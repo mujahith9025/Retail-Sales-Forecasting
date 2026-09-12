@@ -48,24 +48,33 @@ graph TD
   - *🎯 Goal Target Rating:* Evaluates feasibility from *🟢 Easy Baseline* to *🚀 Moonshot Surge*.
   - *📈 Macro Health Bar:* Evaluates combined gas prices, CPI inflation, and unemployment stress.
 
-### 6. 🔮 1-Click What-If Scenario Simulator
-* **7 Commercial Presets:** *🛍️ Black Friday Surge*, *🎄 Christmas Rush*, *☀️ Summer Peak*, *🏷️ Clearance (30% Off)*, *📉 Macro Inflation*, *🏈 Super Bowl*, and *🔄 Standard Operations*.
-* **Driver Waterfall:** Deconstructs baseline revenue, markdown demand lift, and holiday surge volume.
+### 6. 🌊 Visual 3-Step Demand Surge Waterfall & 3 Directive Badges
+* **Visual 3-Step Demand Surge Waterfall:** Step-by-step deconstruction of *4-Wk Baseline* ➔ *Markdown Lift* ➔ *Holiday Surge* ➔ *Simulated Target Demand* with custom color-coded bars and connector lines.
+* **3 Quick-Glance Pictorial Directive Badges:** Instant operational callouts for **👥 Frontline Staffing**, **📦 Safety Stock Buffers**, and **🏷️ Pricing & Margin Protection**.
 
-### 7. 📤 Custom CSV Sales Report Upload & Auto-Analyzer
+### 7. ⚡ "3-Second Visual Answer Card" (Instant AI Q&A)
+* **Big Bold Hero Stat:** Instantly surfaces the primary KPI number ($24.85M, +43.7%, Grocery leader) at a glance.
+* **3 Visual Bullet Chips with Emojis:** 🏆 Primary Leader, 📊 Volume Driver, and 🚀 Action Directive in glowing rounded pills.
+
+### 8. 📑 Executive 1-Slide Infographic Card & 3 Stat Dials
+* **1-Line Headline Pill:** High-contrast executive summary banner with real-time risk alert badges.
+* **3 Visual Stat Dials:** Plotly semi-circular gauge dials for **🛡️ P10 Safety Floor**, **🎯 P50 Expected Demand**, and **🚀 P90 Peak Surge Ceiling**.
+* **3 Checklist Action Pills:** Immediate operational checklist with verified green checkmarks `[✓]`.
+
+### 9. 📤 Custom CSV Sales Report Upload & Auto-Analyzer
 * **1-Click Demo Dataset:** Test immediately without uploading, or drag-and-drop custom store CSV sales files.
 * **Automated AI Audit:** Automatically generates 12-week forward forecasts, detects sales outliers (>2.2σ), and exports custom PDF audit memos.
 
-### 8. 📦 1-Click "Download Everything" Executive Bundle (.ZIP)
+### 10. 📦 1-Click "Download Everything" Executive Bundle (.ZIP)
 * **Single-Click Download:** Compiles **Executive PDF Memo**, **5-Sheet Formatted Excel Workbook**, **Batch Predictions CSV**, **Store Health Scorecards CSV**, and **Management Readme** into an all-in-one ZIP archive.
 
-### 9. 📖 Built-in Plain-English "Jargon Buster" Glossary
+### 11. 📖 Built-in Plain-English "Jargon Buster" Glossary
 * **Retail & AI Demystified:** Instant 1-sentence explanations and real-world examples for terms like `COGS`, `Safety Stock`, `MAPE ±5.4%`, `R² = 94.6%`, and `P10/P50/P90 Cones`.
 
-### 10. ⚓ Floating Bottom Action Bar (Mobile & Desktop Friendly)
+### 12. ⚓ Floating Bottom Action Bar (Mobile & Desktop Friendly)
 * **Persistent Glassmorphic Dock:** Fixed at the bottom of the screen with active store indicator (`🏆 Dallas, TX`), live model accuracy telemetry (`🟢 94.6% Accuracy`), and quick actions on any screen size.
 
-### 11. 💡 Glowing Floating Segmented Tabs
+### 13. 💡 Glowing Floating Segmented Tabs
 * **Aesthetic Navigation:** Frosted glass segmented controller with glowing blue active badges, hover elevations, and responsive segmented radio selectors.
 
 ---

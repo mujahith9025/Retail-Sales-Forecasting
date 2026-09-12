@@ -6,6 +6,102 @@ labor scheduling recommendations, and commercial margin strategies.
 
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
+
+
+def create_executive_stat_dials(p10_val: float, p50_val: float, p90_val: float, baseline_val: float) -> dict:
+    """
+    Creates 3 Plotly semi-circular gauge indicator dials for P10, P50, and P90.
+    """
+    max_axis = max(p90_val * 1.25, baseline_val * 1.25, 1000.0)
+    
+    # P10 Dial (Safety Floor)
+    fig_p10 = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=p10_val,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': "<b>🛡️ Safety Floor (P10)</b><br><span style='font-size:0.75rem;color:#64748B;'>90% Guaranteed Demand Floor</span>", 'font': {'size': 13, 'color': '#0F172A'}},
+        delta={'reference': baseline_val, 'increasing': {'color': '#10B981'}, 'decreasing': {'color': '#EF4444'}, 'valueformat': '$,.0f'},
+        number={'valueformat': '$,.0f', 'font': {'size': 22, 'color': '#D97706'}},
+        gauge={
+            'axis': {'range': [0, max_axis], 'tickwidth': 1, 'tickcolor': '#CBD5E1', 'tickformat': '$,.0f'},
+            'bar': {'color': '#F59E0B', 'thickness': 0.75},
+            'bgcolor': '#F8FAFC',
+            'borderwidth': 1,
+            'bordercolor': '#E2E8F0',
+            'steps': [
+                {'range': [0, baseline_val], 'color': '#FEF3C7'},
+                {'range': [baseline_val, max_axis], 'color': '#F1F5F9'}
+            ],
+            'threshold': {
+                'line': {'color': '#475569', 'width': 2},
+                'thickness': 0.8,
+                'value': baseline_val
+            }
+        }
+    ))
+    fig_p10.update_layout(height=175, margin=dict(l=15, r=15, t=35, b=15), paper_bgcolor='rgba(0,0,0,0)', font=dict(family='Inter, sans-serif'))
+
+    # P50 Dial (Expected Demand)
+    fig_p50 = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=p50_val,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': "<b>🎯 Expected Target (P50)</b><br><span style='font-size:0.75rem;color:#64748B;'>Primary Operating Forecast</span>", 'font': {'size': 13, 'color': '#0F172A'}},
+        delta={'reference': baseline_val, 'increasing': {'color': '#10B981'}, 'decreasing': {'color': '#EF4444'}, 'valueformat': '$,.0f'},
+        number={'valueformat': '$,.0f', 'font': {'size': 24, 'color': '#2563EB'}},
+        gauge={
+            'axis': {'range': [0, max_axis], 'tickwidth': 1, 'tickcolor': '#CBD5E1', 'tickformat': '$,.0f'},
+            'bar': {'color': '#2563EB', 'thickness': 0.75},
+            'bgcolor': '#F8FAFC',
+            'borderwidth': 1,
+            'bordercolor': '#E2E8F0',
+            'steps': [
+                {'range': [0, baseline_val], 'color': '#DBEAFE'},
+                {'range': [baseline_val, max_axis], 'color': '#F1F5F9'}
+            ],
+            'threshold': {
+                'line': {'color': '#475569', 'width': 2},
+                'thickness': 0.8,
+                'value': baseline_val
+            }
+        }
+    ))
+    fig_p50.update_layout(height=175, margin=dict(l=15, r=15, t=35, b=15), paper_bgcolor='rgba(0,0,0,0)', font=dict(family='Inter, sans-serif'))
+
+    # P90 Dial (Peak Surge Ceiling)
+    fig_p90 = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=p90_val,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': "<b>🚀 Peak Surge (P90)</b><br><span style='font-size:0.75rem;color:#64748B;'>Capacity Stress Ceiling</span>", 'font': {'size': 13, 'color': '#0F172A'}},
+        delta={'reference': baseline_val, 'increasing': {'color': '#10B981'}, 'decreasing': {'color': '#EF4444'}, 'valueformat': '$,.0f'},
+        number={'valueformat': '$,.0f', 'font': {'size': 22, 'color': '#8B5CF6'}},
+        gauge={
+            'axis': {'range': [0, max_axis], 'tickwidth': 1, 'tickcolor': '#CBD5E1', 'tickformat': '$,.0f'},
+            'bar': {'color': '#8B5CF6', 'thickness': 0.75},
+            'bgcolor': '#F8FAFC',
+            'borderwidth': 1,
+            'bordercolor': '#E2E8F0',
+            'steps': [
+                {'range': [0, baseline_val], 'color': '#EDE9FE'},
+                {'range': [baseline_val, max_axis], 'color': '#F1F5F9'}
+            ],
+            'threshold': {
+                'line': {'color': '#475569', 'width': 2},
+                'thickness': 0.8,
+                'value': baseline_val
+            }
+        }
+    ))
+    fig_p90.update_layout(height=175, margin=dict(l=15, r=15, t=35, b=15), paper_bgcolor='rgba(0,0,0,0)', font=dict(family='Inter, sans-serif'))
+
+    return {
+        "fig_p10": fig_p10,
+        "fig_p50": fig_p50,
+        "fig_p90": fig_p90
+    }
+
 
 def generate_executive_briefing(store_id: str, dept: str, predicted_sales: float, 
                                 baseline_sales: float, p10_val: float, p90_val: float, 

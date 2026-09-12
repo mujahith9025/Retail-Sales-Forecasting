@@ -44,7 +44,10 @@ from src.export_reports import (
     generate_executive_pdf,
     generate_executive_bundle_zip
 )
-from src.executive_briefing import generate_executive_briefing
+from src.executive_briefing import (
+    generate_executive_briefing,
+    create_executive_stat_dials
+)
 from src.upload_analyzer import (
     generate_sample_sales_template,
     process_and_forecast_uploaded_data,
@@ -852,26 +855,81 @@ def render_smart_question_chips(is_simple=False):
             STORE_LOCATIONS
         )
 
-    # Hero Answer Card
+    # 3-Second Visual Answer Card with Big Bold Number & 3 Visual Bullet Chips
+    hero_kpi = ans["kpis"][0] if ans["kpis"] else {"label": "Key Result", "val": "Optimized", "sub": "AI Computed"}
+    secondary_kpi = ans["kpis"][1] if len(ans["kpis"]) > 1 else {"label": "Benchmark", "val": "Standard", "sub": "Baseline"}
+    rec_lead = ans["recommendations"][0] if ans["recommendations"] else "Maintain standard operational cadence."
+    
     st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1px solid #BFDBFE; border-left: 6px solid #2563EB; border-radius: 14px; padding: 1.25rem 1.6rem; box-shadow: 0 4px 15px -2px rgba(37, 99, 235, 0.08); margin-bottom: 1.2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span style="font-weight: 700; font-size: 0.85rem; color: #2563EB; text-transform: uppercase; letter-spacing: 0.05em;">
+    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F0FDF4 100%); border: 1.5px solid #BFDBFE; border-left: 8px solid #2563EB; border-radius: 16px; padding: 1.3rem 1.6rem; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); margin-bottom: 1.25rem;">
+        <!-- Top Pill & Category Banner -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+            <span style="font-weight: 800; font-size: 0.82rem; color: #2563EB; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(37,99,235,0.1); padding: 0.25rem 0.75rem; border-radius: 9999px;">
                 {ans['category']}
             </span>
-            <span style="background: #2563EB; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 700; font-size: 0.78rem;">
-                AI Answer
+            <span style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-weight: 800; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(16,185,129,0.3);">
+                ⚡ 3-SECOND VISUAL ANSWER
             </span>
         </div>
-        <div style="font-weight: 800; font-size: 1.25rem; color: #0F172A; margin-bottom: 0.5rem; line-height: 1.35;">
+
+        <!-- Question Heading -->
+        <div style="font-weight: 800; font-size: 1.2rem; color: #0F172A; margin-bottom: 0.8rem; line-height: 1.35;">
             {ans['question']}
         </div>
-        <div style="background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 0.7rem;">
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1E3A8A; margin-bottom: 0.35rem;">
-                🎯 {ans['headline']}
+
+        <!-- Hero Stat Row with Big Bold Number -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: white; border: 1.5px solid #DBEAFE; border-radius: 12px; padding: 1rem 1.3rem; margin-bottom: 0.85rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.05); gap: 1rem;">
+            <div style="flex: 1; min-width: 190px;">
+                <div style="font-size: 0.78rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">{hero_kpi['label']}</div>
+                <div style="font-size: 2.3rem; font-weight: 900; color: #1E3A8A; line-height: 1.1; letter-spacing: -0.02em; margin-top: 0.15rem;">
+                    {hero_kpi['val']}
+                </div>
+                <div style="font-size: 0.84rem; font-weight: 700; color: #059669; margin-top: 0.2rem;">
+                    {hero_kpi['sub']}
+                </div>
             </div>
-            <div style="font-size: 0.9rem; color: #334155; line-height: 1.55;">
-                {ans['summary']}
+            <div style="flex: 2; min-width: 250px; border-left: 2px solid #EFF6FF; padding-left: 1.2rem;">
+                <div style="font-size: 0.98rem; font-weight: 700; color: #1E293B; line-height: 1.45;">
+                    🎯 {ans['headline']}
+                </div>
+                <div style="font-size: 0.85rem; color: #475569; margin-top: 0.3rem; line-height: 1.4;">
+                    {ans['summary'][:150]}...
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 Visual Bullet Chips with Emojis -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem;">
+            <!-- Bullet Chip 1 -->
+            <div style="background: rgba(255,255,255,0.92); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="font-size: 0.74rem; font-weight: 800; color: #2563EB; text-transform: uppercase; margin-bottom: 0.15rem;">
+                    🏆 Primary Leader
+                </div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">
+                    {hero_kpi['label']}: <b style="color: #2563EB;">{hero_kpi['val']}</b>
+                </div>
+                <div style="font-size: 0.76rem; color: #64748B;">{hero_kpi['sub']}</div>
+            </div>
+
+            <!-- Bullet Chip 2 -->
+            <div style="background: rgba(255,255,255,0.92); border: 1px solid #A7F3D0; border-left: 4px solid #10B981; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="font-size: 0.74rem; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 0.15rem;">
+                    📊 Volume Driver
+                </div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">
+                    {secondary_kpi['label']}: <b style="color: #059669;">{secondary_kpi['val']}</b>
+                </div>
+                <div style="font-size: 0.76rem; color: #64748B;">{secondary_kpi['sub']}</div>
+            </div>
+
+            <!-- Bullet Chip 3 -->
+            <div style="background: rgba(255,255,255,0.92); border: 1px solid #DDD6FE; border-left: 4px solid #8B5CF6; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <div style="font-size: 0.74rem; font-weight: 800; color: #7C3AED; text-transform: uppercase; margin-bottom: 0.15rem;">
+                    🚀 Action Directive
+                </div>
+                <div style="font-size: 0.84rem; font-weight: 600; color: #1E293B; line-height: 1.35;">
+                    {rec_lead}
+                </div>
             </div>
         </div>
     </div>
@@ -1823,21 +1881,88 @@ def render_scenario_simulator(is_simple=False):
             st.metric("Expected Range (±6%)", f"${conf_low:,.0f} - ${conf_high:,.0f}")
             
         st.write("")
-        st.markdown("##### 🔍 Revenue Driver Waterfall Breakdown")
+        
+        # 3 Quick-Glance Pictorial Directive Badges
+        st.markdown("##### ⚡ 3 Quick-Glance Operational Directives:")
+        d_badge1, d_badge2, d_badge3 = st.columns(3)
+        with d_badge1:
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
+                <div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase; letter-spacing: 0.04em;">
+                    👥 Staffing Directive
+                </div>
+                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+                    {active_p['staff_rec']}
+                </div>
+                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+                    Floor coverage: 12 PM - 6 PM
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with d_badge2:
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%); border: 1.5px solid #A7F3D0; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(16,185,129,0.06);">
+                <div style="font-size: 0.75rem; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.04em;">
+                    📦 Safety Stock Buffer
+                </div>
+                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+                    {active_p['buffer_rec']}
+                </div>
+                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+                    Backroom restock 48h prior
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with d_badge3:
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%); border: 1.5px solid #FDE68A; border-left: 5px solid #F59E0B; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(245,158,11,0.06);">
+                <div style="font-size: 0.75rem; font-weight: 800; color: #D97706; text-transform: uppercase; letter-spacing: 0.04em;">
+                    🏷️ Pricing & Margin
+                </div>
+                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+                    {int(sim_promo * 100)}% Promo Markdown
+                </div>
+                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+                    Contribution margin protected
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.write("")
+        st.markdown("##### 🌊 Visual 3-Step Demand Surge Waterfall")
         promo_effect = (predicted_sales - rolling_mean_4) * (0.55 if sim_promo > 0 else 0.0)
         holiday_effect = (predicted_sales - rolling_mean_4) * (0.45 if sim_holiday != "Regular_Week" else 0.0)
         
         fig_waterfall = go.Figure(go.Waterfall(
-            name="Forecast Breakdown",
+            name="Demand Surge Breakdown",
             orientation="v",
             measure=["absolute", "relative", "relative", "total"],
-            x=["4-Wk Baseline", "Promotional Impact", "Holiday Surge", "Simulated Revenue"],
+            x=["1. 4-Wk Baseline", "2. Markdown Lift", "3. Holiday Surge", "4. Target Demand"],
             textposition="outside",
-            text=[f"${rolling_mean_4:,.0f}", f"+${promo_effect:,.0f}" if promo_effect!=0 else "$0", f"+${holiday_effect:,.0f}" if holiday_effect!=0 else "$0", f"${predicted_sales:,.0f}"],
+            text=[
+                f"${rolling_mean_4:,.0f}",
+                f"+${promo_effect:,.0f}" if promo_effect > 0 else (f"-${abs(promo_effect):,.0f}" if promo_effect < 0 else "$0"),
+                f"+${holiday_effect:,.0f}" if holiday_effect > 0 else (f"-${abs(holiday_effect):,.0f}" if holiday_effect < 0 else "$0"),
+                f"${predicted_sales:,.0f}"
+            ],
             y=[rolling_mean_4, promo_effect, holiday_effect, predicted_sales],
-            connector={"line": {"color": "rgb(63, 63, 63)"}},
+            connector={"line": {"color": "#64748B", "width": 1.5, "dash": "solid"}},
+            increasing={"marker": {"color": "#10B981"}},
+            decreasing={"marker": {"color": "#EF4444"}},
+            totals={"marker": {"color": "#1E3A8A"}},
+            base=0
         ))
-        fig_waterfall.update_layout(template="plotly_white", margin=dict(l=20, r=20, t=20, b=20), height=320)
+        fig_waterfall.update_layout(
+            template="plotly_white",
+            margin=dict(l=20, r=20, t=25, b=25),
+            height=300,
+            yaxis_title="Weekly Revenue ($)",
+            yaxis=dict(tickformat="$,.0f", gridcolor="#F1F5F9"),
+            xaxis=dict(tickfont=dict(size=12, family="Inter, sans-serif")),
+            font=dict(family="Inter, sans-serif")
+        )
         st.plotly_chart(fig_waterfall, use_container_width=True)
         
     st.write("")
@@ -2398,26 +2523,57 @@ def render_executive_briefing(is_simple=False):
             persona=eb_persona
         )
         
-        # Render AI Executive Card
+        # Executive 1-Slide Infographic Card: Headline Pill, 3 Stat Dials, & 3 Checklist Action Pills
         st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1px solid #CBD5E1; border-left: 6px solid {briefing['risk_color']}; border-radius: 14px; padding: 1.25rem 1.6rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{briefing['headline']}</span>
-                <span style="background: {briefing['risk_color']}; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.78rem; font-weight: 700;">{briefing['risk_level']}</span>
+        <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(15,23,42,0.12);">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span style="font-size: 1.15rem;">📌</span>
+                <span style="font-weight: 800; font-size: 1.02rem; color: #F8FAFC; letter-spacing: -0.01em;">
+                    {briefing['headline']}
+                </span>
             </div>
-            <div style="font-size: 0.92rem; color: #334155; line-height: 1.55; margin-bottom: 0.8rem;">{briefing['summary']}</div>
-            <div style="display: flex; gap: 2rem; border-top: 1px solid #E2E8F0; padding-top: 0.6rem; font-size: 0.84rem;">
-                <span><b>Expected Sales (P50):</b> ${briefing['p50']:,.0f}</span>
-                <span><b>Safety Floor (P10):</b> ${briefing['p10']:,.0f}</span>
-                <span><b>Peak Demand (P90):</b> ${briefing['p90']:,.0f}</span>
-                <span><b>Uncertainty Spread:</b> ${briefing['uncertainty_spread']:,.0f}</span>
-            </div>
+            <span style="background: {briefing['risk_color']}; color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
+                {briefing['risk_level']}
+            </span>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("#### 🎯 Strategic Action Recommendations")
-        for rec in briefing["recommendations"]:
-            st.markdown(f"- {rec}")
+        # 3 Visual Stat Dials (P10, P50, P90)
+        stat_dials = create_executive_stat_dials(briefing["p10"], briefing["p50"], briefing["p90"], base_sales_eb)
+        dial_col1, dial_col2, dial_col3 = st.columns(3)
+        with dial_col1:
+            st.plotly_chart(stat_dials["fig_p10"], use_container_width=True)
+        with dial_col2:
+            st.plotly_chart(stat_dials["fig_p50"], use_container_width=True)
+        with dial_col3:
+            st.plotly_chart(stat_dials["fig_p90"], use_container_width=True)
+            
+        # 3 Checklist Action Pills
+        rec_1 = briefing["recommendations"][0] if len(briefing["recommendations"]) > 0 else "Optimize revenue allocation"
+        rec_2 = briefing["recommendations"][1] if len(briefing["recommendations"]) > 1 else "Stage safety stock buffer"
+        rec_3 = briefing["recommendations"][2] if len(briefing["recommendations"]) > 2 else "Align floor associate shift roster"
+        
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-radius: 14px; padding: 1rem 1.3rem; margin-top: 0.1rem; margin-bottom: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.04);">
+            <div style="font-weight: 800; font-size: 0.88rem; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>📋</span> <span>Executive Action Checklist (Immediate Directives):</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <span style="background: #ECFDF5; color: #059669; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_1}</span>
+                </div>
+                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <span style="background: #EFF6FF; color: #2563EB; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_2}</span>
+                </div>
+                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #8B5CF6; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <span style="background: #F5F3FF; color: #7C3AED; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_3}</span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
             
         memo_text = f"""RETAIL DEMAND EXECUTIVE BRIEFING MEMORANDUM
 Generated by Retail Pulse AI Engine
