@@ -463,23 +463,36 @@ def load_historical_data():
 def load_trained_models():
     models = {}
     if BEST_MODEL_FILE.exists():
-        models["champion"] = joblib.load(BEST_MODEL_FILE)
+        try:
+            models["champion"] = joblib.load(BEST_MODEL_FILE)
+        except Exception as e:
+            print(f"Warning loading champion model: {e}")
     
     quantile_file = MODELS_DIR / "quantile_models.pkl"
     if quantile_file.exists():
-        models["quantiles"] = joblib.load(quantile_file)
+        try:
+            models["quantiles"] = joblib.load(quantile_file)
+        except Exception as e:
+            print(f"Warning loading quantiles: {e}")
         
     lstm_meta_file = MODELS_DIR / "lstm_metadata.pkl"
     lstm_model_file = MODELS_DIR / "pytorch_lstm_model.pt"
     if lstm_meta_file.exists() and lstm_model_file.exists():
         try:
-            from src.deep_learning import BiLSTMForecaster
-        except (ImportError, ModuleNotFoundError):
-            from deep_learning import BiLSTMForecaster
-        lstm_net = BiLSTMForecaster(input_dim=len(meta["feature_cols"]), hidden_dim=64, num_layers=2)
-        lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu")))
-        lstm_net.eval()
-        models["lstm"] = {"net": lstm_net, "meta": meta}
+            meta = joblib.load(lstm_meta_file)
+            try:
+                from src.deep_learning import BiLSTMForecaster
+            except (ImportError, ModuleNotFoundError):
+                from deep_learning import BiLSTMForecaster
+            lstm_net = BiLSTMForecaster(input_dim=len(meta["feature_cols"]), hidden_dim=64, num_layers=2)
+            try:
+                lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu"), weights_only=False))
+            except TypeError:
+                lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu")))
+            lstm_net.eval()
+            models["lstm"] = {"net": lstm_net, "meta": meta}
+        except Exception as e:
+            print(f"Warning loading PyTorch LSTM: {e}")
         
     return models
 
