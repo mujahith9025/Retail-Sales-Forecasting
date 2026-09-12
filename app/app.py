@@ -89,6 +89,12 @@ from src.decision_wizard import (
     DECISION_INTENTS,
     render_decision_wizard
 )
+from src.gamified_feedback import (
+    get_promo_slider_feedback,
+    get_goal_target_feedback,
+    get_economic_feedback,
+    render_slider_feedback_badge
+)
 
 # Page Configuration
 st.set_page_config(
@@ -1158,6 +1164,10 @@ def render_goal_seek(is_simple=False):
             st.session_state[state_key] = num_target
             current_target = num_target
 
+    # Dynamic Real-Time Gamified Slider Feedback
+    pct_gap_live = ((current_target - baseline_val) / (baseline_val + 1e-5)) * 100
+    render_slider_feedback_badge(get_goal_target_feedback(pct_gap_live))
+
     # Execute Goal Seek Solver
     with st.spinner("🤖 Reverse-engineering optimal discount, staffing, inventory buffer, and financial margin..."):
         plan = solve_target_revenue_plan(gs_store, gs_dept, current_target, raw_df)
@@ -1637,12 +1647,14 @@ def render_scenario_simulator(is_simple=False):
         holidays_list = ["Regular_Week", "Thanksgiving_BlackFriday", "Christmas_Holiday", "Labor_Day", "Easter", "Super_Bowl"]
         sim_holiday = st.selectbox("Active Holiday Event:", holidays_list, index=holidays_list.index(active_p["holiday"]), key="sim_hol_sel")
         sim_promo = st.slider("Promotional Discount (%):", min_value=0, max_value=35, value=active_p["promo"], step=5, key="sim_prm_sel") / 100.0
+        render_slider_feedback_badge(get_promo_slider_feedback(int(sim_promo * 100)))
         
         with st.expander("Fine-Tune Economic Conditions (Optional)"):
             sim_temp = st.slider("Temperature (°F):", min_value=20.0, max_value=95.0, value=active_p["temp"], key="sim_tmp_sel")
             sim_fuel = st.slider("Fuel Price ($/gal):", min_value=2.0, max_value=5.0, value=active_p["fuel"], key="sim_fl_sel")
             sim_cpi = st.slider("CPI Inflation Index:", min_value=200.0, max_value=270.0, value=active_p["cpi"], key="sim_cpi_sel")
             sim_unemp = st.slider("Unemployment Rate (%):", min_value=3.5, max_value=10.0, value=active_p["unemp"], key="sim_un_sel")
+            render_slider_feedback_badge(get_economic_feedback(sim_cpi, sim_unemp, sim_fuel, sim_temp))
     
     with sim_col2:
         history_subset = raw_df[(raw_df["Store_ID"] == sim_store) & (raw_df["Department"] == sim_dept)].sort_values(by="Date")
@@ -1973,6 +1985,8 @@ def render_profit_estimator(is_simple=False):
         pe_dept = st.selectbox("Select Department:", DEPARTMENTS, key="pe_dept_select", index=0)
     with p_c3:
         pe_promo = st.slider("Simulate Promotional Markdown (%):", min_value=0, max_value=35, value=10, step=5, key="pe_promo_slider") / 100.0
+
+    render_slider_feedback_badge(get_promo_slider_feedback(int(pe_promo * 100)))
 
     profile = DEPARTMENT_COST_PROFILES.get(pe_dept, DEPARTMENT_COST_PROFILES["Grocery"])
 
