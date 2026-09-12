@@ -1,10 +1,13 @@
 # 🛍️ Retail Pulse AI — Enterprise Sales Forecasting & Scenario Intelligence Suite
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://retail-sales-forecasting-rfpalfdfa5app2a8krcq3cp.streamlit.app/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-FF4B4B.svg)](https://streamlit.io/)
 [![XGBoost](https://img.shields.io/badge/XGBoost-Champion_94.6%25-orange.svg)](https://xgboost.readthedocs.io/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-Bi--LSTM-EE4C2C.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+> 🌐 **Live Web Application:** [https://retail-sales-forecasting-rfpalfdfa5app2a8krcq3cp.streamlit.app/](https://retail-sales-forecasting-rfpalfdfa5app2a8krcq3cp.streamlit.app/)
 
 An enterprise-grade retail demand forecasting, store health diagnostic, financial margin modeling, and commercial scenario intelligence suite. Built with **XGBoost ($R^2 = 0.968$)**, **PyTorch Bi-LSTM Deep Sequence Modeling**, and a **Streamlit Web Application** featuring both an ultra-clean **🌟 Simple Mode (Beginner)** and a **🔬 Advanced ML Lab**.
 
@@ -104,27 +107,34 @@ retail-sales-forecasting/
 
 ## ⚡ Quick Start & Installation
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/YOUR_USERNAME/retail-sales-forecasting.git
-cd retail-sales-forecasting
-```
+### Option A: Use the Live Cloud App (Zero Setup)
+👉 **Open Live Web App:** [https://retail-sales-forecasting-rfpalfdfa5app2a8krcq3cp.streamlit.app/](https://retail-sales-forecasting-rfpalfdfa5app2a8krcq3cp.streamlit.app/)
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+---
 
-### 3. Run the Complete Data & Modeling Pipeline (Optional)
-```bash
-python run_pipeline.py
-```
+### Option B: Run Locally on Your Machine
 
-### 4. Launch the Web Dashboard
-```bash
-streamlit run app/app.py
-```
-👉 Open **`http://localhost:8501`** in your browser.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/mujahith9025/Retail-Sales-Forecasting.git
+   cd Retail-Sales-Forecasting
+   ```
+
+2. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the Complete Data & Modeling Pipeline (Optional):**
+   ```bash
+   python run_pipeline.py
+   ```
+
+4. **Launch the Web Dashboard:**
+   ```bash
+   streamlit run app/app.py
+   ```
+   Open **`http://localhost:8501`** in your browser.
 
 ---
 
