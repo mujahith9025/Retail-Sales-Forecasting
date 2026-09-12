@@ -210,6 +210,11 @@ def simulate_discount_elasticity_curve(
     Simulates revenue and net profit across a 0% to 40% discount ladder
     to find the profit-maximizing optimal discount rate.
     """
+    try:
+        baseline_sales = float(baseline_sales)
+    except (ValueError, TypeError):
+        baseline_sales = 25000.0
+        
     discounts = [0.0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40]
     
     elasticity_multipliers = {

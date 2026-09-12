@@ -111,6 +111,15 @@ def train_quantile_forecasters():
     joblib.dump(artifact, QUANTILE_MODELS_FILE)
     print(f"[OK] Quantile forecasting ensemble saved to: {QUANTILE_MODELS_FILE}")
     print("[SUCCESS] Probabilistic module training complete!")
+    return artifact
+
+
+def load_quantile_models():
+    """Loads saved quantile forecasting ensemble artifact."""
+    if QUANTILE_MODELS_FILE.exists():
+        return joblib.load(QUANTILE_MODELS_FILE)
+    return None
+
 
 if __name__ == "__main__":
     train_quantile_forecasters()
