@@ -62,6 +62,9 @@ graph TD
 ### 10. ⚓ Floating Bottom Action Bar (Mobile & Desktop Friendly)
 * **Persistent Glassmorphic Dock:** Fixed at the bottom of the screen with active store indicator (`🏆 Dallas, TX`), live model accuracy telemetry (`🟢 94.6% Accuracy`), and quick actions on any screen size.
 
+### 11. 💡 Glowing Floating Segmented Tabs
+* **Aesthetic Navigation:** Frosted glass segmented controller with glowing blue active badges, hover elevations, and responsive segmented radio selectors.
+
 ---
 
 ## 🏆 Multi-Model Benchmark Leaderboard

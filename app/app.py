@@ -229,28 +229,84 @@ st.markdown("""
         color: #1E3A8A;
     }
 
-    /* Tab styling */
+    /* ==========================================================================
+       GLOWING FLOATING SEGMENTED TABS & PILL CONTROLLERS
+       ========================================================================== */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        background: #F1F5F9;
-        padding: 6px;
-        border-radius: 12px;
-        margin-bottom: 1.2rem;
+        background: rgba(241, 245, 249, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(203, 213, 225, 0.8);
+        padding: 6px 8px;
+        border-radius: 16px;
+        margin-bottom: 1.4rem;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 2px 4px rgba(0, 0, 0, 0.02);
     }
+    
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px !important;
-        padding: 8px 18px !important;
-        font-weight: 600 !important;
-        font-size: 0.88rem !important;
+        border-radius: 12px !important;
+        padding: 10px 22px !important;
+        font-weight: 700 !important;
+        font-size: 0.92rem !important;
         color: #475569 !important;
         background: transparent !important;
-        border: none !important;
-        transition: all 0.2s ease;
+        border: 1px solid transparent !important;
+        letter-spacing: -0.01em;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(255, 255, 255, 0.75) !important;
+        color: #0F172A !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    
     .stTabs [aria-selected="true"] {
-        background: #2563EB !important;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         color: #FFFFFF !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        font-weight: 800 !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.45), 0 0 12px 1px rgba(96, 165, 250, 0.35) !important;
+        transform: translateY(-1px) scale(1.02);
+    }
+
+    /* Segmented Radio Pills (Sim Mode & Upload Selectors) */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex;
+        gap: 8px;
+        background: rgba(241, 245, 249, 0.85);
+        padding: 5px 8px;
+        border-radius: 14px;
+        border: 1px solid #E2E8F0;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        margin-bottom: 0.8rem;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        background: transparent;
+        border-radius: 10px;
+        padding: 6px 16px;
+        font-weight: 600;
+        font-size: 0.86rem;
+        color: #475569;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+        background: rgba(255, 255, 255, 0.8);
+        color: #0F172A;
+    }
+    
+    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+        background: #FFFFFF !important;
+        color: #2563EB !important;
+        font-weight: 700 !important;
+        border: 1px solid #BFDBFE !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
     }
 </style>
 """, unsafe_allow_html=True)
