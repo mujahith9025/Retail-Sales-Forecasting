@@ -88,6 +88,12 @@ from src.store_deck import (
     get_enriched_store_cards,
     render_interactive_store_deck
 )
+from src.mini_map_pinboard import (
+    render_us_minimap_pinboard
+)
+from src.store_battle_arena import (
+    render_store_battle_arena
+)
 from src.decision_wizard import (
     DECISION_INTENTS,
     render_decision_wizard
@@ -1101,28 +1107,39 @@ def render_health_scorecard(is_simple=False):
         
     st.write("")
     
-    # Store Scorecard Table & Category Table in 2 Tabs
-    subtab_store, subtab_dept = st.tabs(["🏢 Store Branch Diagnostics (10 Locations)", "🛒 Product Category Diagnostics (5 Departments)"])
+    # Store Scorecard Table, Battle Arena & Category Table in 3 Tabs
+    subtab_store, subtab_arena, subtab_dept = st.tabs([
+        "🏢 Store Diagnostics & US Mini-Map Pinboard (10 Locations)",
+        "⚔️ Store Battle Arena (Head-to-Head Comparison)",
+        "🛒 Product Category Diagnostics (5 Departments)"
+    ])
     
     with subtab_store:
-        st.markdown("#### 🏆 Store Network Health Leaderboard")
-        st.caption("Ranked by composite 5-pillar operational score (Revenue, Space Efficiency, Growth, Stability, Agility).")
+        st.markdown("#### 🗺️ Interactive US Mini-Map Pinboard")
+        st.caption("Click any colored pulsating pin dot (🟢 A+, 🔵 B, 🟡 C) to select a store branch and synchronize analytics platform-wide.")
         
-        display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
-        st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
-        
-        st.write("")
-        st.markdown("#### 🔍 Deep-Dive Store Diagnostic Breakdown")
-        active_deck_store = render_interactive_store_deck(
+        # Render Interactive US Mini-Map Pinboard
+        active_pin_store = render_us_minimap_pinboard(
             raw_df,
             STORE_LOCATIONS,
             st.session_state.get("active_store", "Store_09"),
+            key_prefix="health_pinboard"
+        )
+        
+        st.write("")
+        st.markdown("#### 🏢 Interactive Store Branch Card Deck")
+        active_deck_store = render_interactive_store_deck(
+            raw_df,
+            STORE_LOCATIONS,
+            st.session_state.get("active_store", active_pin_store),
             key_prefix="health_deck"
         )
         sel_diag_store = active_deck_store
         
         target_store_data = store_card_df[store_card_df["Store_ID"] == sel_diag_store].iloc[0]
         
+        st.write("")
+        st.markdown("#### 🔍 Deep-Dive Store Diagnostic Breakdown")
         diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
             st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
@@ -1182,6 +1199,20 @@ def render_health_scorecard(is_simple=False):
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            
+        st.write("")
+        st.markdown("#### 🏆 Store Network Health Leaderboard")
+        st.caption("Ranked by composite 5-pillar operational score (Revenue, Space Efficiency, Growth, Stability, Agility).")
+        display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
+        st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
+
+    with subtab_arena:
+        # Render Store Battle Arena
+        render_store_battle_arena(
+            raw_df,
+            STORE_LOCATIONS,
+            key_prefix="health_battle_arena"
+        )
 
     with subtab_dept:
         st.markdown("#### 🛒 Product Department Health Leaderboard")
