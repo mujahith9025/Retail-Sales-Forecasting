@@ -241,6 +241,22 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
+def safe_render_html(html_str: str, container=None):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    target = container or st
+    if hasattr(target, "html"):
+        target.html(html_str)
+    elif hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        target.markdown(minified, unsafe_allow_html=True)
+
+
 # Global Active Store State Initialization
 if "active_store" not in st.session_state:
     st.session_state.active_store = "Store_09"
@@ -248,7 +264,7 @@ if "active_store" not in st.session_state:
 # ==============================================================================
 # PREMIUM DESIGN SYSTEM & CSS (THE WOW FACTOR)
 # ==============================================================================
-st.markdown("""<style>
+safe_render_html("""<style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
@@ -457,19 +473,7 @@ font-weight: 700 !important;
 border: 1px solid #BFDBFE !important;
 box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
 }
-</style>""", unsafe_allow_html=True)
-
-
-def safe_render_html(html_str: str):
-    """
-    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
-    Prefers st.html if available, with minified st.markdown as fallback.
-    """
-    if hasattr(st, "html"):
-        st.html(html_str)
-    else:
-        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
-        st.markdown(minified, unsafe_allow_html=True)
+</style>""")
 
 
 # ==============================================================================
@@ -675,16 +679,14 @@ if TEST_FEATURES_FILE.exists() and "champion" in all_models:
     )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("""
-<div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
-    <b>🛍️ Retail Pulse AI Overview:</b><br/>
-    • <b>Champion Model:</b> XGBoost ($R^2 = 0.968$)<br/>
-    • <b>Accuracy:</b> 94.6% ($\pm 5.4\%$ Avg Error)<br/>
-    • <b>Network:</b> 10 US Stores × 5 Departments<br/>
-    • <b>Diagnostics:</b> A+ to F Health Scorecard<br/>
-    • <b>Deep Learning:</b> PyTorch Bi-LSTM
-</div>
-""", unsafe_allow_html=True)
+safe_render_html("""<div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
+<b>🛍️ Retail Pulse AI Overview:</b><br/>
+• <b>Champion Model:</b> XGBoost (R² = 0.968)<br/>
+• <b>Accuracy:</b> 94.6% (±5.4% Avg Error)<br/>
+• <b>Network:</b> 10 US Stores × 5 Departments<br/>
+• <b>Diagnostics:</b> A+ to F Health Scorecard<br/>
+• <b>Deep Learning:</b> PyTorch Bi-LSTM
+</div>""", container=st.sidebar)
 
 # ==============================================================================
 # HEADER BANNER
@@ -700,7 +702,7 @@ header_html = """<div class="brand-container" style="background: linear-gradient
 <span class="status-badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.4rem 0.95rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">🟢 System Ready (Accuracy: 94.6%)</span>
 </div>
 </div>"""
-st.markdown(header_html, unsafe_allow_html=True)
+safe_render_html(header_html)
 
 if raw_df is None or "champion" not in all_models:
     st.error("⚠️ Model or data artifacts are missing! Click 'Re-run Complete Pipeline' in the sidebar.")
@@ -746,7 +748,7 @@ def render_jargon_buster_tab(is_simple=False):
     for idx, item in enumerate(filtered_terms):
         c = j_cols[idx % 2]
         with c:
-            st.markdown(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+            safe_render_html(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
 <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.4rem;">
 {item['icon']} {item['term']}
@@ -764,15 +766,15 @@ def render_jargon_buster_tab(is_simple=False):
 <div style="font-size: 0.78rem; color: #64748B;">
 🎯 <b>Why it matters:</b> {item['why_it_matters']}
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
 
 def render_smart_question_chips(is_simple=False):
     st.subheader("💡 1-Click Smart Question Chips (Instant AI Answers)")
     if is_simple:
-        st.markdown("""<div class="simple-callout">
+        safe_render_html("""<div class="simple-callout">
 💡 <b>Instant AI Answers:</b> Click any <b>Smart Question Chip</b> below to get immediate plain-English answers, KPI metric callouts, charts, and actionable recommendations without writing queries or building complex filters.
-</div>""", unsafe_allow_html=True)
+</div>""")
     else:
         st.caption("Click any business question chip or ask custom queries to instantly synthesize machine learning analytics, KPI drivers, and operational directives.")
 
@@ -800,7 +802,7 @@ def render_smart_question_chips(is_simple=False):
             key="sel_smart_chip_cat"
         )
 
-    st.markdown("##### ⚡ Click a Smart Question Chip:")
+    safe_render_html("##### ⚡ Click a Smart Question Chip:")
     
     # Filter questions if category selected
     displayed_questions = SMART_QUESTIONS
@@ -868,25 +870,25 @@ def render_smart_question_chips(is_simple=False):
 </div>
 </div>
 </div>"""
-    st.markdown(answer_card_html, unsafe_allow_html=True)
+    st.markdown(answer_card_html)
 
     # 4 KPI Cards
     k1, k2, k3, k4 = st.columns(4)
     for idx, (col, kpi) in enumerate(zip([k1, k2, k3, k4], ans["kpis"])):
         with col:
-            st.markdown(f"""<div class="glass-kpi-card">
+            safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar {kpi['color']}"></div>
 <div class="kpi-label">{kpi['label']}</div>
 <div class="kpi-number" style="font-size: 1.45rem;">{kpi['val']}</div>
 <div class="kpi-meta">{kpi['sub']}</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     st.write("")
     
     # Visual Evidence & Supporting Data Table
     v_c1, v_c2 = st.columns([1.5, 1])
     with v_c1:
-        st.markdown("#### 📊 Visual Data Evidence")
+        safe_render_html("#### 📊 Visual Data Evidence")
         st.plotly_chart(ans["fig"], use_container_width=True)
     with v_c2:
         st.markdown("#### 📑 Summary Table")
@@ -918,7 +920,7 @@ def render_historical_analytics(is_simple=False):
         st.markdown("""<div class="simple-callout">
 💡 <b>Key Business Takeaway:</b> <b>Grocery</b> and <b>Electronics</b> account for <b>52.6%</b> of total revenue.
 Thanksgiving / Black Friday drives the strongest annual demand spike (+43.7% revenue lift).
-</div>""", unsafe_allow_html=True)
+</div>""")
     else:
         st.caption("Inspect store demand trajectories, department sales shares, and holiday surge multipliers.")
         
@@ -1002,7 +1004,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div class="kpi-meta">🏆 {top_store['City']} ({top_store['Grade']} • {top_store['Health_Score']}/100)</div>
 </div>
 """
-        st.markdown(kpi_h1, unsafe_allow_html=True)
+        safe_render_html(kpi_h1)
     with h_col2:
         kpi_h2 = f"""
 <div class="glass-kpi-card">
@@ -1012,7 +1014,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div class="kpi-meta">🛒 {top_cat['Grade']} • {top_cat['Health_Score']}/100 Score</div>
 </div>
 """
-        st.markdown(kpi_h2, unsafe_allow_html=True)
+        safe_render_html(kpi_h2)
     with h_col3:
         kpi_h3 = f"""
 <div class="glass-kpi-card">
@@ -1022,7 +1024,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div class="kpi-meta">✨ Solid Operational Baseline</div>
 </div>
 """
-        st.markdown(kpi_h3, unsafe_allow_html=True)
+        safe_render_html(kpi_h3)
     with h_col4:
         kpi_h4 = f"""
 <div class="glass-kpi-card">
@@ -1032,7 +1034,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div class="kpi-meta">🛡️ 0 Stores in Critical Grade F</div>
 </div>
 """
-        st.markdown(kpi_h4, unsafe_allow_html=True)
+        safe_render_html(kpi_h4)
         
     st.write("")
     
@@ -1057,7 +1059,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
         target_store_data = target_store_match.iloc[0] if len(target_store_match) > 0 else store_card_df.iloc[0]
         
         st.write("")
-        st.markdown(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
+        safe_render_html(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
         diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
             st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
@@ -1087,7 +1089,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div style="background: linear-gradient(90deg, {bar_color} 0%, #60A5FA 100%); height: 100%; width: {p_pct}%; border-radius: 9999px; transition: width 0.4s ease;"></div>
 </div>
 </div>"""
-                st.markdown(meter_html, unsafe_allow_html=True)
+                st.markdown(meter_html)
 
         with diag_c2:
             raw_rx = target_store_data.get('Prescription', 'Maintain standard inventory buffers.')
@@ -1113,10 +1115,10 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 💡 Action: {rx_pill}
 </div>
 </div>"""
-            st.markdown(action_pill_html, unsafe_allow_html=True)
+            safe_render_html(action_pill_html)
             
         st.write("")
-        st.markdown("#### 🏆 Store Network Health Leaderboard")
+        safe_render_html("#### 🏆 Store Network Health Leaderboard")
         st.caption("Ranked by composite 5-pillar operational score (Revenue, Space Efficiency, Growth, Stability, Agility).")
         display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
         st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
@@ -1155,7 +1157,7 @@ def render_goal_seek(is_simple=False):
         st.markdown("""<div class="simple-callout">
 💡 <b>How Goal-Seek Works:</b> Instead of asking <i>"What will sales be?"</i>, tell the AI your <b>dream weekly revenue goal</b> (e.g. $35,000).
 The machine learning solver reverse-engineers the <b>exact promotional markdown</b>, <b>floor staffing roster</b>, <b>safety inventory buffer</b>, and <b>net profit margin</b> required to hit it.
-</div>""", unsafe_allow_html=True)
+</div>""")
     else:
         st.caption("Reverse-engineer promotional discounts, labor staffing allocations, warehouse safety buffers, and net operating margins for any user-defined weekly revenue target.")
 
@@ -1193,7 +1195,7 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
         st.session_state[state_key] = float(round(baseline_val * 1.20, -2))
 
     with c_ctrl2:
-        st.markdown("##### ⚡ Quick Goal Presets (+% vs 4-Wk Baseline):")
+        safe_render_html("##### ⚡ Quick Goal Presets (+% vs 4-Wk Baseline):")
         q1, q2, q3, q4 = st.columns(4)
         if q1.button(f"+10%\n${baseline_val*1.10:,.0f}", key=f"btn_p10_{gs_store}_{gs_dept}", use_container_width=True):
             st.session_state[state_key] = float(round(baseline_val * 1.10, -2))
@@ -1310,34 +1312,34 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
 <div class="kpi-label">🏷️ Required Markdown</div>
 <div class="kpi-number" style="font-size: 1.45rem;">{promo_pct_val}% Off</div>
 <div class="kpi-meta">🎯 {promo_event_val}</div>
-</div>""", unsafe_allow_html=True)
-            st.markdown(f"""<div class="glass-kpi-card">
+</div>""")
+            safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">👥 Extra Floor Staff</div>
 <div class="kpi-number" style="font-size: 1.45rem;">{staff_val}</div>
 <div class="kpi-meta">💵 Labor Cost: ${labor_cost_val:,.0f}/wk</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             
         with k2:
-            st.markdown(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+            safe_render_html(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
 <div class="kpi-accent-bar accent-amber"></div>
 <div class="kpi-label">📦 Restock Boxes Buffer</div>
 <div class="kpi-number" style="font-size: 1.45rem;">{inv_buf_val}</div>
 <div class="kpi-meta">⏱️ Lead Time: {lead_time_val} Days</div>
-</div>""", unsafe_allow_html=True)
-            st.markdown(f"""<div class="glass-kpi-card">
+</div>""")
+            safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">💵 Net Cash Profit</div>
 <div class="kpi-number" style="font-size: 1.45rem;">${profit_val:,.0f}</div>
 <div class="kpi-meta">📈 {margin_pct_val:.1f}% Margin</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     st.write("")
 
     # Financial Contribution & Margin Analysis + Revenue Bridge Waterfall
     f_col1, f_col2 = st.columns([1.1, 1.4])
     with f_col1:
-        st.markdown("#### 💰 Financial Contribution & Profitability")
+        safe_render_html("#### 💰 Financial Contribution & Profitability")
         st.caption("Evaluates whether reaching this revenue target increases or erodes net operating profits.")
         
         fin_df = pd.DataFrame([
@@ -1358,10 +1360,10 @@ ${plan['net_profit']:,.2f}
 <div style="font-size: 0.82rem; font-weight: 600; color: #475569;">
 Operating Margin: <b>{plan['net_margin_pct']:.1f}%</b> of Net Sales
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         
     with f_col2:
-        st.markdown("#### 🔍 Revenue Bridge / Growth Waterfall")
+        safe_render_html("#### 🔍 Revenue Bridge / Growth Waterfall")
         st.caption("Deconstructs baseline revenue, promotional markdown lift, and holiday traffic push.")
         
         b_val = plan["baseline_sales"]
@@ -1524,35 +1526,35 @@ def render_upload_analyzer(is_simple=False):
 <div class="kpi-label">Ingested Records</div>
 <div class="kpi-number">{summary['total_records']:,}</div>
 <div class="kpi-meta">📅 {summary['date_min']} → {summary['date_max']}</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with up_k2:
-            st.markdown(f"""<div class="glass-kpi-card" title="Total forecasted sales volume across all records.">
+            safe_render_html(f"""<div class="glass-kpi-card" title="Total forecasted sales volume across all records.">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">Total Projected Sales</div>
 <div class="kpi-number">${summary['total_projected_sales']/1e6:,.2f}M</div>
 <div class="kpi-meta">✨ Avg: ${summary['avg_weekly_projected']/1e3:,.1f}K/row</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with up_k3:
-            st.markdown(f"""<div class="glass-kpi-card" title="Category generating the highest forecasted revenue.">
+            safe_render_html(f"""<div class="glass-kpi-card" title="Category generating the highest forecasted revenue.">
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">Top Category</div>
 <div class="kpi-number">{summary['top_projected_dept']}</div>
 <div class="kpi-meta">🛒 Leading Volume Driver</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with up_k4:
-            st.markdown(f"""<div class="glass-kpi-card" title="Forecast accuracy evaluated against actual sales.">
+            safe_render_html(f"""<div class="glass-kpi-card" title="Forecast accuracy evaluated against actual sales.">
 <div class="kpi-accent-bar accent-amber"></div>
 <div class="kpi-label">Model Accuracy</div>
 <div class="kpi-number">{summary['avg_accuracy']:.1f}%</div>
 <div class="kpi-meta">🎯 Champion Model</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with up_k5:
-            st.markdown(f"""<div class="glass-kpi-card" title="Number of abnormal sales spikes or drops detected (>2.2 Z-scores).">
+            safe_render_html(f"""<div class="glass-kpi-card" title="Number of abnormal sales spikes or drops detected (>2.2 Z-scores).">
 <div class="kpi-accent-bar accent-rose"></div>
 <div class="kpi-label">Outlier Anomalies</div>
 <div class="kpi-number">{summary['anomaly_count']}</div>
 <div class="kpi-meta">⚠️ Flagged for Audit</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             
         st.write("")
         proc_df = summary["processed_df"]
@@ -1601,7 +1603,7 @@ def render_upload_analyzer(is_simple=False):
         # Anomalies Alert Table
         if summary["anomaly_count"] > 0:
             st.write("")
-            st.markdown(f"#### ⚠️ Detected {summary['anomaly_count']} Sales Outliers / Anomalies")
+            safe_render_html(f"#### ⚠️ Detected {summary['anomaly_count']} Sales Outliers / Anomalies")
             st.caption("Records where forecasted demand deviates significantly (>2.2σ) from baseline norms. Review for inventory risk or stockouts.")
             anomalies_df = proc_df[proc_df["Is_Anomaly"]][["Date", "Store_ID", "Department", "Forecasted_Sales ($)", "Safety_Floor_P10 ($)", "Surge_Ceiling_P90 ($)"]]
             st.dataframe(anomalies_df, use_container_width=True)
@@ -1625,7 +1627,7 @@ def render_upload_analyzer(is_simple=False):
 Executive summary memo with dataset statistics, category rankings, and directives based on your uploaded file.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             pdf_buf = generate_uploaded_pdf(summary)
             st.download_button(
@@ -1638,7 +1640,7 @@ Executive summary memo with dataset statistics, category rankings, and directive
             )
             
         with u_exp2:
-            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📊</div>
 <div style="font-weight: 700; color: #0F172A;">Formatted Excel Workbook</div>
@@ -1646,7 +1648,7 @@ Executive summary memo with dataset statistics, category rankings, and directive
 Multi-tab workbook containing Executive Summary and Forecast Results with currency and percentage styling.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             excel_buf = generate_uploaded_excel(summary)
             st.download_button(
@@ -1659,7 +1661,7 @@ Multi-tab workbook containing Executive Summary and Forecast Results with curren
             )
             
         with u_exp3:
-            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📁</div>
 <div style="font-weight: 700; color: #0F172A;">Enriched Predictions CSV</div>
@@ -1667,7 +1669,7 @@ Multi-tab workbook containing Executive Summary and Forecast Results with curren
 Full dataset with appended Forecasts, P10 Safety Floor, P90 Surge Ceiling, and Outlier flags.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             csv_up_data = summary["export_df"].to_csv(index=False).encode('utf-8')
             st.download_button(
@@ -1687,7 +1689,7 @@ def render_scenario_simulator(is_simple=False):
     st.caption("Click any preset below to instantly see forecasted sales, revenue lift, and operational staffing rules.")
     
     # Preset Selector Pills
-    st.markdown("##### ⚡ Click a Commercial Scenario Preset:")
+    safe_render_html("##### ⚡ Click a Commercial Scenario Preset:")
     preset_cols = st.columns(len(PRESETS))
     
     if "active_preset" not in st.session_state:
@@ -1709,12 +1711,12 @@ def render_scenario_simulator(is_simple=False):
 <span style="color: #059669;">📦 Safety Stock: {active_p['buffer_rec']}</span>
 <span style="color: #D97706;">🏷️ Promo: {active_p['promo']}% Discount</span>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     
     sim_col1, sim_col2 = st.columns([1, 2])
     
     with sim_col1:
-        st.markdown("#### ⚙️ Entity Selection")
+        safe_render_html("#### ⚙️ Entity Selection")
         st_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
         sim_store = st.selectbox("Select Store:", STORES, index=st_idx, key="sim_st_sel")
         sim_dept = st.selectbox("Select Department:", DEPARTMENTS, index=0, key="sim_dp_sel")
@@ -1821,10 +1823,10 @@ def render_scenario_simulator(is_simple=False):
 <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
 Floor coverage: 12 PM - 6 PM
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             
         with d_badge2:
-            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%); border: 1.5px solid #A7F3D0; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(16,185,129,0.06);">
+            safe_render_html(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%); border: 1.5px solid #A7F3D0; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(16,185,129,0.06);">
 <div style="font-size: 0.75rem; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.04em;">
 📦 Safety Stock Buffer
 </div>
@@ -1834,10 +1836,10 @@ Floor coverage: 12 PM - 6 PM
 <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
 Backroom restock 48h prior
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             
         with d_badge3:
-            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%); border: 1.5px solid #FDE68A; border-left: 5px solid #F59E0B; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(245,158,11,0.06);">
+            safe_render_html(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%); border: 1.5px solid #FDE68A; border-left: 5px solid #F59E0B; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(245,158,11,0.06);">
 <div style="font-size: 0.75rem; font-weight: 800; color: #D97706; text-transform: uppercase; letter-spacing: 0.04em;">
 🏷️ Pricing & Margin
 </div>
@@ -1847,10 +1849,10 @@ Backroom restock 48h prior
 <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
 Contribution margin protected
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
         st.write("")
-        st.markdown("##### 🌊 Visual 3-Step Demand Surge Waterfall")
+        safe_render_html("##### 🌊 Visual 3-Step Demand Surge Waterfall")
         promo_effect = (predicted_sales - rolling_mean_4) * (0.55 if sim_promo > 0 else 0.0)
         holiday_effect = (predicted_sales - rolling_mean_4) * (0.45 if sim_holiday != "Regular_Week" else 0.0)
         
@@ -1949,7 +1951,7 @@ def render_speedometer_gauges(is_simple=False):
     if is_simple:
         st.markdown("""<div class="simple-callout">
 💡 <b>Operational Command Cockpit:</b> Visual speedometer gauges let store directors and warehouse managers monitor <b>inventory stockout risks</b>, <b>cashier & restocker workloads</b>, and <b>fill-rate SLAs</b> in real-time before demand surges hit.
-</div>""", unsafe_allow_html=True)
+</div>""")
     else:
         st.caption("Real-time operational indicator dials measuring warehouse capacity stress, frontline associate throughput, sales velocity, and on-shelf availability.")
 
@@ -2035,7 +2037,7 @@ def render_speedometer_gauges(is_simple=False):
     
     # Hero Alert Banner
     alert_border = gauges["inv_color"] if gauges["inv_stress_index"] > 110 else gauges["labor_color"]
-    st.markdown(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {alert_border}; border-radius: 12px; padding: 1.1rem 1.4rem; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
+    safe_render_html(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {alert_border}; border-radius: 12px; padding: 1.1rem 1.4rem; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
 <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">
 Active Operational State: {sp_preset}
@@ -2048,7 +2050,7 @@ Active Operational State: {sp_preset}
 • <b>Warehouse Strategy:</b> {gauges['inv_desc']}<br/>
 • <b>Floor Staffing Directive:</b> {gauges['labor_desc']}
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     # 4 Speedometer Gauges Grid (2x2)
     g_r1_c1, g_r1_c2 = st.columns(2)
@@ -2066,7 +2068,7 @@ Active Operational State: {sp_preset}
     st.write("")
     
     # Operational Action Checklist Card
-    st.markdown("#### 📋 Floor Manager & Warehouse Action Checklist")
+    safe_render_html("#### 📋 Floor Manager & Warehouse Action Checklist")
     act1, act2, act3 = st.columns(3)
     with act1:
         st.markdown(f"""<div class="glass-kpi-card">
@@ -2074,30 +2076,30 @@ Active Operational State: {sp_preset}
 <div class="kpi-label">Warehouse Safety Stock</div>
 <div class="kpi-number" style="font-size: 1.3rem;">{gauges['inv_rec']}</div>
 <div class="kpi-meta">📦 Restock Target</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     with act2:
-        st.markdown(f"""<div class="glass-kpi-card">
+        safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">Labor Schedule Adjustment</div>
 <div class="kpi-number" style="font-size: 1.3rem;">{gauges['labor_rec']}</div>
 <div class="kpi-meta">👥 Frontline Associates</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     with act3:
-        st.markdown(f"""<div class="glass-kpi-card">
+        safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">On-Shelf Availability SLA</div>
 <div class="kpi-number" style="font-size: 1.3rem;">{gauges['fill_rate']:.1f}% Target</div>
 <div class="kpi-meta">🛡️ Zero-Out-Of-Stock Goal</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
 
 def render_profit_estimator(is_simple=False):
     st.subheader("💰 Profit & Operating Margin Estimator")
     if is_simple:
-        st.markdown("""<div class="simple-callout">
+        safe_render_html("""<div class="simple-callout">
 💡 <b>Why Profit Modeling Matters:</b> Top-line sales volume is only half the picture! Selling $50,000 at a 30% discount can sometimes make <b>LESS net profit</b> than selling $35,000 at a 10% discount.
 This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>Break-Even Sales</b>, and calculates your <b>maximum take-home cash profit sweet spot</b>.
-</div>""", unsafe_allow_html=True)
+</div>""")
     else:
         st.caption("Comprehensive financial P&L statement simulator, cost of goods sold (COGS) decomposition, promotional markdown elasticity, and net operating margin optimization.")
 
@@ -2186,7 +2188,7 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
     st.write("")
     
     # Visual Financial Cash Flow Stepper Bar ($ Sales ➔ Wholesale ➔ Wages ➔ Rent ➔ Net Cash)
-    st.markdown(f"""<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; color: white; gap: 0.5rem; box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.25);">
+    safe_render_html(f"""<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; color: white; gap: 0.5rem; box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.25);">
 <div style="text-align: center;">
 <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">💵 Register Sales</div>
 <div style="font-size: 1.1rem; font-weight: 800; color: #60A5FA;">${pl['net_sales']:,.0f}</div>
@@ -2211,45 +2213,45 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
 <div style="font-size: 0.72rem; color: #6EE7B7; text-transform: uppercase; font-weight: 800;">💰 = Net Cash Profit</div>
 <div style="font-size: 1.2rem; font-weight: 800; color: #34D399;">${pl['net_operating_profit']:,.0f} <span style="font-size: 0.75rem;">({pl['net_margin_pct']:.1f}%)</span></div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     # 4 Glassmorphism KPI Metrics
     pk1, pk2, pk3, pk4 = st.columns(4)
     with pk1:
-        st.markdown(f"""<div class="glass-kpi-card" title="Bottom-line operating cash profit after all inventory, markdown, labor, and OPEX costs.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Bottom-line operating cash profit after all inventory, markdown, labor, and OPEX costs.">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">Net Operating Profit</div>
 <div class="kpi-number" style="font-size: 1.5rem;">${pl['net_operating_profit']:,.0f}</div>
 <div class="kpi-meta">📈 {pl['net_margin_pct']:.1f}% Net Margin</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     with pk2:
-        st.markdown(f"""<div class="glass-kpi-card" title="Revenue minus wholesale cost of goods sold.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Revenue minus wholesale cost of goods sold.">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">Gross Margin ($)</div>
 <div class="kpi-number" style="font-size: 1.5rem;">${pl['gross_profit']:,.0f}</div>
 <div class="kpi-meta">🛒 {pl['gross_margin_pct']:.1f}% of Sales</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     with pk3:
-        st.markdown(f"""<div class="glass-kpi-card" title="Direct store associate floor labor and checkout staff costs.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Direct store associate floor labor and checkout staff costs.">
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">Store Labor Cost</div>
 <div class="kpi-number" style="font-size: 1.5rem;">${pl['labor_cost']:,.0f}</div>
 <div class="kpi-meta">👥 {pl['total_labor_hours']:.0f} Total Hours</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
     with pk4:
-        st.markdown(f"""<div class="glass-kpi-card" title="Minimum weekly sales needed to cover all labor and fixed store overhead without taking a loss.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Minimum weekly sales needed to cover all labor and fixed store overhead without taking a loss.">
 <div class="kpi-accent-bar accent-amber"></div>
 <div class="kpi-label">Break-Even Sales</div>
 <div class="kpi-number" style="font-size: 1.5rem;">${pl['break_even_sales']:,.0f}</div>
 <div class="kpi-meta">🛡️ Zero-Loss Threshold</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     st.write("")
     
     # Financial Waterfall Chart & P&L Statement Table
     wf_col1, wf_col2 = st.columns([1.5, 1])
     with wf_col1:
-        st.markdown("#### 📊 P&L Cash Flow Waterfall")
+        safe_render_html("#### 📊 P&L Cash Flow Waterfall")
         fig_wf = generate_financial_waterfall_chart(pl)
         st.plotly_chart(fig_wf, use_container_width=True)
         
@@ -2290,7 +2292,7 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
 <div style="font-size: 0.86rem; color: #334155; line-height: 1.45;">
 Generates peak net cash profit of <b>${optimal_row['Net Profit ($)']:,.2f}</b> ({optimal_row['Net Margin (%)']:.1f}% margin) with a <b>+{optimal_row['Revenue Lift (%)']:.1f}%</b> demand velocity lift.
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         
         display_curve_df = df_curve[["Discount (%)", "Gross Revenue ($)", "Revenue Lift (%)", "Net Profit ($)", "Net Margin (%)"]].copy()
         display_curve_df["Gross Revenue ($)"] = display_curve_df["Gross Revenue ($)"].map("${:,.0f}".format)
@@ -2301,7 +2303,7 @@ Generates peak net cash profit of <b>${optimal_row['Net Profit ($)']:,.2f}</b> (
 
     # 1-Click P&L Statement Export
     st.write("")
-    st.markdown("### 🚀 1-Click Financial Statement Export")
+    safe_render_html("### 🚀 1-Click Financial Statement Export")
     st.caption("Export the complete P&L audit statement and discount sensitivity ladder to share with CFOs and finance teams.")
     
     exp_f1, exp_f2 = st.columns(2)
@@ -2429,7 +2431,7 @@ def render_executive_briefing(is_simple=False):
 <span style="background: {briefing['risk_color']}; color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
 {briefing['risk_level']}
 </span>
-</div>""", unsafe_allow_html=True)
+</div>""")
         
         # 3 Visual Stat Dials (P10, P50, P90)
         stat_dials = create_executive_stat_dials(briefing["p10"], briefing["p50"], briefing["p90"], base_sales_eb)
@@ -2446,7 +2448,7 @@ def render_executive_briefing(is_simple=False):
         rec_2 = briefing["recommendations"][1] if len(briefing["recommendations"]) > 1 else "Stage safety stock buffer"
         rec_3 = briefing["recommendations"][2] if len(briefing["recommendations"]) > 2 else "Align floor associate shift roster"
         
-        st.markdown(f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-radius: 14px; padding: 1rem 1.3rem; margin-top: 0.1rem; margin-bottom: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.04);">
+        safe_render_html(f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-radius: 14px; padding: 1rem 1.3rem; margin-top: 0.1rem; margin-bottom: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.04);">
 <div style="font-weight: 800; font-size: 0.88rem; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;">
 <span>📋</span> <span>Executive Action Checklist (Immediate Directives):</span>
 </div>
@@ -2464,7 +2466,7 @@ def render_executive_briefing(is_simple=False):
 <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_3}</span>
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             
         memo_text = f"""RETAIL DEMAND EXECUTIVE BRIEFING MEMORANDUM
 Generated by Retail Pulse AI Engine
@@ -2629,7 +2631,7 @@ def render_geospatial_matrix():
     
     g_col1, g_col2 = st.columns(2)
     with g_col1:
-        st.markdown("#### 🔗 Category Co-Movement & Affinity Matrix")
+        safe_render_html("#### 🔗 Category Co-Movement & Affinity Matrix")
         st.caption("Measures how demand surges in one department correlate with adjacent category volume (Halo Effect).")
         dept_pivot = raw_df.pivot_table(index=["Store_ID", "Date"], columns="Department", values="Weekly_Sales", aggfunc="sum")
         affinity_corr = dept_pivot.corr()
@@ -2820,7 +2822,7 @@ def render_batch_export(is_simple=False):
 <div style="font-size: 0.9rem; color: #D1FAE5; line-height: 1.5;">
 Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</b> + <b>Granular CSV Predictions</b> + <b>Store Health Leaderboard</b> + <b>Category Diagnostics</b> + <b>Management Readme</b>.
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         
         st.download_button(
             label="📦 DOWNLOAD COMPLETE EXECUTIVE BUNDLE (.ZIP)",
@@ -2832,7 +2834,7 @@ Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</
         )
         
         st.write("")
-        st.markdown("##### Or Download Individual Report Formats:")
+        safe_render_html("##### Or Download Individual Report Formats:")
         exp_col1, exp_col2, exp_col3 = st.columns(3)
         
         with exp_col1:
@@ -2844,7 +2846,7 @@ Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</
 Ready-to-present PDF memo with KPI tables, department dynamics, champion model leaderboard, and strategic directives.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             pdf_bytes = generate_executive_pdf(raw_df, results_df, metrics_data, STORE_LOCATIONS)
             st.download_button(
@@ -2857,7 +2859,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
             )
             
         with exp_col2:
-            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📊</div>
 <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Multi-Sheet Excel Workbook</div>
@@ -2865,7 +2867,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
 5 comprehensive worksheets: Executive_Summary, Store_Network, Department_Breakdown, Model_Benchmarks, and Batch_Forecasts.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             excel_bytes = generate_multisheet_excel(raw_df, results_df, metrics_data, STORE_LOCATIONS)
             st.download_button(
@@ -2878,7 +2880,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
             )
             
         with exp_col3:
-            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📁</div>
 <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Granular Batch CSV Dataset</div>
@@ -2886,7 +2888,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
 Raw tabular forecast results ready for downstream data warehouses (Snowflake/BigQuery) or custom BI tool ingestion.
 </div>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
             st.write("")
             csv_data = results_df.to_csv(index=False).encode('utf-8')
             st.download_button(
@@ -2912,44 +2914,44 @@ def page_executive_view():
     # Plain-English Executive KPI Banner
     kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
     with kpi1:
-        st.markdown(f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year period.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year period.">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">Total Network Sales</div>
 <div class="kpi-number">${total_rev/1e6:,.1f}M</div>
 <div class="kpi-meta">📈 +3.5% Annual Growth</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     with kpi2:
-        st.markdown(f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">Weekly Sales Pace</div>
 <div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
 <div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     with kpi3:
-        st.markdown(f"""<div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">Top Category</div>
 <div class="kpi-number">{best_dept}</div>
 <div class="kpi-meta">🛒 27.6% of Net Sales</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     with kpi4:
-        st.markdown(f"""<div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
 <div class="kpi-accent-bar accent-amber"></div>
 <div class="kpi-label">Forecast Accuracy</div>
 <div class="kpi-number">{champion_r2*100:.1f}%</div>
 <div class="kpi-meta">🎯 Champion: XGBoost</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     with kpi5:
-        st.markdown(f"""<div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
 <div class="kpi-accent-bar accent-rose"></div>
 <div class="kpi-label">Avg Error Margin</div>
 <div class="kpi-number">±{champion_mape:.1f}%</div>
 <div class="kpi-meta">🛡️ High Confidence</div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
     st.write("")
 
@@ -2990,7 +2992,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
 </div>
 </div>
 </div>"""
-    st.markdown(action_center_html, unsafe_allow_html=True)
+    safe_render_html(action_center_html)
 
     # 1-Click Executive Decision Wizard
     try:
@@ -2999,7 +3001,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
         st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
 
     st.write("")
-    st.markdown("---")
+    safe_render_html("---")
 
     # 3-Second Visual Smart Q&A Engine
     render_smart_question_chips(is_simple=(view_mode.startswith("🌟")))
@@ -3022,21 +3024,21 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
 <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
 Click any Smart Question Chip for instant plain-English answers and inspect <b>A+ to F Store Health Grades</b>.
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with g2:
-            st.markdown("""<div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            safe_render_html("""<div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
 <div style="font-weight: 700; color: #92400E; font-size: 0.92rem;">2️⃣ Plan, Simulate & Profits</div>
 <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
 Set a target revenue goal or test <b>Black Friday presets</b> to see required staff, discounts, and net cash profits.
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
         with g3:
-            st.markdown("""<div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            safe_render_html("""<div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
 <div style="font-weight: 700; color: #065F46; font-size: 0.92rem;">3️⃣ Upload & 1-Click Reports</div>
 <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
 Upload custom store CSVs or click 1 button to download the <b>Complete Executive Bundle (.ZIP)</b>.
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
 
 
 # ==============================================================================

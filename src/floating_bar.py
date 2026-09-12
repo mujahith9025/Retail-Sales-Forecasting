@@ -14,6 +14,18 @@ except (ImportError, ModuleNotFoundError):
     from store_deck import STORE_PROFILES
 
 
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 def render_floating_action_bar(
     raw_df: pd.DataFrame,
     store_locations: dict,
@@ -26,7 +38,7 @@ def render_floating_action_bar(
     profile = STORE_PROFILES.get(active_store, STORE_PROFILES.get("Store_09", {"city": "Dallas", "state": "TX", "icon": "🏆"}))
 
     # CSS for Floating Dock
-    st.markdown("""<style>
+    safe_render_html("""<style>
 .floating-dock-container {
 position: fixed;
 bottom: 16px;
@@ -95,10 +107,10 @@ border-radius: 16px;
 display: none;
 }
 }
-</style>""", unsafe_allow_html=True)
+</style>""")
 
     # Render Floating HTML Dock
-    st.markdown(f"""<div class="floating-dock-container">
+    safe_render_html(f"""<div class="floating-dock-container">
 <div class="floating-badge-store" title="Currently selected active branch">
 <span>{profile['icon']}</span>
 <span>{profile['city']}, {profile['state']}</span>
@@ -110,4 +122,4 @@ display: none;
 <div style="font-size: 0.78rem; color: #94A3B8; display: flex; align-items: center; gap: 0.5rem;">
 <span>⚡ <b>Active Suite:</b> Simple & Executive Mode</span>
 </div>
-</div>""", unsafe_allow_html=True)
+</div>""")
