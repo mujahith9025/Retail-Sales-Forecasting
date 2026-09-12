@@ -357,11 +357,16 @@ def generate_executive_bundle_zip(
         csv_data = test_results_df.to_csv(index=False).encode('utf-8')
         zf.writestr("Retail_Sales_Batch_Forecast_Predictions.csv", csv_data)
         
-        # 4. Add Health Scorecards if available
-        if store_card_df is not None:
-            zf.writestr("Store_Health_Scorecards_Leaderboard.csv", store_card_df.to_csv(index=False).encode('utf-8'))
-        if cat_card_df is not None:
-            zf.writestr("Category_Health_Scorecards.csv", cat_card_df.to_csv(index=False).encode('utf-8'))
+        # 4. Add Health Scorecards
+        if store_card_df is None:
+            from src.health_scorecard import compute_store_health_scorecard
+            store_card_df = compute_store_health_scorecard(raw_df, store_locations)
+        if cat_card_df is None:
+            from src.health_scorecard import compute_category_health_scorecard
+            cat_card_df = compute_category_health_scorecard(raw_df)
+            
+        zf.writestr("Store_Health_Scorecards_Leaderboard.csv", store_card_df.to_csv(index=False).encode('utf-8'))
+        zf.writestr("Category_Health_Scorecards.csv", cat_card_df.to_csv(index=False).encode('utf-8'))
             
         # 5. Add Plain-English Readme
         readme_content = f"""RETAIL PULSE AI — COMPLETE EXECUTIVE INTELLIGENCE BUNDLE

@@ -128,29 +128,55 @@ def process_and_forecast_uploaded_data(df: pd.DataFrame) -> dict:
         
     working_df.rename(columns=rename_dict, inplace=True)
     
-    # Parse Date
-    working_df["Date"] = pd.to_datetime(working_df["Date"])
+    # Parse Date safely with error coercion
+    working_df["Date"] = pd.to_datetime(working_df["Date"], errors="coerce")
+    working_df = working_df.dropna(subset=["Date"])
+    if len(working_df) == 0:
+        return {"success": False, "error": "No valid date records found in the 'Date' column. Please verify date formatting (e.g. YYYY-MM-DD)."}
+        
     working_df = working_df.sort_values(by=["Store_ID", "Department", "Date"]).reset_index(drop=True)
     
-    # Set default values for missing optional columns
+    # Set default values for missing optional columns and sanitize nulls
     if "Promotion_Discount" not in working_df.columns:
         working_df["Promotion_Discount"] = 0.0
+    else:
+        working_df["Promotion_Discount"] = working_df["Promotion_Discount"].fillna(0.0)
+        
     if "Is_Holiday" not in working_df.columns:
         working_df["Is_Holiday"] = 0
+    else:
+        working_df["Is_Holiday"] = working_df["Is_Holiday"].fillna(0).astype(int)
+        
     if "Store_Size_SqFt" not in working_df.columns:
         working_df["Store_Size_SqFt"] = 120000
+    else:
+        working_df["Store_Size_SqFt"] = working_df["Store_Size_SqFt"].fillna(120000)
+        
     if "Temperature" not in working_df.columns:
         working_df["Temperature"] = 62.0
+    else:
+        working_df["Temperature"] = working_df["Temperature"].fillna(62.0)
+        
     if "Fuel_Price" not in working_df.columns:
         working_df["Fuel_Price"] = 3.45
+    else:
+        working_df["Fuel_Price"] = working_df["Fuel_Price"].fillna(3.45)
+        
     if "CPI" not in working_df.columns:
         working_df["CPI"] = 245.0
+    else:
+        working_df["CPI"] = working_df["CPI"].fillna(245.0)
+        
     if "Unemployment_Rate" not in working_df.columns:
         working_df["Unemployment_Rate"] = 5.2
+    else:
+        working_df["Unemployment_Rate"] = working_df["Unemployment_Rate"].fillna(5.2)
         
     has_actual_sales = "Weekly_Sales" in working_df.columns
     if not has_actual_sales:
         working_df["Weekly_Sales"] = 25000.0  # Placeholder for feature calculation
+    else:
+        working_df["Weekly_Sales"] = working_df["Weekly_Sales"].fillna(25000.0)
         
     # Feature Engineering
     dt_series = working_df["Date"]
