@@ -232,41 +232,33 @@ def render_store_battle_arena(
     cB = battle["store_b"]
 
     # Matchup Hero Banner
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 1rem 1.4rem; margin-top: 0.5rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(15,23,42,0.15); color: white;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
-            <!-- Fighter A -->
-            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <span style="font-size: 2rem;">{cA['icon']}</span>
-                <div>
-                    <div style="font-size: 0.75rem; color: #93C5FD; font-weight: 800; text-transform: uppercase;">BLUE CORNER</div>
-                    <div style="font-size: 1.15rem; font-weight: 900; color: white;">{cA['city']} ({cA['store_id']})</div>
-                    <div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #60A5FA;">{cA['grade']}</b> • {cA['tag']}</div>
-                </div>
-            </div>
-
-            <!-- VS Badge -->
-            <div style="background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 9999px; padding: 0.35rem 1rem; font-weight: 900; font-size: 0.95rem; letter-spacing: 0.08em; color: #F8FAFC;">
-                ⚔️ VS
-            </div>
-
-            <!-- Fighter B -->
-            <div style="display: flex; align-items: center; gap: 0.75rem; text-align: right;">
-                <div>
-                    <div style="font-size: 0.75rem; color: #C4B5FD; font-weight: 800; text-transform: uppercase;">PURPLE CORNER</div>
-                    <div style="font-size: 1.15rem; font-weight: 900; color: white;">{cB['city']} ({cB['store_id']})</div>
-                    <div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #A78BFA;">{cB['grade']}</b> • {cB['tag']}</div>
-                </div>
-                <span style="font-size: 2rem;">{cB['icon']}</span>
-            </div>
-        </div>
-        
-        <!-- Bottom Verdict Strip -->
-        <div style="border-top: 1px solid rgba(255,255,255,0.15); margin-top: 0.8rem; padding-top: 0.6rem; font-size: 0.88rem; color: #F1F5F9;">
-            {battle['verdict_summary']}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    banner_html = f"""<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 1rem 1.4rem; margin-top: 0.5rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(15,23,42,0.15); color: white;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+<div style="display: flex; align-items: center; gap: 0.75rem;">
+<span style="font-size: 2rem;">{cA['icon']}</span>
+<div>
+<div style="font-size: 0.75rem; color: #93C5FD; font-weight: 800; text-transform: uppercase;">BLUE CORNER</div>
+<div style="font-size: 1.15rem; font-weight: 900; color: white;">{cA['city']} ({cA['store_id']})</div>
+<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #60A5FA;">{cA['grade']}</b> • {cA['tag']}</div>
+</div>
+</div>
+<div style="background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 9999px; padding: 0.35rem 1rem; font-weight: 900; font-size: 0.95rem; letter-spacing: 0.08em; color: #F8FAFC;">
+⚔️ VS
+</div>
+<div style="display: flex; align-items: center; gap: 0.75rem; text-align: right;">
+<div>
+<div style="font-size: 0.75rem; color: #C4B5FD; font-weight: 800; text-transform: uppercase;">PURPLE CORNER</div>
+<div style="font-size: 1.15rem; font-weight: 900; color: white;">{cB['city']} ({cB['store_id']})</div>
+<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #A78BFA;">{cB['grade']}</b> • {cB['tag']}</div>
+</div>
+<span style="font-size: 2rem;">{cB['icon']}</span>
+</div>
+</div>
+<div style="border-top: 1px solid rgba(255,255,255,0.15); margin-top: 0.8rem; padding-top: 0.6rem; font-size: 0.88rem; color: #F1F5F9;">
+{battle['verdict_summary']}
+</div>
+</div>"""
+    st.markdown(banner_html, unsafe_allow_html=True)
 
     # 2-Column Layout: Side-by-Side Comparison Bars (Left) + Plotly Benchmark Chart (Right)
     arena_c1, arena_c2 = st.columns([1.4, 1.2])
@@ -281,28 +273,23 @@ def render_store_battle_arena(
             badge_a = "🏆 WINNER" if win_a else ""
             badge_b = "🏆 WINNER" if win_b else ""
             
-            st.markdown(f"""
-            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="font-size: 0.78rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 0.25rem;">
-                    {m['name']}
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
-                    <!-- Branch A Bar -->
-                    <div style="flex: 1; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 800; font-size: 0.88rem; color: #1E40AF;">{m['fmt_a']}</span>
-                        <span style="font-size: 0.68rem; font-weight: 800; color: #2563EB;">{badge_a}</span>
-                    </div>
-
-                    <span style="font-size: 0.75rem; font-weight: 700; color: #94A3B8;">vs</span>
-
-                    <!-- Branch B Bar -->
-                    <div style="flex: 1; background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.68rem; font-weight: 800; color: #7C3AED;">{badge_b}</span>
-                        <span style="font-weight: 800; font-size: 0.88rem; color: #6D28D9;">{m['fmt_b']}</span>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            bar_html = f"""<div style="background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+<div style="font-size: 0.78rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 0.25rem;">
+{m['name']}
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+<div style="flex: 1; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
+<span style="font-weight: 800; font-size: 0.88rem; color: #1E40AF;">{m['fmt_a']}</span>
+<span style="font-size: 0.68rem; font-weight: 800; color: #2563EB;">{badge_a}</span>
+</div>
+<span style="font-size: 0.75rem; font-weight: 700; color: #94A3B8;">vs</span>
+<div style="flex: 1; background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
+<span style="font-size: 0.68rem; font-weight: 800; color: #7C3AED;">{badge_b}</span>
+<span style="font-weight: 800; font-size: 0.88rem; color: #6D28D9;">{m['fmt_b']}</span>
+</div>
+</div>
+</div>"""
+            st.markdown(bar_html, unsafe_allow_html=True)
 
     with arena_c2:
         st.markdown("##### 📈 Relative Strength Index:")
@@ -310,13 +297,12 @@ def render_store_battle_arena(
         st.plotly_chart(fig_battle, use_container_width=True, config={'displayModeBar': False})
         
         # 1-Glance Executive Takeaway Pill
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.75rem 0.95rem; margin-top: 0.4rem;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase;">
-                💡 1-Glance Strategic Takeaway
-            </div>
-            <div style="font-size: 0.85rem; color: #1E293B; line-height: 1.4; margin-top: 0.2rem;">
-                Benchmark top SKU assortments and promotional floor plans from <b>{battle['overall_winner']}</b> to lift space productivity in peer branches.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        takeaway_html = f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.75rem 0.95rem; margin-top: 0.4rem;">
+<div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase;">
+💡 1-Glance Strategic Takeaway
+</div>
+<div style="font-size: 0.85rem; color: #1E293B; line-height: 1.4; margin-top: 0.2rem;">
+Benchmark top SKU assortments and promotional floor plans from <b>{battle['overall_winner']}</b> to lift space productivity in peer branches.
+</div>
+</div>"""
+        st.markdown(takeaway_html, unsafe_allow_html=True)

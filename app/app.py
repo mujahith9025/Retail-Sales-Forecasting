@@ -262,40 +262,54 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-        padding: 1.25rem 2rem;
+        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+        padding: 1.35rem 2rem;
         border-radius: 16px;
-        margin-bottom: 1.2rem;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1.25rem;
+        box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.15);
     }
-    .brand-title {
-        color: #F8FAFC;
-        font-size: 1.85rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin: 0;
+    .brand-title, .brand-container h1, h1.brand-title {
+        color: #FFFFFF !important;
+        font-size: 2.15rem !important;
+        font-weight: 900 !important;
+        letter-spacing: -0.02em !important;
+        margin: 0 !important;
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.65rem;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6) !important;
+    }
+    .brand-title-gradient {
+        color: #FFFFFF !important;
+        font-weight: 900 !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 0 20px rgba(56, 189, 248, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+    }
+    .brand-title-accent {
+        color: #38BDF8 !important;
+        font-weight: 900 !important;
+        text-shadow: 0 0 16px rgba(56, 189, 248, 0.85) !important;
     }
     .brand-subtitle {
-        color: #94A3B8;
-        font-size: 0.92rem;
-        margin-top: 0.2rem;
-        font-weight: 400;
+        color: #CBD5E1 !important;
+        font-size: 0.95rem !important;
+        margin-top: 0.35rem !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.01em !important;
     }
     .status-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        background: rgba(16, 185, 129, 0.15);
+        background: rgba(16, 185, 129, 0.2);
         color: #34D399;
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        padding: 0.35rem 0.85rem;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        padding: 0.4rem 0.95rem;
         border-radius: 9999px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        font-size: 0.82rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
     }
 
     /* Glassmorphism KPI Metric Cards */
@@ -663,18 +677,19 @@ st.sidebar.markdown("""
 
 # ==============================================================================
 # HEADER BANNER
-# ==============================================================================
-st.markdown("""
-<div class="brand-container">
-    <div>
-        <h1 class="brand-title">🛍️ Retail Pulse AI</h1>
-        <div class="brand-subtitle">Enterprise Retail Demand Forecasting, Store Diagnostics & Scenario Intelligence</div>
-    </div>
-    <div>
-        <span class="status-badge">🟢 System Ready (Accuracy: 94.6%)</span>
-    </div>
+header_html = """<div class="brand-container" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important; padding: 1.35rem 2rem; border-radius: 16px; margin-bottom: 1.25rem; box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.4); border: 1px solid rgba(255, 255, 255, 0.15); display: flex; align-items: center; justify-content: space-between;">
+<div>
+<div class="brand-title" style="color: #FFFFFF !important; font-size: 2.15rem !important; font-weight: 900 !important; display: flex; align-items: center; gap: 0.65rem; margin: 0 !important;">
+<span style="font-size: 2.2rem;">🛍️</span>
+<span class="brand-title-gradient" style="color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);">Retail Pulse <span class="brand-title-accent" style="color: #38BDF8 !important; text-shadow: 0 0 16px rgba(56, 189, 248, 0.85);">AI</span></span>
 </div>
-""", unsafe_allow_html=True)
+<div class="brand-subtitle" style="color: #CBD5E1 !important; font-size: 0.95rem !important; margin-top: 0.35rem !important; font-weight: 500 !important;">Enterprise Retail Demand Forecasting, Store Diagnostics & Scenario Intelligence</div>
+</div>
+<div>
+<span class="status-badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.4rem 0.95rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">🟢 System Ready (Accuracy: 94.6%)</span>
+</div>
+</div>"""
+st.markdown(header_html, unsafe_allow_html=True)
 
 if raw_df is None or "champion" not in all_models:
     st.error("⚠️ Model or data artifacts are missing! Click 'Re-run Complete Pipeline' in the sidebar.")
@@ -694,98 +709,92 @@ champion_mape = metrics_data[0]["MAPE (%)"] if metrics_data else 5.38
 kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
 
 with kpi1:
-    st.markdown(f"""
-    <div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year historical period.">
-        <div class="kpi-accent-bar accent-blue"></div>
-        <div class="kpi-label">Total Network Sales</div>
-        <div class="kpi-number">${total_rev/1e6:,.1f}M</div>
-        <div class="kpi-meta">📈 +3.5% Annual Growth</div>
-    </div>
-    """, unsafe_allow_html=True)
+    kpi1_html = f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year historical period.">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">Total Network Sales</div>
+<div class="kpi-number">${total_rev/1e6:,.1f}M</div>
+<div class="kpi-meta">📈 +3.5% Annual Growth</div>
+</div>"""
+    st.markdown(kpi1_html, unsafe_allow_html=True)
 
 with kpi2:
-    st.markdown(f"""
-    <div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
-        <div class="kpi-accent-bar accent-emerald"></div>
-        <div class="kpi-label">Weekly Sales Pace</div>
-        <div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
-        <div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
-    </div>
-    """, unsafe_allow_html=True)
+    kpi2_html = f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Weekly Sales Pace</div>
+<div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
+<div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
+</div>"""
+    st.markdown(kpi2_html, unsafe_allow_html=True)
 
 with kpi3:
-    st.markdown(f"""
-    <div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
-        <div class="kpi-accent-bar accent-purple"></div>
-        <div class="kpi-label">Top Category</div>
-        <div class="kpi-number">{best_dept}</div>
-        <div class="kpi-meta">🛒 27.6% of Net Sales</div>
-    </div>
-    """, unsafe_allow_html=True)
+    kpi3_html = f"""<div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Top Category</div>
+<div class="kpi-number">{best_dept}</div>
+<div class="kpi-meta">🛒 27.6% of Net Sales</div>
+</div>"""
+    st.markdown(kpi3_html, unsafe_allow_html=True)
 
 with kpi4:
-    st.markdown(f"""
-    <div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
-        <div class="kpi-accent-bar accent-amber"></div>
-        <div class="kpi-label">Forecast Accuracy</div>
-        <div class="kpi-number">{champion_r2*100:.1f}%</div>
-        <div class="kpi-meta">🎯 Champion: XGBoost</div>
-    </div>
-    """, unsafe_allow_html=True)
+    kpi4_html = f"""<div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">Forecast Accuracy</div>
+<div class="kpi-number">{champion_r2*100:.1f}%</div>
+<div class="kpi-meta">🎯 Champion: XGBoost</div>
+</div>"""
+    st.markdown(kpi4_html, unsafe_allow_html=True)
 
 with kpi5:
-    st.markdown(f"""
-    <div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
-        <div class="kpi-accent-bar accent-rose"></div>
-        <div class="kpi-label">Avg Error Margin</div>
-        <div class="kpi-number">±{champion_mape:.1f}%</div>
-        <div class="kpi-meta">🛡️ High Confidence</div>
-    </div>
-    """, unsafe_allow_html=True)
+    kpi5_html = f"""<div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
+<div class="kpi-accent-bar accent-rose"></div>
+<div class="kpi-label">Avg Error Margin</div>
+<div class="kpi-number">±{champion_mape:.1f}%</div>
+<div class="kpi-meta">🛡️ High Confidence</div>
+</div>"""
+    st.markdown(kpi5_html, unsafe_allow_html=True)
 
 st.write("")
 
 # ==============================================================================
 # ⚡ AI DAILY ACTION CENTER (3-SECOND EXECUTIVE TAKEAWAYS)
 # ==============================================================================
-st.markdown("""
-<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-        <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
-            ⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
-        </span>
-        <span style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
-            Updated Live
-        </span>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem;">
-        <div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.75rem 0.9rem;">
-            <div style="font-weight: 700; color: #065F46; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-                🟢 TOP GROWTH OPPORTUNITY
-            </div>
-            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-                <b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
-            </div>
-        </div>
-        <div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
-            <div style="font-weight: 700; color: #92400E; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-                🟡 PROFIT MARGIN SWEET SPOT
-            </div>
-            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-                A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
-            </div>
-        </div>
-        <div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
-            <div style="font-weight: 700; color: #991B1B; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-                🔴 PEAK SURGE WARNING
-            </div>
-            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-                <b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
-            </div>
-        </div>
-    </div>
+action_center_html = """<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+<span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
+</span>
+<span style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+Updated Live
+</span>
 </div>
-""", unsafe_allow_html=True)
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem;">
+<div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #065F46; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🟢 TOP GROWTH OPPORTUNITY
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+<b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
+</div>
+</div>
+<div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #92400E; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🟡 PROFIT MARGIN SWEET SPOT
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
+</div>
+</div>
+<div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #991B1B; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🔴 PEAK SURGE WARNING
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+<b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
+</div>
+</div>
+</div>
+</div>"""
+st.markdown(action_center_html, unsafe_allow_html=True)
 
 # ==============================================================================
 # 🧭 "WHAT DO YOU WANT TO DO?" 1-CLICK DECISION WIZARD
@@ -1011,80 +1020,41 @@ def render_smart_question_chips(is_simple=False):
     secondary_kpi = ans["kpis"][1] if len(ans["kpis"]) > 1 else {"label": "Benchmark", "val": "Standard", "sub": "Baseline"}
     rec_lead = ans["recommendations"][0] if ans["recommendations"] else "Maintain standard operational cadence."
     
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F0FDF4 100%); border: 1.5px solid #BFDBFE; border-left: 8px solid #2563EB; border-radius: 16px; padding: 1.3rem 1.6rem; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); margin-bottom: 1.25rem;">
-        <!-- Top Pill & Category Banner -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-            <span style="font-weight: 800; font-size: 0.82rem; color: #2563EB; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(37,99,235,0.1); padding: 0.25rem 0.75rem; border-radius: 9999px;">
-                {ans['category']}
-            </span>
-            <span style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-weight: 800; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(16,185,129,0.3);">
-                ⚡ 3-SECOND VISUAL ANSWER
-            </span>
-        </div>
-
-        <!-- Question Heading -->
-        <div style="font-weight: 800; font-size: 1.2rem; color: #0F172A; margin-bottom: 0.8rem; line-height: 1.35;">
-            {ans['question']}
-        </div>
-
-        <!-- Hero Stat Row with Big Bold Number -->
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: white; border: 1.5px solid #DBEAFE; border-radius: 12px; padding: 1rem 1.3rem; margin-bottom: 0.85rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.05); gap: 1rem;">
-            <div style="flex: 1; min-width: 190px;">
-                <div style="font-size: 0.78rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">{hero_kpi['label']}</div>
-                <div style="font-size: 2.3rem; font-weight: 900; color: #1E3A8A; line-height: 1.1; letter-spacing: -0.02em; margin-top: 0.15rem;">
-                    {hero_kpi['val']}
-                </div>
-                <div style="font-size: 0.84rem; font-weight: 700; color: #059669; margin-top: 0.2rem;">
-                    {hero_kpi['sub']}
-                </div>
-            </div>
-            <div style="flex: 2; min-width: 250px; border-left: 2px solid #EFF6FF; padding-left: 1.2rem;">
-                <div style="font-size: 0.98rem; font-weight: 700; color: #1E293B; line-height: 1.45;">
-                    🎯 {ans['headline']}
-                </div>
-                <div style="font-size: 0.85rem; color: #475569; margin-top: 0.3rem; line-height: 1.4;">
-                    {ans['summary'][:150]}...
-                </div>
-            </div>
-        </div>
-
-        <!-- 3 Visual Bullet Chips with Emojis -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem;">
-            <!-- Bullet Chip 1 -->
-            <div style="background: rgba(255,255,255,0.92); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="font-size: 0.74rem; font-weight: 800; color: #2563EB; text-transform: uppercase; margin-bottom: 0.15rem;">
-                    🏆 Primary Leader
-                </div>
-                <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">
-                    {hero_kpi['label']}: <b style="color: #2563EB;">{hero_kpi['val']}</b>
-                </div>
-                <div style="font-size: 0.76rem; color: #64748B;">{hero_kpi['sub']}</div>
-            </div>
-
-            <!-- Bullet Chip 2 -->
-            <div style="background: rgba(255,255,255,0.92); border: 1px solid #A7F3D0; border-left: 4px solid #10B981; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="font-size: 0.74rem; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 0.15rem;">
-                    📊 Volume Driver
-                </div>
-                <div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">
-                    {secondary_kpi['label']}: <b style="color: #059669;">{secondary_kpi['val']}</b>
-                </div>
-                <div style="font-size: 0.76rem; color: #64748B;">{secondary_kpi['sub']}</div>
-            </div>
-
-            <!-- Bullet Chip 3 -->
-            <div style="background: rgba(255,255,255,0.92); border: 1px solid #DDD6FE; border-left: 4px solid #8B5CF6; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                <div style="font-size: 0.74rem; font-weight: 800; color: #7C3AED; text-transform: uppercase; margin-bottom: 0.15rem;">
-                    🚀 Action Directive
-                </div>
-                <div style="font-size: 0.84rem; font-weight: 600; color: #1E293B; line-height: 1.35;">
-                    {rec_lead}
-                </div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    answer_card_html = f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F0FDF4 100%); border: 1.5px solid #BFDBFE; border-left: 8px solid #2563EB; border-radius: 16px; padding: 1.3rem 1.6rem; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); margin-bottom: 1.25rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+<span style="font-weight: 800; font-size: 0.82rem; color: #2563EB; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(37,99,235,0.1); padding: 0.25rem 0.75rem; border-radius: 9999px;">{ans['category']}</span>
+<span style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-weight: 800; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(16,185,129,0.3);">⚡ 3-SECOND VISUAL ANSWER</span>
+</div>
+<div style="font-weight: 800; font-size: 1.2rem; color: #0F172A; margin-bottom: 0.8rem; line-height: 1.35;">{ans['question']}</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: white; border: 1.5px solid #DBEAFE; border-radius: 12px; padding: 1rem 1.3rem; margin-bottom: 0.85rem; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.05); gap: 1rem;">
+<div style="flex: 1; min-width: 190px;">
+<div style="font-size: 0.78rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">{hero_kpi['label']}</div>
+<div style="font-size: 2.3rem; font-weight: 900; color: #1E3A8A; line-height: 1.1; letter-spacing: -0.02em; margin-top: 0.15rem;">{hero_kpi['val']}</div>
+<div style="font-size: 0.84rem; font-weight: 700; color: #059669; margin-top: 0.2rem;">{hero_kpi['sub']}</div>
+</div>
+<div style="flex: 2; min-width: 250px; border-left: 2px solid #EFF6FF; padding-left: 1.2rem;">
+<div style="font-size: 0.98rem; font-weight: 700; color: #1E293B; line-height: 1.45;">🎯 {ans['headline']}</div>
+<div style="font-size: 0.85rem; color: #475569; margin-top: 0.3rem; line-height: 1.4;">{ans['summary'][:150]}...</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem;">
+<div style="background: rgba(255,255,255,0.92); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+<div style="font-size: 0.74rem; font-weight: 800; color: #2563EB; text-transform: uppercase; margin-bottom: 0.15rem;">🏆 Primary Leader</div>
+<div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">{hero_kpi['label']}: <b style="color: #2563EB;">{hero_kpi['val']}</b></div>
+<div style="font-size: 0.76rem; color: #64748B;">{hero_kpi['sub']}</div>
+</div>
+<div style="background: rgba(255,255,255,0.92); border: 1px solid #A7F3D0; border-left: 4px solid #10B981; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+<div style="font-size: 0.74rem; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 0.15rem;">📊 Volume Driver</div>
+<div style="font-size: 0.88rem; font-weight: 700; color: #0F172A; line-height: 1.3;">{secondary_kpi['label']}: <b style="color: #059669;">{secondary_kpi['val']}</b></div>
+<div style="font-size: 0.76rem; color: #64748B;">{secondary_kpi['sub']}</div>
+</div>
+<div style="background: rgba(255,255,255,0.92); border: 1px solid #DDD6FE; border-left: 4px solid #8B5CF6; border-radius: 10px; padding: 0.6rem 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+<div style="font-size: 0.74rem; font-weight: 800; color: #7C3AED; text-transform: uppercase; margin-bottom: 0.15rem;">🚀 Action Directive</div>
+<div style="font-size: 0.84rem; font-weight: 600; color: #1E293B; line-height: 1.35;">{rec_lead}</div>
+</div>
+</div>
+</div>"""
+    st.markdown(answer_card_html, unsafe_allow_html=True)
 
     # 4 KPI Cards
     k1, k2, k3, k4 = st.columns(4)
