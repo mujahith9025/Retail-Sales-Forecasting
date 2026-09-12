@@ -17,7 +17,10 @@ from reportlab.platypus import (
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
-from src.config import BEST_MODEL_FILE, MODELS_DIR, DEPARTMENTS, STORES
+try:
+    from src.config import BEST_MODEL_FILE, MODELS_DIR, DEPARTMENTS, STORES
+except (ImportError, ModuleNotFoundError):
+    from config import BEST_MODEL_FILE, MODELS_DIR, DEPARTMENTS, STORES
 
 # Standard expected column aliases for flexible user input
 COLUMN_ALIASES = {

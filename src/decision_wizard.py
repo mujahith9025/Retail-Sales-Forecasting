@@ -10,9 +10,18 @@ import pandas as pd
 import numpy as np
 from typing import Dict, Any, List
 
-from src.config import STORES, DEPARTMENTS, STORE_LOCATIONS
-from src.health_scorecard import compute_store_health_scorecard
-from src.goal_seek import solve_target_revenue_plan
+try:
+    from src.config import STORES, DEPARTMENTS, STORE_LOCATIONS
+except (ImportError, ModuleNotFoundError):
+    from config import STORES, DEPARTMENTS, STORE_LOCATIONS
+try:
+    from src.health_scorecard import compute_store_health_scorecard
+except (ImportError, ModuleNotFoundError):
+    from health_scorecard import compute_store_health_scorecard
+try:
+    from src.goal_seek import solve_target_revenue_plan
+except (ImportError, ModuleNotFoundError):
+    from goal_seek import solve_target_revenue_plan
 
 DECISION_INTENTS = [
     {

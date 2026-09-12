@@ -18,7 +18,10 @@ matplotlib.use('Agg')  # Non-interactive backend for generating figures
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from src.config import RAW_DATA_FILE, BASE_DIR
+try:
+    from src.config import RAW_DATA_FILE, BASE_DIR
+except (ImportError, ModuleNotFoundError):
+    from config import RAW_DATA_FILE, BASE_DIR
 
 # Reports output directory
 REPORTS_DIR = BASE_DIR / "reports" / "figures"

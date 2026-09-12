@@ -9,7 +9,10 @@ import numpy as np
 import pandas as pd
 import joblib
 from datetime import datetime
-from src.config import BEST_MODEL_FILE, DEPARTMENTS, STORES
+try:
+    from src.config import BEST_MODEL_FILE, DEPARTMENTS, STORES
+except (ImportError, ModuleNotFoundError):
+    from config import BEST_MODEL_FILE, DEPARTMENTS, STORES
 
 
 def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw_df: pd.DataFrame) -> dict:

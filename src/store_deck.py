@@ -7,8 +7,10 @@ footprint efficiency metrics ($/sq ft), operational health scores, and active se
 import pandas as pd
 import streamlit as st
 from typing import Dict, Any, List
-
-from src.health_scorecard import compute_store_health_scorecard
+try:
+    from src.health_scorecard import compute_store_health_scorecard
+except (ImportError, ModuleNotFoundError):
+    from health_scorecard import compute_store_health_scorecard
 
 STORE_PROFILES = {
     "Store_01": {"city": "New York", "state": "NY", "icon": "🗽", "tag": "Flagship Hub", "type": "Supercenter"},

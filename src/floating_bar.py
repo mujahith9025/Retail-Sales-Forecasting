@@ -8,7 +8,10 @@ import streamlit as st
 import pandas as pd
 from typing import Dict, Any
 
-from src.store_deck import STORE_PROFILES
+try:
+    from src.store_deck import STORE_PROFILES
+except (ImportError, ModuleNotFoundError):
+    from store_deck import STORE_PROFILES
 
 
 def render_floating_action_bar(

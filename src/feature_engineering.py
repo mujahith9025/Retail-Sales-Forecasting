@@ -15,12 +15,20 @@ if str(PROJECT_ROOT) not in sys.path:
 import pandas as pd
 import numpy as np
 
-from src.config import (
-    RAW_DATA_FILE,
-    TRAIN_FEATURES_FILE,
-    TEST_FEATURES_FILE,
-    PROCESSED_DATA_DIR
-)
+try:
+    from src.config import (
+        RAW_DATA_FILE,
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        PROCESSED_DATA_DIR
+    )
+except (ImportError, ModuleNotFoundError):
+    from config import (
+        RAW_DATA_FILE,
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        PROCESSED_DATA_DIR
+    )
 
 def create_calendar_features(df: pd.DataFrame) -> pd.DataFrame:
     """Extracts calendar and cyclical time features from Date."""

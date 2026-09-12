@@ -359,10 +359,16 @@ def generate_executive_bundle_zip(
         
         # 4. Add Health Scorecards
         if store_card_df is None:
-            from src.health_scorecard import compute_store_health_scorecard
+            try:
+                from src.health_scorecard import compute_store_health_scorecard
+            except (ImportError, ModuleNotFoundError):
+                from health_scorecard import compute_store_health_scorecard
             store_card_df = compute_store_health_scorecard(raw_df, store_locations)
         if cat_card_df is None:
-            from src.health_scorecard import compute_category_health_scorecard
+            try:
+                from src.health_scorecard import compute_category_health_scorecard
+            except (ImportError, ModuleNotFoundError):
+                from health_scorecard import compute_category_health_scorecard
             cat_card_df = compute_category_health_scorecard(raw_df)
             
         zf.writestr("Store_Health_Scorecards_Leaderboard.csv", store_card_df.to_csv(index=False).encode('utf-8'))

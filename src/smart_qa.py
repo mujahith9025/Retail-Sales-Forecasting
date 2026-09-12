@@ -10,7 +10,10 @@ import plotly.express as px
 import plotly.graph_objects as go
 from typing import Dict, Any, List
 
-from src.config import STORES, DEPARTMENTS, STORE_LOCATIONS
+try:
+    from src.config import STORES, DEPARTMENTS, STORE_LOCATIONS
+except (ImportError, ModuleNotFoundError):
+    from config import STORES, DEPARTMENTS, STORE_LOCATIONS
 
 
 SMART_QUESTIONS = [

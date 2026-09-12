@@ -15,7 +15,10 @@ if str(PROJECT_ROOT) not in sys.path:
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
-from src.config import RAW_DATA_FILE, STORES, DEPARTMENTS, START_DATE, END_DATE
+try:
+    from src.config import RAW_DATA_FILE, STORES, DEPARTMENTS, START_DATE, END_DATE
+except (ImportError, ModuleNotFoundError):
+    from config import RAW_DATA_FILE, STORES, DEPARTMENTS, START_DATE, END_DATE
 
 # Set random seed for reproducibility
 np.random.seed(42)

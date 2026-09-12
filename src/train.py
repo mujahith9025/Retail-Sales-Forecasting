@@ -29,14 +29,24 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import xgboost as xgb
 
-from src.config import (
-    TRAIN_FEATURES_FILE,
-    TEST_FEATURES_FILE,
-    BEST_MODEL_FILE,
-    MODEL_METRICS_FILE,
-    MODELS_DIR,
-    BASE_DIR
-)
+try:
+    from src.config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        BEST_MODEL_FILE,
+        MODEL_METRICS_FILE,
+        MODELS_DIR,
+        BASE_DIR
+    )
+except (ImportError, ModuleNotFoundError):
+    from config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        BEST_MODEL_FILE,
+        MODEL_METRICS_FILE,
+        MODELS_DIR,
+        BASE_DIR
+    )
 
 REPORTS_DIR = BASE_DIR / "reports" / "figures"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)

@@ -10,7 +10,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 from typing import Dict, Any, List
 
-from src.config import DEPARTMENTS, STORES
+try:
+    from src.config import DEPARTMENTS, STORES
+except (ImportError, ModuleNotFoundError):
+    from config import DEPARTMENTS, STORES
 
 
 DEPARTMENT_COST_PROFILES = {

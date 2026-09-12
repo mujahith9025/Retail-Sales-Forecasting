@@ -18,11 +18,18 @@ import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_pinball_loss
 
-from src.config import (
-    TRAIN_FEATURES_FILE,
-    TEST_FEATURES_FILE,
-    MODELS_DIR
-)
+try:
+    from src.config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        MODELS_DIR
+    )
+except (ImportError, ModuleNotFoundError):
+    from config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        MODELS_DIR
+    )
 
 QUANTILE_MODELS_FILE = MODELS_DIR / "quantile_models.pkl"
 

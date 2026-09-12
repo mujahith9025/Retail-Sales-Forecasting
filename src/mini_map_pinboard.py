@@ -8,9 +8,12 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 from typing import Dict, Any, List
-
-from src.config import STORE_LOCATIONS, STORES
-from src.store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
+try:
+    from src.config import STORE_LOCATIONS, STORES
+    from src.store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
+except (ImportError, ModuleNotFoundError):
+    from config import STORE_LOCATIONS, STORES
+    from store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
 
 
 def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str) -> go.Figure:

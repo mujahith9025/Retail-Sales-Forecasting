@@ -8,10 +8,13 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
-from typing import Dict, Any
-
-from src.config import STORE_LOCATIONS, STORES, DEPARTMENTS
-from src.store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
+from typing import Dict, Any, List
+try:
+    from src.config import STORE_LOCATIONS, STORES, DEPARTMENTS
+    from src.store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
+except (ImportError, ModuleNotFoundError):
+    from config import STORE_LOCATIONS, STORES, DEPARTMENTS
+    from store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
 
 
 def compute_store_battle_metrics(raw_df: pd.DataFrame, store_locations: dict, store_a_id: str, store_b_id: str) -> Dict[str, Any]:

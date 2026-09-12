@@ -12,7 +12,10 @@ import pandas as pd
 import plotly.graph_objects as go
 from typing import Dict, Any
 
-from src.config import DEPARTMENTS, STORES
+try:
+    from src.config import DEPARTMENTS, STORES
+except (ImportError, ModuleNotFoundError):
+    from config import DEPARTMENTS, STORES
 
 
 def compute_operational_gauges(

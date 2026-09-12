@@ -22,12 +22,20 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from src.config import (
-    TRAIN_FEATURES_FILE,
-    TEST_FEATURES_FILE,
-    MODELS_DIR,
-    BASE_DIR
-)
+try:
+    from src.config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        MODELS_DIR,
+        BASE_DIR
+    )
+except (ImportError, ModuleNotFoundError):
+    from config import (
+        TRAIN_FEATURES_FILE,
+        TEST_FEATURES_FILE,
+        MODELS_DIR,
+        BASE_DIR
+    )
 
 # PyTorch Model Checkpoint paths
 LSTM_MODEL_FILE = MODELS_DIR / "pytorch_lstm_model.pt"

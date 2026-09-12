@@ -11,13 +11,17 @@ Featuring:
 - Publication-Ready PDF, Multi-Sheet Excel, and CSV 1-Click Exports
 """
 
+import os
 import sys
 from pathlib import Path
 
-# Add project root to sys.path
+# Add project root and src directory to sys.path robustly
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+SRC_DIR = PROJECT_ROOT / "src"
+
+for p in [str(PROJECT_ROOT), str(SRC_DIR), os.getcwd()]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 import json
 import joblib
@@ -29,82 +33,205 @@ import plotly.graph_objects as go
 import streamlit as st
 import torch
 
-from src.config import (
-    RAW_DATA_FILE,
-    TEST_FEATURES_FILE,
-    BEST_MODEL_FILE,
-    MODEL_METRICS_FILE,
-    MODELS_DIR,
-    STORES,
-    DEPARTMENTS,
-    STORE_LOCATIONS
-)
-from src.export_reports import (
-    generate_multisheet_excel,
-    generate_executive_pdf,
-    generate_executive_bundle_zip
-)
-from src.executive_briefing import (
-    generate_executive_briefing,
-    create_executive_stat_dials
-)
-from src.upload_analyzer import (
-    generate_sample_sales_template,
-    process_and_forecast_uploaded_data,
-    generate_uploaded_excel,
-    generate_uploaded_pdf
-)
-from src.health_scorecard import (
-    compute_store_health_scorecard,
-    compute_category_health_scorecard
-)
-from src.goal_seek import (
-    solve_target_revenue_plan,
-    generate_goal_seek_playbook_text
-)
-from src.smart_qa import (
-    SMART_QUESTIONS,
-    answer_smart_question,
-    search_smart_answers
-)
-from src.speedometer_gauges import (
-    compute_operational_gauges
-)
-from src.profit_estimator import (
-    DEPARTMENT_COST_PROFILES,
-    compute_profit_and_loss,
-    generate_financial_waterfall_chart,
-    simulate_discount_elasticity_curve,
-    plot_discount_elasticity_curve,
-    export_financial_statement_text
-)
-from src.jargon_buster import (
-    JARGON_TERMS,
-    search_jargon_terms
-)
-from src.store_deck import (
-    STORE_PROFILES,
-    GRADE_COLORS,
-    get_enriched_store_cards,
-    render_interactive_store_deck
-)
-from src.mini_map_pinboard import (
-    render_us_minimap_pinboard
-)
-from src.store_battle_arena import (
-    render_store_battle_arena
-)
-from src.decision_wizard import (
-    DECISION_INTENTS,
-    render_decision_wizard
-)
-from src.gamified_feedback import (
-    get_promo_slider_feedback,
-    get_goal_target_feedback,
-    get_economic_feedback,
-    render_slider_feedback_badge
-)
-from src.floating_bar import render_floating_action_bar
+try:
+    from src.config import (
+        RAW_DATA_FILE,
+        TEST_FEATURES_FILE,
+        BEST_MODEL_FILE,
+        MODEL_METRICS_FILE,
+        MODELS_DIR,
+        STORES,
+        DEPARTMENTS,
+        STORE_LOCATIONS
+    )
+except (ImportError, ModuleNotFoundError):
+    from config import (
+        RAW_DATA_FILE,
+        TEST_FEATURES_FILE,
+        BEST_MODEL_FILE,
+        MODEL_METRICS_FILE,
+        MODELS_DIR,
+        STORES,
+        DEPARTMENTS,
+        STORE_LOCATIONS
+    )
+
+try:
+    from src.export_reports import (
+        generate_multisheet_excel,
+        generate_executive_pdf,
+        generate_executive_bundle_zip
+    )
+except (ImportError, ModuleNotFoundError):
+    from export_reports import (
+        generate_multisheet_excel,
+        generate_executive_pdf,
+        generate_executive_bundle_zip
+    )
+
+try:
+    from src.executive_briefing import (
+        generate_executive_briefing,
+        create_executive_stat_dials
+    )
+except (ImportError, ModuleNotFoundError):
+    from executive_briefing import (
+        generate_executive_briefing,
+        create_executive_stat_dials
+    )
+
+try:
+    from src.upload_analyzer import (
+        generate_sample_sales_template,
+        process_and_forecast_uploaded_data,
+        generate_uploaded_excel,
+        generate_uploaded_pdf
+    )
+except (ImportError, ModuleNotFoundError):
+    from upload_analyzer import (
+        generate_sample_sales_template,
+        process_and_forecast_uploaded_data,
+        generate_uploaded_excel,
+        generate_uploaded_pdf
+    )
+
+try:
+    from src.health_scorecard import (
+        compute_store_health_scorecard,
+        compute_category_health_scorecard
+    )
+except (ImportError, ModuleNotFoundError):
+    from health_scorecard import (
+        compute_store_health_scorecard,
+        compute_category_health_scorecard
+    )
+
+try:
+    from src.goal_seek import (
+        solve_target_revenue_plan,
+        generate_goal_seek_playbook_text
+    )
+except (ImportError, ModuleNotFoundError):
+    from goal_seek import (
+        solve_target_revenue_plan,
+        generate_goal_seek_playbook_text
+    )
+
+try:
+    from src.smart_qa import (
+        SMART_QUESTIONS,
+        answer_smart_question,
+        search_smart_answers
+    )
+except (ImportError, ModuleNotFoundError):
+    from smart_qa import (
+        SMART_QUESTIONS,
+        answer_smart_question,
+        search_smart_answers
+    )
+
+try:
+    from src.speedometer_gauges import (
+        compute_operational_gauges
+    )
+except (ImportError, ModuleNotFoundError):
+    from speedometer_gauges import (
+        compute_operational_gauges
+    )
+
+try:
+    from src.profit_estimator import (
+        DEPARTMENT_COST_PROFILES,
+        compute_profit_and_loss,
+        generate_financial_waterfall_chart,
+        simulate_discount_elasticity_curve,
+        plot_discount_elasticity_curve,
+        export_financial_statement_text
+    )
+except (ImportError, ModuleNotFoundError):
+    from profit_estimator import (
+        DEPARTMENT_COST_PROFILES,
+        compute_profit_and_loss,
+        generate_financial_waterfall_chart,
+        simulate_discount_elasticity_curve,
+        plot_discount_elasticity_curve,
+        export_financial_statement_text
+    )
+
+try:
+    from src.jargon_buster import (
+        JARGON_TERMS,
+        search_jargon_terms
+    )
+except (ImportError, ModuleNotFoundError):
+    from jargon_buster import (
+        JARGON_TERMS,
+        search_jargon_terms
+    )
+
+try:
+    from src.store_deck import (
+        STORE_PROFILES,
+        GRADE_COLORS,
+        get_enriched_store_cards,
+        render_interactive_store_deck
+    )
+except (ImportError, ModuleNotFoundError):
+    from store_deck import (
+        STORE_PROFILES,
+        GRADE_COLORS,
+        get_enriched_store_cards,
+        render_interactive_store_deck
+    )
+
+try:
+    from src.mini_map_pinboard import (
+        render_us_minimap_pinboard
+    )
+except (ImportError, ModuleNotFoundError):
+    from mini_map_pinboard import (
+        render_us_minimap_pinboard
+    )
+
+try:
+    from src.store_battle_arena import (
+        render_store_battle_arena
+    )
+except (ImportError, ModuleNotFoundError):
+    from store_battle_arena import (
+        render_store_battle_arena
+    )
+
+try:
+    from src.decision_wizard import (
+        DECISION_INTENTS,
+        render_decision_wizard
+    )
+except (ImportError, ModuleNotFoundError):
+    from decision_wizard import (
+        DECISION_INTENTS,
+        render_decision_wizard
+    )
+
+try:
+    from src.gamified_feedback import (
+        get_promo_slider_feedback,
+        get_goal_target_feedback,
+        get_economic_feedback,
+        render_slider_feedback_badge
+    )
+except (ImportError, ModuleNotFoundError):
+    from gamified_feedback import (
+        get_promo_slider_feedback,
+        get_goal_target_feedback,
+        get_economic_feedback,
+        render_slider_feedback_badge
+    )
+
+try:
+    from src.floating_bar import render_floating_action_bar
+except (ImportError, ModuleNotFoundError):
+    from floating_bar import render_floating_action_bar
 
 # Page Configuration
 st.set_page_config(
@@ -345,8 +472,10 @@ def load_trained_models():
     lstm_meta_file = MODELS_DIR / "lstm_metadata.pkl"
     lstm_model_file = MODELS_DIR / "pytorch_lstm_model.pt"
     if lstm_meta_file.exists() and lstm_model_file.exists():
-        meta = joblib.load(lstm_meta_file)
-        from src.deep_learning import BiLSTMForecaster
+        try:
+            from src.deep_learning import BiLSTMForecaster
+        except (ImportError, ModuleNotFoundError):
+            from deep_learning import BiLSTMForecaster
         lstm_net = BiLSTMForecaster(input_dim=len(meta["feature_cols"]), hidden_dim=64, num_layers=2)
         lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu")))
         lstm_net.eval()
@@ -2855,7 +2984,10 @@ def render_deep_probabilistic():
 
     st.write("")
     st.markdown("#### 🏢 Hierarchical Multi-Level Reconciliation Analysis")
-    from src.hierarchical import reconcile_hierarchical_forecasts
+    try:
+        from src.hierarchical import reconcile_hierarchical_forecasts
+    except (ImportError, ModuleNotFoundError):
+        from hierarchical import reconcile_hierarchical_forecasts
     h_recon = reconcile_hierarchical_forecasts(pd.read_csv(TEST_FEATURES_FILE))
     h1, h2 = st.columns(2)
     with h1:

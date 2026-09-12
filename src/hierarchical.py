@@ -16,7 +16,10 @@ import pandas as pd
 import numpy as np
 import joblib
 
-from src.config import BEST_MODEL_FILE, TEST_FEATURES_FILE
+try:
+    from src.config import BEST_MODEL_FILE, TEST_FEATURES_FILE
+except (ImportError, ModuleNotFoundError):
+    from config import BEST_MODEL_FILE, TEST_FEATURES_FILE
 
 def reconcile_hierarchical_forecasts(test_features_df: pd.DataFrame = None) -> pd.DataFrame:
     """
