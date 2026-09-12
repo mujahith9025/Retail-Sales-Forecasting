@@ -171,18 +171,16 @@ def render_slider_feedback_badge(feedback: dict):
     subtitle_val = feedback.get(subtitle_key, "")
     action_text = feedback.get("message", feedback.get("action", ""))
 
-    st.markdown(f"""
-    <div style="background: {feedback['bg']}; border: 1.5px solid {feedback['border']}; border-left: 5px solid {feedback['color']}; border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: -0.4rem; margin-bottom: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-            <span style="font-weight: 800; font-size: 0.88rem; color: {feedback['color']}; display: flex; align-items: center; gap: 0.35rem;">
-                {feedback['emoji']} {feedback.get('status', feedback.get('level', 'Status'))}
-            </span>
-            <span style="font-size: 0.74rem; font-weight: 700; color: {feedback['color']}; background: rgba(255,255,255,0.8); padding: 0.15rem 0.5rem; border-radius: 9999px; border: 1px solid {feedback['border']};">
-                {subtitle_val}
-            </span>
-        </div>
-        <div style="font-size: 0.78rem; color: #334155; line-height: 1.35;">
-            {action_text}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style="background: {feedback['bg']}; border: 1.5px solid {feedback['border']}; border-left: 5px solid {feedback['color']}; border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: -0.4rem; margin-bottom: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s ease;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+<span style="font-weight: 800; font-size: 0.88rem; color: {feedback['color']}; display: flex; align-items: center; gap: 0.35rem;">
+{feedback['emoji']} {feedback.get('status', feedback.get('level', 'Status'))}
+</span>
+<span style="font-size: 0.74rem; font-weight: 700; color: {feedback['color']}; background: rgba(255,255,255,0.8); padding: 0.15rem 0.5rem; border-radius: 9999px; border: 1px solid {feedback['border']};">
+{subtitle_val}
+</span>
+</div>
+<div style="font-size: 0.78rem; color: #334155; line-height: 1.35;">
+{action_text}
+</div>
+</div>""", unsafe_allow_html=True)

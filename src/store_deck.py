@@ -103,16 +103,15 @@ def render_interactive_store_deck(
     store_cards = get_enriched_store_cards(raw_df, store_locations)
     active_profile = STORE_PROFILES.get(current_active, STORE_PROFILES["Store_09"])
 
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 0.6rem 1rem; border-radius: 10px;">
-        <span style="font-weight: 700; font-size: 0.95rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
-            🏢 <b>Visual Store Card Deck:</b> Click Any Branch to Select
-        </span>
-        <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">
-            Currently Active: <span style="background: #2563EB; color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700;">{active_profile['icon']} {active_profile['city']}, {active_profile['state']} ({current_active})</span>
-        </span>
-    </div>
-    """, unsafe_allow_html=True)
+    header_deck_html = f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 0.6rem 1rem; border-radius: 10px;">
+<span style="font-weight: 700; font-size: 0.95rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+🏢 <b>Visual Store Card Deck:</b> Click Any Branch to Select
+</span>
+<span style="font-size: 0.82rem; color: #334155; font-weight: 600;">
+Currently Active: <span style="background: #2563EB; color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700;">{active_profile['icon']} {active_profile['city']}, {active_profile['state']} ({current_active})</span>
+</span>
+</div>"""
+    st.markdown(header_deck_html, unsafe_allow_html=True)
 
     # Render in 2 rows of 5 columns
     row1 = store_cards[:5]
@@ -132,25 +131,24 @@ def render_interactive_store_deck(
                 box_shadow = "0 8px 24px -4px rgba(37, 99, 235, 0.3)" if is_active else "0 2px 6px rgba(0,0,0,0.03)"
                 active_badge = f'<span style="background: #2563EB; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700;">🟢 Active</span>' if is_active else f'<span style="background: {card["color"]}; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 800;">{card["grade"]}</span>'
 
-                st.markdown(f"""
-                <div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.8rem 0.9rem; box-shadow: {box_shadow}; min-height: 142px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
-                            <span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">
-                                {card['icon']} {card['city']}
-                            </span>
-                            {active_badge}
-                        </div>
-                        <div style="font-size: 0.72rem; color: #64748B; font-weight: 600; margin-bottom: 0.4rem;">
-                            {card['store_id']} • {card['state']} • {card['tag']}
-                        </div>
-                    </div>
-                    <div style="border-top: 1px solid #E2E8F0; padding-top: 0.4rem; font-size: 0.75rem; color: #334155; line-height: 1.35;">
-                        <div>⚡ <b>Yield:</b> ${card['yield_sqft']:.1f}/sq ft</div>
-                        <div>📈 <b>Sales:</b> ${card['tot_rev']/1e6:.1f}M Total</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                card_html = f"""<div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.8rem 0.9rem; box-shadow: {box_shadow}; min-height: 142px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease;">
+<div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+<span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">
+{card['icon']} {card['city']}
+</span>
+{active_badge}
+</div>
+<div style="font-size: 0.72rem; color: #64748B; font-weight: 600; margin-bottom: 0.4rem;">
+{card['store_id']} • {card['state']} • {card['tag']}
+</div>
+</div>
+<div style="border-top: 1px solid #E2E8F0; padding-top: 0.4rem; font-size: 0.75rem; color: #334155; line-height: 1.35;">
+<div>⚡ <b>Yield:</b> ${card['yield_sqft']:.1f}/sq ft</div>
+<div>📈 <b>Sales:</b> ${card['tot_rev']/1e6:.1f}M Total</div>
+</div>
+</div>"""
+                st.markdown(card_html, unsafe_allow_html=True)
                 
                 btn_type = "primary" if is_active else "secondary"
                 btn_label = f"Selected ✓" if is_active else f"Select {card['city']}"

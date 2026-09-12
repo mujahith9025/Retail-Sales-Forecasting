@@ -97,21 +97,19 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
 
     current_intent_id = st.session_state.decision_wizard_intent
 
-    st.markdown("""
-    <div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 25px -4px rgba(15, 23, 42, 0.3);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-            <span style="font-weight: 800; font-size: 1.12rem; color: #F8FAFC; display: flex; align-items: center; gap: 0.5rem;">
-                🧭 <b>"What Do You Want to Do?"</b> 1-Click Executive Decision Wizard
-            </span>
-            <span style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 9999px; border: 1px solid rgba(59, 130, 246, 0.3);">
-                ⚡ Instant Decision Engine
-            </span>
-        </div>
-        <div style="font-size: 0.84rem; color: #94A3B8;">
-            Select your high-level business goal below — the AI will instantly calculate your optimal action plan, key metrics, and recommended next steps.
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("""<div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 25px -4px rgba(15, 23, 42, 0.3);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+<span style="font-weight: 800; font-size: 1.12rem; color: #F8FAFC; display: flex; align-items: center; gap: 0.5rem;">
+🧭 <b>"What Do You Want to Do?"</b> 1-Click Executive Decision Wizard
+</span>
+<span style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 9999px; border: 1px solid rgba(59, 130, 246, 0.3);">
+⚡ Instant Decision Engine
+</span>
+</div>
+<div style="font-size: 0.84rem; color: #94A3B8;">
+Select your high-level business goal below — the AI will instantly calculate your optimal action plan, key metrics, and recommended next steps.
+</div>
+</div>""", unsafe_allow_html=True)
 
     # Render 6 Intent Cards in 2 rows of 3 columns
     row1 = DECISION_INTENTS[:3]
@@ -128,24 +126,22 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
                 box_shadow = "0 8px 20px -3px rgba(37, 99, 235, 0.25)" if is_active else "0 2px 6px rgba(0,0,0,0.03)"
                 badge = f'<span style="background: {item["color"]}; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700;">🟢 Active Intent</span>' if is_active else f'<span style="background: #F1F5F9; color: #475569; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 600;">1-Click</span>'
 
-                st.markdown(f"""
-                <div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.85rem 1rem; box-shadow: {box_shadow}; min-height: 125px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0.3rem;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                            <span style="font-weight: 800; font-size: 0.98rem; color: #0F172A;">
-                                {item['icon']} {item['title']}
-                            </span>
-                            {badge}
-                        </div>
-                        <div style="font-size: 0.78rem; font-weight: 600; color: {item['color']}; margin-bottom: 0.3rem;">
-                            {item['tagline']}
-                        </div>
-                        <div style="font-size: 0.74rem; color: #64748B; line-height: 1.35;">
-                            {item['description']}
-                        </div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f"""<div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.85rem 1rem; box-shadow: {box_shadow}; min-height: 125px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0.3rem;">
+<div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+<span style="font-weight: 800; font-size: 0.98rem; color: #0F172A;">
+{item['icon']} {item['title']}
+</span>
+{badge}
+</div>
+<div style="font-size: 0.78rem; font-weight: 600; color: {item['color']}; margin-bottom: 0.3rem;">
+{item['tagline']}
+</div>
+<div style="font-size: 0.74rem; color: #64748B; line-height: 1.35;">
+{item['description']}
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
 
                 btn_type = "primary" if is_active else "secondary"
                 btn_label = f"Selected ✓" if is_active else f"Select: {item['title']}"
@@ -160,17 +156,15 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
     # ==============================================================================
     active_intent_data = next((x for x in DECISION_INTENTS if x["id"] == current_intent_id), DECISION_INTENTS[0])
     
-    st.markdown(f"""
-    <div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-left: 6px solid {active_intent_data['color']}; border-radius: 14px; padding: 1.2rem 1.5rem; margin-top: 0.5rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.05);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-            <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
-                {active_intent_data['icon']} <b>AI Action Plan:</b> {active_intent_data['title']}
-            </span>
-            <span style="background: {active_intent_data['color']}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
-                Target Store: {active_store}
-            </span>
-        </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-left: 6px solid {active_intent_data['color']}; border-radius: 14px; padding: 1.2rem 1.5rem; margin-top: 0.5rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.05);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+{active_intent_data['icon']} <b>AI Action Plan:</b> {active_intent_data['title']}
+</span>
+<span style="background: {active_intent_data['color']}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
+Target Store: {active_store}
+</span>
+</div>""", unsafe_allow_html=True)
 
     try:
         # Tailored Action Details based on Intent
@@ -201,11 +195,9 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("📦 Safety Stock Buffer", buffer_str, f"Lead Time: {lead_days} days")
 
-            st.markdown(f"""
-            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-                💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
+💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
+</div>""", unsafe_allow_html=True)
 
         elif current_intent_id == "holiday_surge":
             w1, w2, w3, w4 = st.columns(4)
@@ -218,11 +210,9 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("📦 Warehouse Buffer", "+35% Safety Stock", "Order 14 days in advance")
 
-            st.markdown("""
-            <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #991B1B; line-height: 1.45;">
-                🚨 <b>Holiday Readiness Directive:</b> Commercial demand surges by <b>+48.5%</b> during Black Friday week. Ensure warehouse purchase orders are dispatched <b>14 days prior</b> and schedule <b>+4 extra staff members per branch</b> to prevent stockouts and register bottlenecks.
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #991B1B; line-height: 1.45;">
+🚨 <b>Holiday Readiness Directive:</b> Commercial demand surges by <b>+48.5%</b> during Black Friday week. Ensure warehouse purchase orders are dispatched <b>14 days prior</b> and schedule <b>+4 extra staff members per branch</b> to prevent stockouts and register bottlenecks.
+</div>""", unsafe_allow_html=True)
 
         elif current_intent_id == "store_audit":
             store_cards = compute_store_health_scorecard(raw_df, store_locations)
@@ -253,11 +243,9 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("🛡️ Critical Risk Stores", "0 Stores (Grade F)", "Low Network Risk")
 
-            st.markdown(f"""
-            <div style="background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #166534; line-height: 1.45;">
-                🩺 <b>Health Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} Space efficiency is currently <b>${curr_sqft_rev}/sq ft</b> with <b>{curr_growth:+.1f}%</b> recent momentum.
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #166534; line-height: 1.45;">
+🩺 <b>Health Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} Space efficiency is currently <b>${curr_sqft_rev}/sq ft</b> with <b>{curr_growth:+.1f}%</b> recent momentum.
+</div>""", unsafe_allow_html=True)
 
         elif current_intent_id == "profit_sweetspot":
             w1, w2, w3, w4 = st.columns(4)
@@ -270,11 +258,9 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("📊 Wholesale COGS", "58% of Revenue", "Grocery Category Benchmark")
 
-            st.markdown("""
-            <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #92400E; line-height: 1.45;">
-                💡 <b>Profit Margin Directive:</b> A <b>10% promotional markdown</b> increases unit volume sufficiently to generate <b>$10,500 net cash profit</b>. Avoid deep 30%+ clearance markdowns unless liquidating obsolete inventory, as wholesale COGS erode net margins rapidly.
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #92400E; line-height: 1.45;">
+💡 <b>Profit Margin Directive:</b> A <b>10% promotional markdown</b> increases unit volume sufficiently to generate <b>$10,500 net cash profit</b>. Avoid deep 30%+ clearance markdowns unless liquidating obsolete inventory, as wholesale COGS erode net margins rapidly.
+</div>""", unsafe_allow_html=True)
 
         elif current_intent_id == "custom_upload":
             w1, w2, w3, w4 = st.columns(4)
@@ -287,11 +273,9 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("🔍 Anomaly Scanner", "Outlier Detection", "Alerts on >2.2σ Spikes")
 
-            st.markdown("""
-            <div style="background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #6B21A8; line-height: 1.45;">
-                🚀 <b>Custom Data Directive:</b> Navigate to <b>Tab 3 (Upload & Reports)</b> or click below to test the automated AI forecaster with your own custom store sales CSV files.
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #6B21A8; line-height: 1.45;">
+🚀 <b>Custom Data Directive:</b> Navigate to <b>Tab 3 (Upload & Reports)</b> or click below to test the automated AI forecaster with your own custom store sales CSV files.
+</div>""", unsafe_allow_html=True)
 
         elif current_intent_id == "export_bundle":
             w1, w2, w3, w4 = st.columns(4)
@@ -304,17 +288,13 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
             with w4:
                 st.metric("📦 1-Click ZIP Archive", "All-in-One Bundle", "Single Download")
 
-            st.markdown("""
-            <div style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-                📦 <b>Executive Reporting Directive:</b> Download the complete multi-asset bundle directly from the sidebar button or <b>Tab 3</b> for immediate board-level presentation and analysis.
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
+📦 <b>Executive Reporting Directive:</b> Download the complete multi-asset bundle directly from the sidebar button or <b>Tab 3</b> for immediate board-level presentation and analysis.
+</div>""", unsafe_allow_html=True)
 
     except Exception as e:
-        st.markdown(f"""
-        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-            💡 <b>Executive Directive:</b> AI strategy plan loaded for <b>{active_store}</b>. Use the interactive tools and controls below to evaluate forward forecasts and simulations.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
+💡 <b>Executive Directive:</b> AI strategy plan loaded for <b>{active_store}</b>. Use the interactive tools and controls below to evaluate forward forecasts and simulations.
+</div>""", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)

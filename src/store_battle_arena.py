@@ -195,8 +195,12 @@ def render_store_battle_arena(
     if f"{key_prefix}_store_b" not in st.session_state:
         st.session_state[f"{key_prefix}_store_b"] = "Store_01"  # New York
 
+    val_a = st.session_state.get(f"{key_prefix}_store_a", "Store_09")
+    val_b = st.session_state.get(f"{key_prefix}_store_b", "Store_01")
+    idx_a = STORES.index(val_a) if val_a in STORES else 8
+    idx_b = STORES.index(val_b) if val_b in STORES else 0
+
     with col_a:
-        idx_a = STORES.index(st.session_state[f"{key_prefix}_store_a"]) if st.session_state[f"{key_prefix}_store_a"] in STORES else 8
         sel_a = st.selectbox(
             "🔵 Select Branch Fighter A:",
             options=STORES,
@@ -204,7 +208,8 @@ def render_store_battle_arena(
             format_func=lambda s: f"{STORE_PROFILES.get(s, {}).get('icon', '🏢')} {s} — {STORE_PROFILES.get(s, {}).get('city', s)}",
             key=f"{key_prefix}_sel_box_a"
         )
-        st.session_state[f"{key_prefix}_store_a"] = sel_a
+        if sel_a != st.session_state[f"{key_prefix}_store_a"]:
+            st.session_state[f"{key_prefix}_store_a"] = sel_a
 
     with col_swap:
         st.write("")
@@ -213,10 +218,11 @@ def render_store_battle_arena(
             temp = st.session_state[f"{key_prefix}_store_a"]
             st.session_state[f"{key_prefix}_store_a"] = st.session_state[f"{key_prefix}_store_b"]
             st.session_state[f"{key_prefix}_store_b"] = temp
+            st.session_state[f"{key_prefix}_sel_box_a"] = st.session_state[f"{key_prefix}_store_a"]
+            st.session_state[f"{key_prefix}_sel_box_b"] = st.session_state[f"{key_prefix}_store_b"]
             st.rerun()
 
     with col_b:
-        idx_b = STORES.index(st.session_state[f"{key_prefix}_store_b"]) if st.session_state[f"{key_prefix}_store_b"] in STORES else 0
         sel_b = st.selectbox(
             "🟣 Select Branch Fighter B:",
             options=STORES,
@@ -224,7 +230,8 @@ def render_store_battle_arena(
             format_func=lambda s: f"{STORE_PROFILES.get(s, {}).get('icon', '🏢')} {s} — {STORE_PROFILES.get(s, {}).get('city', s)}",
             key=f"{key_prefix}_sel_box_b"
         )
-        st.session_state[f"{key_prefix}_store_b"] = sel_b
+        if sel_b != st.session_state[f"{key_prefix}_store_b"]:
+            st.session_state[f"{key_prefix}_store_b"] = sel_b
 
     # Compute battle data
     battle = compute_store_battle_metrics(raw_df, store_locations, sel_a, sel_b)

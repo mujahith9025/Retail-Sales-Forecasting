@@ -144,20 +144,19 @@ def render_us_minimap_pinboard(
     active_c = card_dict.get(current_active, cards[0])
 
     # Header Card
-    st.markdown(f"""
-    <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 6px solid {active_c['color']}; border-radius: 12px; padding: 0.75rem 1.1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 0.6rem;">
-            <span style="font-size: 1.3rem;">📍</span>
-            <div>
-                <span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">Interactive US Pinboard: <b>{active_c['icon']} {current_active} ({active_c['city']}, {active_c['state']})</b></span>
-                <span style="font-size: 0.8rem; color: #64748B; margin-left: 0.5rem;">Grade: <b style="color: {active_c['color']};">{active_c['grade']}</b> ({active_c['health_score']:.1f} pts)</span>
-            </div>
-        </div>
-        <span style="background: {active_c['color']}; color: white; padding: 0.2rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.72rem;">
-            ${active_c['yield_sqft']:.2f}/sq ft Yield
-        </span>
-    </div>
-    """, unsafe_allow_html=True)
+    header_pin_html = f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 6px solid {active_c['color']}; border-radius: 12px; padding: 0.75rem 1.1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+<div style="display: flex; align-items: center; gap: 0.6rem;">
+<span style="font-size: 1.3rem;">📍</span>
+<div>
+<span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">Interactive US Pinboard: <b>{active_c['icon']} {current_active} ({active_c['city']}, {active_c['state']})</b></span>
+<span style="font-size: 0.8rem; color: #64748B; margin-left: 0.5rem;">Grade: <b style="color: {active_c['color']};">{active_c['grade']}</b> ({active_c['health_score']:.1f} pts)</span>
+</div>
+</div>
+<span style="background: {active_c['color']}; color: white; padding: 0.2rem 0.65rem; border-radius: 9999px; font-weight: 800; font-size: 0.72rem;">
+${active_c['yield_sqft']:.2f}/sq ft Yield
+</span>
+</div>"""
+    st.markdown(header_pin_html, unsafe_allow_html=True)
 
     # Mini-Map Plotly Chart
     fig = generate_us_minimap_figure(cards, current_active)

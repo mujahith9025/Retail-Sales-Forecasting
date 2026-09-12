@@ -248,218 +248,216 @@ if "active_store" not in st.session_state:
 # ==============================================================================
 # PREMIUM DESIGN SYSTEM & CSS (THE WOW FACTOR)
 # ==============================================================================
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+st.markdown("""<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        color: #0F172A;
-    }
+html, body, [class*="css"] {
+font-family: 'Plus Jakarta Sans', sans-serif;
+color: #0F172A;
+}
 
-    /* Top Brand Navigation Bar */
-    .brand-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
-        padding: 1.35rem 2rem;
-        border-radius: 16px;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    .brand-title, .brand-container h1, h1.brand-title {
-        color: #FFFFFF !important;
-        font-size: 2.15rem !important;
-        font-weight: 900 !important;
-        letter-spacing: -0.02em !important;
-        margin: 0 !important;
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6) !important;
-    }
-    .brand-title-gradient {
-        color: #FFFFFF !important;
-        font-weight: 900 !important;
-        letter-spacing: -0.02em !important;
-        text-shadow: 0 0 20px rgba(56, 189, 248, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8) !important;
-    }
-    .brand-title-accent {
-        color: #38BDF8 !important;
-        font-weight: 900 !important;
-        text-shadow: 0 0 16px rgba(56, 189, 248, 0.85) !important;
-    }
-    .brand-subtitle {
-        color: #CBD5E1 !important;
-        font-size: 0.95rem !important;
-        margin-top: 0.35rem !important;
-        font-weight: 500 !important;
-        letter-spacing: 0.01em !important;
-    }
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        background: rgba(16, 185, 129, 0.2);
-        color: #34D399;
-        border: 1px solid rgba(16, 185, 129, 0.4);
-        padding: 0.4rem 0.95rem;
-        border-radius: 9999px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-    }
+/* Top Brand Navigation Bar */
+.brand-container {
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+padding: 1.35rem 2rem;
+border-radius: 16px;
+margin-bottom: 1.25rem;
+box-shadow: 0 12px 30px -5px rgba(15, 23, 42, 0.4);
+border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.brand-title, .brand-container h1, h1.brand-title {
+color: #FFFFFF !important;
+font-size: 2.15rem !important;
+font-weight: 900 !important;
+letter-spacing: -0.02em !important;
+margin: 0 !important;
+display: flex;
+align-items: center;
+gap: 0.65rem;
+text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6) !important;
+}
+.brand-title-gradient {
+color: #FFFFFF !important;
+font-weight: 900 !important;
+letter-spacing: -0.02em !important;
+text-shadow: 0 0 20px rgba(56, 189, 248, 0.5), 0 2px 8px rgba(0, 0, 0, 0.8) !important;
+}
+.brand-title-accent {
+color: #38BDF8 !important;
+font-weight: 900 !important;
+text-shadow: 0 0 16px rgba(56, 189, 248, 0.85) !important;
+}
+.brand-subtitle {
+color: #CBD5E1 !important;
+font-size: 0.95rem !important;
+margin-top: 0.35rem !important;
+font-weight: 500 !important;
+letter-spacing: 0.01em !important;
+}
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 0.4rem;
+background: rgba(16, 185, 129, 0.2);
+color: #34D399;
+border: 1px solid rgba(16, 185, 129, 0.4);
+padding: 0.4rem 0.95rem;
+border-radius: 9999px;
+font-size: 0.82rem;
+font-weight: 700;
+box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
 
-    /* Glassmorphism KPI Metric Cards */
-    .glass-kpi-card {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 1.15rem 1.25rem;
-        box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04);
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .glass-kpi-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.08);
-    }
-    .kpi-accent-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-    }
-    .accent-blue { background: linear-gradient(90deg, #2563EB, #60A5FA); }
-    .accent-emerald { background: linear-gradient(90deg, #10B981, #34D399); }
-    .accent-purple { background: linear-gradient(90deg, #8B5CF6, #C084FC); }
-    .accent-amber { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
-    .accent-rose { background: linear-gradient(90deg, #F43F5E, #FB7185); }
+/* Glassmorphism KPI Metric Cards */
+.glass-kpi-card {
+background: rgba(255, 255, 255, 0.9);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid #E2E8F0;
+border-radius: 14px;
+padding: 1.15rem 1.25rem;
+box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04);
+position: relative;
+overflow: hidden;
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.glass-kpi-card:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.08);
+}
+.kpi-accent-bar {
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+height: 4px;
+}
+.accent-blue { background: linear-gradient(90deg, #2563EB, #60A5FA); }
+.accent-emerald { background: linear-gradient(90deg, #10B981, #34D399); }
+.accent-purple { background: linear-gradient(90deg, #8B5CF6, #C084FC); }
+.accent-amber { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+.accent-rose { background: linear-gradient(90deg, #F43F5E, #FB7185); }
 
-    .kpi-label {
-        font-size: 0.82rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #64748B;
-        margin-bottom: 0.35rem;
-    }
-    .kpi-number {
-        font-size: 1.65rem;
-        font-weight: 800;
-        color: #0F172A;
-        letter-spacing: -0.03em;
-        line-height: 1.1;
-    }
-    .kpi-meta {
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: #475569;
-        margin-top: 0.4rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-    }
+.kpi-label {
+font-size: 0.82rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+color: #64748B;
+margin-bottom: 0.35rem;
+}
+.kpi-number {
+font-size: 1.65rem;
+font-weight: 800;
+color: #0F172A;
+letter-spacing: -0.03em;
+line-height: 1.1;
+}
+.kpi-meta {
+font-size: 0.78rem;
+font-weight: 600;
+color: #475569;
+margin-top: 0.4rem;
+display: flex;
+align-items: center;
+gap: 0.3rem;
+}
 
-    /* Helper callouts */
-    .simple-callout {
-        background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
-        border: 1px solid #BFDBFE;
-        border-left: 5px solid #2563EB;
-        border-radius: 10px;
-        padding: 0.9rem 1.2rem;
-        margin-bottom: 1.2rem;
-        font-size: 0.9rem;
-        color: #1E3A8A;
-    }
+/* Helper callouts */
+.simple-callout {
+background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+border: 1px solid #BFDBFE;
+border-left: 5px solid #2563EB;
+border-radius: 10px;
+padding: 0.9rem 1.2rem;
+margin-bottom: 1.2rem;
+font-size: 0.9rem;
+color: #1E3A8A;
+}
 
-    /* ==========================================================================
-       GLOWING FLOATING SEGMENTED TABS & PILL CONTROLLERS
-       ========================================================================== */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: rgba(241, 245, 249, 0.9);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(203, 213, 225, 0.8);
-        padding: 6px 8px;
-        border-radius: 16px;
-        margin-bottom: 1.4rem;
-        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 2px 4px rgba(0, 0, 0, 0.02);
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 12px !important;
-        padding: 10px 22px !important;
-        font-weight: 700 !important;
-        font-size: 0.92rem !important;
-        color: #475569 !important;
-        background: transparent !important;
-        border: 1px solid transparent !important;
-        letter-spacing: -0.01em;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-    
-    .stTabs [data-baseweb="tab"]:hover {
-        background: rgba(255, 255, 255, 0.75) !important;
-        color: #0F172A !important;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-    
-    .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        border: 1px solid rgba(255, 255, 255, 0.25) !important;
-        box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.45), 0 0 12px 1px rgba(96, 165, 250, 0.35) !important;
-        transform: translateY(-1px) scale(1.02);
-    }
+/* ==========================================================================
+GLOWING FLOATING SEGMENTED TABS & PILL CONTROLLERS
+========================================================================== */
+.stTabs [data-baseweb="tab-list"] {
+gap: 8px;
+background: rgba(241, 245, 249, 0.9);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border: 1px solid rgba(203, 213, 225, 0.8);
+padding: 6px 8px;
+border-radius: 16px;
+margin-bottom: 1.4rem;
+box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
 
-    /* Segmented Radio Pills (Sim Mode & Upload Selectors) */
-    div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: flex;
-        gap: 8px;
-        background: rgba(241, 245, 249, 0.85);
-        padding: 5px 8px;
-        border-radius: 14px;
-        border: 1px solid #E2E8F0;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-        margin-bottom: 0.8rem;
-    }
-    
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
-        background: transparent;
-        border-radius: 10px;
-        padding: 6px 16px;
-        font-weight: 600;
-        font-size: 0.86rem;
-        color: #475569;
-        transition: all 0.2s ease;
-        border: 1px solid transparent;
-        cursor: pointer;
-    }
-    
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
-        background: rgba(255, 255, 255, 0.8);
-        color: #0F172A;
-    }
-    
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
-        background: #FFFFFF !important;
-        color: #2563EB !important;
-        font-weight: 700 !important;
-        border: 1px solid #BFDBFE !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+.stTabs [data-baseweb="tab"] {
+border-radius: 12px !important;
+padding: 10px 22px !important;
+font-weight: 700 !important;
+font-size: 0.92rem !important;
+color: #475569 !important;
+background: transparent !important;
+border: 1px solid transparent !important;
+letter-spacing: -0.01em;
+transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+background: rgba(255, 255, 255, 0.75) !important;
+color: #0F172A !important;
+transform: translateY(-1px);
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stTabs [aria-selected="true"] {
+background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+color: #FFFFFF !important;
+font-weight: 800 !important;
+border: 1px solid rgba(255, 255, 255, 0.25) !important;
+box-shadow: 0 6px 20px -2px rgba(37, 99, 235, 0.45), 0 0 12px 1px rgba(96, 165, 250, 0.35) !important;
+transform: translateY(-1px) scale(1.02);
+}
+
+/* Segmented Radio Pills (Sim Mode & Upload Selectors) */
+div[data-testid="stRadio"] > div[role="radiogroup"] {
+display: flex;
+gap: 8px;
+background: rgba(241, 245, 249, 0.85);
+padding: 5px 8px;
+border-radius: 14px;
+border: 1px solid #E2E8F0;
+box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+margin-bottom: 0.8rem;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+background: transparent;
+border-radius: 10px;
+padding: 6px 16px;
+font-weight: 600;
+font-size: 0.86rem;
+color: #475569;
+transition: all 0.2s ease;
+border: 1px solid transparent;
+cursor: pointer;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+background: rgba(255, 255, 255, 0.8);
+color: #0F172A;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+background: #FFFFFF !important;
+color: #2563EB !important;
+font-weight: 700 !important;
+border: 1px solid #BFDBFE !important;
+box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+}
+</style>""", unsafe_allow_html=True)
 
 # ==============================================================================
 # DATA & MODEL LOADERS
@@ -735,37 +733,33 @@ def render_jargon_buster_tab(is_simple=False):
     for idx, item in enumerate(filtered_terms):
         c = j_cols[idx % 2]
         with c:
-            st.markdown(f"""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                    <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.4rem;">
-                        {item['icon']} {item['term']}
-                    </span>
-                    <span style="background: #F1F5F9; color: #475569; font-weight: 600; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px;">
-                        {item['category']}
-                    </span>
-                </div>
-                <div style="font-size: 0.88rem; color: #1E293B; font-weight: 600; line-height: 1.45; margin-bottom: 0.45rem;">
-                    {item['definition']}
-                </div>
-                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
-                    💡 <b>Real-World Example:</b> {item['example']}
-                </div>
-                <div style="font-size: 0.78rem; color: #64748B;">
-                    🎯 <b>Why it matters:</b> {item['why_it_matters']}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+<span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.4rem;">
+{item['icon']} {item['term']}
+</span>
+<span style="background: #F1F5F9; color: #475569; font-weight: 600; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+{item['category']}
+</span>
+</div>
+<div style="font-size: 0.88rem; color: #1E293B; font-weight: 600; line-height: 1.45; margin-bottom: 0.45rem;">
+{item['definition']}
+</div>
+<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
+💡 <b>Real-World Example:</b> {item['example']}
+</div>
+<div style="font-size: 0.78rem; color: #64748B;">
+🎯 <b>Why it matters:</b> {item['why_it_matters']}
+</div>
+</div>""", unsafe_allow_html=True)
 
 
 def render_smart_question_chips(is_simple=False):
     st.subheader("💡 1-Click Smart Question Chips (Instant AI Answers)")
     if is_simple:
-        st.markdown("""
-        <div class="simple-callout">
-            💡 <b>Instant AI Answers:</b> Click any <b>Smart Question Chip</b> below to get immediate plain-English answers, KPI metric callouts, charts, and actionable recommendations without writing queries or building complex filters.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div class="simple-callout">
+💡 <b>Instant AI Answers:</b> Click any <b>Smart Question Chip</b> below to get immediate plain-English answers, KPI metric callouts, charts, and actionable recommendations without writing queries or building complex filters.
+</div>""", unsafe_allow_html=True)
     else:
         st.caption("Click any business question chip or ask custom queries to instantly synthesize machine learning analytics, KPI drivers, and operational directives.")
 
@@ -867,14 +861,12 @@ def render_smart_question_chips(is_simple=False):
     k1, k2, k3, k4 = st.columns(4)
     for idx, (col, kpi) in enumerate(zip([k1, k2, k3, k4], ans["kpis"])):
         with col:
-            st.markdown(f"""
-            <div class="glass-kpi-card">
-                <div class="kpi-accent-bar {kpi['color']}"></div>
-                <div class="kpi-label">{kpi['label']}</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{kpi['val']}</div>
-                <div class="kpi-meta">{kpi['sub']}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar {kpi['color']}"></div>
+<div class="kpi-label">{kpi['label']}</div>
+<div class="kpi-number" style="font-size: 1.45rem;">{kpi['val']}</div>
+<div class="kpi-meta">{kpi['sub']}</div>
+</div>""", unsafe_allow_html=True)
 
     st.write("")
     
@@ -910,12 +902,10 @@ def render_smart_question_chips(is_simple=False):
 def render_historical_analytics(is_simple=False):
     st.subheader("📊 Historical Sales & Customer Demand Insights")
     if is_simple:
-        st.markdown("""
-        <div class="simple-callout">
-            💡 <b>Key Business Takeaway:</b> <b>Grocery</b> and <b>Electronics</b> account for <b>52.6%</b> of total revenue. 
-            Thanksgiving / Black Friday drives the strongest annual demand spike (+43.7% revenue lift).
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div class="simple-callout">
+💡 <b>Key Business Takeaway:</b> <b>Grocery</b> and <b>Electronics</b> account for <b>52.6%</b> of total revenue.
+Thanksgiving / Black Friday drives the strongest annual demand spike (+43.7% revenue lift).
+</div>""", unsafe_allow_html=True)
     else:
         st.caption("Inspect store demand trajectories, department sales shares, and holiday surge multipliers.")
         
@@ -978,7 +968,7 @@ def render_historical_analytics(is_simple=False):
         st.plotly_chart(fig_bar, use_container_width=True)
 
 
-def render_health_scorecard(is_simple=False):
+def render_health_scorecard(is_simple=False, show_embedded_arena=False):
     st.subheader("🩺 AI Store & Category Health Scorecard (A+ to F Grades)")
     st.caption("A beginner-friendly diagnostic grading system evaluating revenue velocity, footprint efficiency ($/sq ft), momentum, stability, and promotional responsiveness.")
     
@@ -991,77 +981,70 @@ def render_health_scorecard(is_simple=False):
     
     h_col1, h_col2, h_col3, h_col4 = st.columns(4)
     with h_col1:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-emerald"></div>
-            <div class="kpi-label">Top Ranked Branch</div>
-            <div class="kpi-number">{top_store['Store_ID']}</div>
-            <div class="kpi-meta">🏆 {top_store['City']} ({top_store['Grade']} • {top_store['Health_Score']}/100)</div>
-        </div>
-        """, unsafe_allow_html=True)
+        kpi_h1 = f"""
+<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Top Ranked Branch</div>
+<div class="kpi-number">{top_store['Store_ID']}</div>
+<div class="kpi-meta">🏆 {top_store['City']} ({top_store['Grade']} • {top_store['Health_Score']}/100)</div>
+</div>
+"""
+        st.markdown(kpi_h1, unsafe_allow_html=True)
     with h_col2:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-blue"></div>
-            <div class="kpi-label">Top Category</div>
-            <div class="kpi-number">{top_cat['Department']}</div>
-            <div class="kpi-meta">🛒 {top_cat['Grade']} • {top_cat['Health_Score']}/100 Score</div>
-        </div>
-        """, unsafe_allow_html=True)
+        kpi_h2 = f"""
+<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">Top Category</div>
+<div class="kpi-number">{top_cat['Department']}</div>
+<div class="kpi-meta">🛒 {top_cat['Grade']} • {top_cat['Health_Score']}/100 Score</div>
+</div>
+"""
+        st.markdown(kpi_h2, unsafe_allow_html=True)
     with h_col3:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-purple"></div>
-            <div class="kpi-label">Network Health Index</div>
-            <div class="kpi-number">{avg_score:.1f}<span style="font-size: 1rem; color: #64748B;">/100</span></div>
-            <div class="kpi-meta">✨ Solid Operational Baseline</div>
-        </div>
-        """, unsafe_allow_html=True)
+        kpi_h3 = f"""
+<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Network Health Index</div>
+<div class="kpi-number">{avg_score:.1f}<span style="font-size: 1rem; color: #64748B;">/100</span></div>
+<div class="kpi-meta">✨ Solid Operational Baseline</div>
+</div>
+"""
+        st.markdown(kpi_h3, unsafe_allow_html=True)
     with h_col4:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-amber"></div>
-            <div class="kpi-label">Network Risk Level</div>
-            <div class="kpi-number">Low Risk</div>
-            <div class="kpi-meta">🛡️ 0 Stores in Critical Grade F</div>
-        </div>
-        """, unsafe_allow_html=True)
+        kpi_h4 = f"""
+<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">Network Risk Level</div>
+<div class="kpi-number">Low Risk</div>
+<div class="kpi-meta">🛡️ 0 Stores in Critical Grade F</div>
+</div>
+"""
+        st.markdown(kpi_h4, unsafe_allow_html=True)
         
     st.write("")
     
-    # Store Scorecard Table, Battle Arena & Category Table in 3 Tabs
-    subtab_store, subtab_arena, subtab_dept = st.tabs([
-        "🏢 Store Diagnostics & US Mini-Map Pinboard (10 Locations)",
-        "⚔️ Store Battle Arena (Head-to-Head Comparison)",
-        "🛒 Product Category Diagnostics (5 Departments)"
-    ])
+    if show_embedded_arena:
+        subtabs = st.tabs([
+            "🏢 Store Diagnostics & US Mini-Map Pinboard (10 Locations)",
+            "⚔️ Store Battle Arena (Head-to-Head Comparison)",
+            "🛒 Product Category Diagnostics (5 Departments)"
+        ])
+        subtab_store, subtab_arena, subtab_dept = subtabs[0], subtabs[1], subtabs[2]
+    else:
+        subtabs = st.tabs([
+            "🏢 Store Diagnostics & 5-Pillar Meters (10 Locations)",
+            "🛒 Product Category Diagnostics (5 Departments)"
+        ])
+        subtab_store, subtab_dept = subtabs[0], subtabs[1]
+        subtab_arena = None
     
     with subtab_store:
-        st.markdown("#### 🗺️ Interactive US Mini-Map Pinboard")
-        st.caption("Click any colored pulsating pin dot (🟢 A+, 🔵 B, 🟡 C) to select a store branch and synchronize analytics platform-wide.")
-        
-        # Render Interactive US Mini-Map Pinboard
-        active_pin_store = render_us_minimap_pinboard(
-            raw_df,
-            STORE_LOCATIONS,
-            st.session_state.get("active_store", "Store_09"),
-            key_prefix="health_pinboard"
-        )
+        active_curr = st.session_state.get("active_store", "Store_09")
+        target_store_match = store_card_df[store_card_df["Store_ID"] == active_curr]
+        target_store_data = target_store_match.iloc[0] if len(target_store_match) > 0 else store_card_df.iloc[0]
         
         st.write("")
-        st.markdown("#### 🏢 Interactive Store Branch Card Deck")
-        active_deck_store = render_interactive_store_deck(
-            raw_df,
-            STORE_LOCATIONS,
-            st.session_state.get("active_store", active_pin_store),
-            key_prefix="health_deck"
-        )
-        sel_diag_store = active_deck_store
-        
-        target_store_data = store_card_df[store_card_df["Store_ID"] == sel_diag_store].iloc[0]
-        
-        st.write("")
-        st.markdown("#### 🔍 Deep-Dive Store Diagnostic Breakdown")
+        st.markdown(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
         diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
             st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
@@ -1082,45 +1065,42 @@ def render_health_scorecard(is_simple=False):
             
             for p_name, p_val, p_max, p_pct in pillars:
                 bar_color = "#10B981" if p_pct >= 80 else ("#2563EB" if p_pct >= 60 else ("#F59E0B" if p_pct >= 40 else "#EF4444"))
-                st.markdown(f"""
-                <div style="background: rgba(255, 255, 255, 0.9); border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.45rem;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: #1E293B; margin-bottom: 0.25rem;">
-                        <span>{p_name}</span>
-                        <span style="color: {bar_color};">{p_val:.1f} / {p_max:.0f} pts ({p_pct:.0f}%)</span>
-                    </div>
-                    <div style="background: #F1F5F9; border-radius: 9999px; height: 10px; overflow: hidden; border: 1px solid #CBD5E1;">
-                        <div style="background: linear-gradient(90deg, {bar_color} 0%, #60A5FA 100%); height: 100%; width: {p_pct}%; border-radius: 9999px; transition: width 0.4s ease;"></div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                meter_html = f"""<div style="background: rgba(255, 255, 255, 0.9); border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.45rem;">
+<div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: #1E293B; margin-bottom: 0.25rem;">
+<span>{p_name}</span>
+<span style="color: {bar_color};">{p_val:.1f} / {p_max:.0f} pts ({p_pct:.0f}%)</span>
+</div>
+<div style="background: #F1F5F9; border-radius: 9999px; height: 10px; overflow: hidden; border: 1px solid #CBD5E1;">
+<div style="background: linear-gradient(90deg, {bar_color} 0%, #60A5FA 100%); height: 100%; width: {p_pct}%; border-radius: 9999px; transition: width 0.4s ease;"></div>
+</div>
+</div>"""
+                st.markdown(meter_html, unsafe_allow_html=True)
 
         with diag_c2:
-            # 1-Sentence Action Pill strictly max 10 words
             raw_rx = target_store_data.get('Prescription', 'Maintain standard inventory buffers.')
             rx_words = str(raw_rx).split()
             rx_pill = " ".join(rx_words[:9]) if len(rx_words) > 9 else raw_rx
             
-            st.markdown(f"""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data['Color']}; border-radius: 14px; padding: 1.1rem 1.25rem; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                        <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data['Store_ID']} — {target_store_data['City']}</span>
-                        <span style="background: {target_store_data['Color']}; color: white; padding: 0.2rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem;">Grade {target_store_data['Grade']}</span>
-                    </div>
-                    <div style="font-size: 0.88rem; color: #334155; margin-bottom: 0.6rem;">
-                        <b>Health Score:</b> {target_store_data['Health_Score']} / 100 <span style="color: #64748B;">({target_store_data['Status']})</span>
-                    </div>
-                    <div style="font-size: 0.82rem; color: #475569; line-height: 1.45; margin-bottom: 0.7rem;">
-                        • <b>Space Yield:</b> ${target_store_data['Sales_per_SqFt ($)']}/sq ft<br/>
-                        • <b>Momentum:</b> {target_store_data['Growth_Pace (%)']:+.1f}% vs 12-wk avg<br/>
-                        • <b>Anchor Dept:</b> {target_store_data['Top_Category']}
-                    </div>
-                </div>
-                <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.8rem; color: #1E3A8A; font-weight: 700;">
-                    💡 Action: {rx_pill}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            action_pill_html = f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data['Color']}; border-radius: 14px; padding: 1.1rem 1.25rem; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data['Store_ID']} — {target_store_data['City']}</span>
+<span style="background: {target_store_data['Color']}; color: white; padding: 0.2rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem;">Grade {target_store_data['Grade']}</span>
+</div>
+<div style="font-size: 0.88rem; color: #334155; margin-bottom: 0.6rem;">
+<b>Health Score:</b> {target_store_data['Health_Score']} / 100 <span style="color: #64748B;">({target_store_data['Status']})</span>
+</div>
+<div style="font-size: 0.82rem; color: #475569; line-height: 1.45; margin-bottom: 0.7rem;">
+• <b>Space Yield:</b> ${target_store_data['Sales_per_SqFt ($)']}/sq ft<br/>
+• <b>Momentum:</b> {target_store_data['Growth_Pace (%)']:+.1f}% vs 12-wk avg<br/>
+• <b>Anchor Dept:</b> {target_store_data['Top_Category']}
+</div>
+</div>
+<div style="background: rgba(37, 99, 235, 0.08); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.8rem; color: #1E3A8A; font-weight: 700;">
+💡 Action: {rx_pill}
+</div>
+</div>"""
+            st.markdown(action_pill_html, unsafe_allow_html=True)
             
         st.write("")
         st.markdown("#### 🏆 Store Network Health Leaderboard")
@@ -1128,13 +1108,13 @@ def render_health_scorecard(is_simple=False):
         display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
         st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
 
-    with subtab_arena:
-        # Render Store Battle Arena
-        render_store_battle_arena(
-            raw_df,
-            STORE_LOCATIONS,
-            key_prefix="health_battle_arena"
-        )
+    if show_embedded_arena and subtab_arena is not None:
+        with subtab_arena:
+            render_store_battle_arena(
+                raw_df,
+                STORE_LOCATIONS,
+                key_prefix="health_battle_arena"
+            )
 
     with subtab_dept:
         st.markdown("#### 🛒 Product Department Health Leaderboard")
@@ -1159,12 +1139,10 @@ def render_health_scorecard(is_simple=False):
 def render_goal_seek(is_simple=False):
     st.subheader("🎯 Interactive Goal-Seek / Target Revenue Calculator")
     if is_simple:
-        st.markdown("""
-        <div class="simple-callout">
-            💡 <b>How Goal-Seek Works:</b> Instead of asking <i>"What will sales be?"</i>, tell the AI your <b>dream weekly revenue goal</b> (e.g. $35,000). 
-            The machine learning solver reverse-engineers the <b>exact promotional markdown</b>, <b>floor staffing roster</b>, <b>safety inventory buffer</b>, and <b>net profit margin</b> required to hit it.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div class="simple-callout">
+💡 <b>How Goal-Seek Works:</b> Instead of asking <i>"What will sales be?"</i>, tell the AI your <b>dream weekly revenue goal</b> (e.g. $35,000).
+The machine learning solver reverse-engineers the <b>exact promotional markdown</b>, <b>floor staffing roster</b>, <b>safety inventory buffer</b>, and <b>net profit margin</b> required to hit it.
+</div>""", unsafe_allow_html=True)
     else:
         st.caption("Reverse-engineer promotional discounts, labor staffing allocations, warehouse safety buffers, and net operating margins for any user-defined weekly revenue target.")
 
@@ -1314,40 +1292,32 @@ def render_goal_seek(is_simple=False):
 
         k1, k2 = st.columns(2)
         with k1:
-            st.markdown(f"""
-            <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
-                <div class="kpi-accent-bar accent-purple"></div>
-                <div class="kpi-label">🏷️ Required Markdown</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{promo_pct_val}% Off</div>
-                <div class="kpi-meta">🎯 {promo_event_val}</div>
-            </div>
-            """, unsafe_allow_html=True)
-            st.markdown(f"""
-            <div class="glass-kpi-card">
-                <div class="kpi-accent-bar accent-emerald"></div>
-                <div class="kpi-label">👥 Extra Floor Staff</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{staff_val}</div>
-                <div class="kpi-meta">💵 Labor Cost: ${labor_cost_val:,.0f}/wk</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">🏷️ Required Markdown</div>
+<div class="kpi-number" style="font-size: 1.45rem;">{promo_pct_val}% Off</div>
+<div class="kpi-meta">🎯 {promo_event_val}</div>
+</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">👥 Extra Floor Staff</div>
+<div class="kpi-number" style="font-size: 1.45rem;">{staff_val}</div>
+<div class="kpi-meta">💵 Labor Cost: ${labor_cost_val:,.0f}/wk</div>
+</div>""", unsafe_allow_html=True)
             
         with k2:
-            st.markdown(f"""
-            <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
-                <div class="kpi-accent-bar accent-amber"></div>
-                <div class="kpi-label">📦 Restock Boxes Buffer</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{inv_buf_val}</div>
-                <div class="kpi-meta">⏱️ Lead Time: {lead_time_val} Days</div>
-            </div>
-            """, unsafe_allow_html=True)
-            st.markdown(f"""
-            <div class="glass-kpi-card">
-                <div class="kpi-accent-bar accent-blue"></div>
-                <div class="kpi-label">💵 Net Cash Profit</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">${profit_val:,.0f}</div>
-                <div class="kpi-meta">📈 {margin_pct_val:.1f}% Margin</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">📦 Restock Boxes Buffer</div>
+<div class="kpi-number" style="font-size: 1.45rem;">{inv_buf_val}</div>
+<div class="kpi-meta">⏱️ Lead Time: {lead_time_val} Days</div>
+</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">💵 Net Cash Profit</div>
+<div class="kpi-number" style="font-size: 1.45rem;">${profit_val:,.0f}</div>
+<div class="kpi-meta">📈 {margin_pct_val:.1f}% Margin</div>
+</div>""", unsafe_allow_html=True)
 
     st.write("")
 
@@ -1367,17 +1337,15 @@ def render_goal_seek(is_simple=False):
         st.dataframe(fin_df, use_container_width=True, hide_index=True)
         
         profit_color = "#10B981" if plan["net_profit"] > 0 else "#DC2626"
-        st.markdown(f"""
-        <div style="background: rgba(248, 250, 252, 0.95); border: 1px solid #CBD5E1; border-radius: 10px; padding: 0.9rem; margin-top: 0.5rem; text-align: center;">
-            <div style="font-size: 0.8rem; font-weight: 600; color: #64748B; text-transform: uppercase;">Estimated Weekly Net Profit</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: {profit_color}; margin-top: 0.2rem;">
-                ${plan['net_profit']:,.2f}
-            </div>
-            <div style="font-size: 0.82rem; font-weight: 600; color: #475569;">
-                Operating Margin: <b>{plan['net_margin_pct']:.1f}%</b> of Net Sales
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="background: rgba(248, 250, 252, 0.95); border: 1px solid #CBD5E1; border-radius: 10px; padding: 0.9rem; margin-top: 0.5rem; text-align: center;">
+<div style="font-size: 0.8rem; font-weight: 600; color: #64748B; text-transform: uppercase;">Estimated Weekly Net Profit</div>
+<div style="font-size: 1.6rem; font-weight: 800; color: {profit_color}; margin-top: 0.2rem;">
+${plan['net_profit']:,.2f}
+</div>
+<div style="font-size: 0.82rem; font-weight: 600; color: #475569;">
+Operating Margin: <b>{plan['net_margin_pct']:.1f}%</b> of Net Sales
+</div>
+</div>""", unsafe_allow_html=True)
         
     with f_col2:
         st.markdown("#### 🔍 Revenue Bridge / Growth Waterfall")
@@ -1538,50 +1506,40 @@ def render_upload_analyzer(is_simple=False):
         
         up_k1, up_k2, up_k3, up_k4, up_k5 = st.columns(5)
         with up_k1:
-            st.markdown(f"""
-            <div class="glass-kpi-card" title="Total number of transaction rows evaluated.">
-                <div class="kpi-accent-bar accent-blue"></div>
-                <div class="kpi-label">Ingested Records</div>
-                <div class="kpi-number">{summary['total_records']:,}</div>
-                <div class="kpi-meta">📅 {summary['date_min']} → {summary['date_max']}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" title="Total number of transaction rows evaluated.">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">Ingested Records</div>
+<div class="kpi-number">{summary['total_records']:,}</div>
+<div class="kpi-meta">📅 {summary['date_min']} → {summary['date_max']}</div>
+</div>""", unsafe_allow_html=True)
         with up_k2:
-            st.markdown(f"""
-            <div class="glass-kpi-card" title="Total forecasted sales volume across all records.">
-                <div class="kpi-accent-bar accent-emerald"></div>
-                <div class="kpi-label">Total Projected Sales</div>
-                <div class="kpi-number">${summary['total_projected_sales']/1e6:,.2f}M</div>
-                <div class="kpi-meta">✨ Avg: ${summary['avg_weekly_projected']/1e3:,.1f}K/row</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" title="Total forecasted sales volume across all records.">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Total Projected Sales</div>
+<div class="kpi-number">${summary['total_projected_sales']/1e6:,.2f}M</div>
+<div class="kpi-meta">✨ Avg: ${summary['avg_weekly_projected']/1e3:,.1f}K/row</div>
+</div>""", unsafe_allow_html=True)
         with up_k3:
-            st.markdown(f"""
-            <div class="glass-kpi-card" title="Category generating the highest forecasted revenue.">
-                <div class="kpi-accent-bar accent-purple"></div>
-                <div class="kpi-label">Top Category</div>
-                <div class="kpi-number">{summary['top_projected_dept']}</div>
-                <div class="kpi-meta">🛒 Leading Volume Driver</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" title="Category generating the highest forecasted revenue.">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Top Category</div>
+<div class="kpi-number">{summary['top_projected_dept']}</div>
+<div class="kpi-meta">🛒 Leading Volume Driver</div>
+</div>""", unsafe_allow_html=True)
         with up_k4:
-            st.markdown(f"""
-            <div class="glass-kpi-card" title="Forecast accuracy evaluated against actual sales.">
-                <div class="kpi-accent-bar accent-amber"></div>
-                <div class="kpi-label">Model Accuracy</div>
-                <div class="kpi-number">{summary['avg_accuracy']:.1f}%</div>
-                <div class="kpi-meta">🎯 Champion Model</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" title="Forecast accuracy evaluated against actual sales.">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">Model Accuracy</div>
+<div class="kpi-number">{summary['avg_accuracy']:.1f}%</div>
+<div class="kpi-meta">🎯 Champion Model</div>
+</div>""", unsafe_allow_html=True)
         with up_k5:
-            st.markdown(f"""
-            <div class="glass-kpi-card" title="Number of abnormal sales spikes or drops detected (>2.2 Z-scores).">
-                <div class="kpi-accent-bar accent-rose"></div>
-                <div class="kpi-label">Outlier Anomalies</div>
-                <div class="kpi-number">{summary['anomaly_count']}</div>
-                <div class="kpi-meta">⚠️ Flagged for Audit</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div class="glass-kpi-card" title="Number of abnormal sales spikes or drops detected (>2.2 Z-scores).">
+<div class="kpi-accent-bar accent-rose"></div>
+<div class="kpi-label">Outlier Anomalies</div>
+<div class="kpi-number">{summary['anomaly_count']}</div>
+<div class="kpi-meta">⚠️ Flagged for Audit</div>
+</div>""", unsafe_allow_html=True)
             
         st.write("")
         proc_df = summary["processed_df"]
@@ -1646,17 +1604,15 @@ def render_upload_analyzer(is_simple=False):
         
         u_exp1, u_exp2, u_exp3 = st.columns(3)
         with u_exp1:
-            st.markdown("""
-            <div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📄</div>
-                    <div style="font-weight: 700; color: #0F172A;">Custom Audit PDF Memo</div>
-                    <div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
-                        Executive summary memo with dataset statistics, category rankings, and directives based on your uploaded file.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📄</div>
+<div style="font-weight: 700; color: #0F172A;">Custom Audit PDF Memo</div>
+<div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
+Executive summary memo with dataset statistics, category rankings, and directives based on your uploaded file.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             pdf_buf = generate_uploaded_pdf(summary)
             st.download_button(
@@ -1669,17 +1625,15 @@ def render_upload_analyzer(is_simple=False):
             )
             
         with u_exp2:
-            st.markdown("""
-            <div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📊</div>
-                    <div style="font-weight: 700; color: #0F172A;">Formatted Excel Workbook</div>
-                    <div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
-                        Multi-tab workbook containing Executive Summary and Forecast Results with currency and percentage styling.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📊</div>
+<div style="font-weight: 700; color: #0F172A;">Formatted Excel Workbook</div>
+<div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
+Multi-tab workbook containing Executive Summary and Forecast Results with currency and percentage styling.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             excel_buf = generate_uploaded_excel(summary)
             st.download_button(
@@ -1692,17 +1646,15 @@ def render_upload_analyzer(is_simple=False):
             )
             
         with u_exp3:
-            st.markdown("""
-            <div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📁</div>
-                    <div style="font-weight: 700; color: #0F172A;">Enriched Predictions CSV</div>
-                    <div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
-                        Full dataset with appended Forecasts, P10 Safety Floor, P90 Surge Ceiling, and Outlier flags.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📁</div>
+<div style="font-weight: 700; color: #0F172A;">Enriched Predictions CSV</div>
+<div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
+Full dataset with appended Forecasts, P10 Safety Floor, P90 Surge Ceiling, and Outlier flags.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             csv_up_data = summary["export_df"].to_csv(index=False).encode('utf-8')
             st.download_button(
@@ -1736,17 +1688,15 @@ def render_scenario_simulator(is_simple=False):
     active_p = PRESETS[st.session_state.active_preset]
     
     # Active Preset Info Callout
-    st.markdown(f"""
-    <div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-left: 5px solid {active_p['color']}; border-radius: 10px; padding: 0.9rem 1.2rem; margin-bottom: 1.2rem;">
-        <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Active Scenario: {st.session_state.active_preset}</div>
-        <div style="font-size: 0.88rem; color: #475569; margin-top: 0.15rem;">{active_p['desc']}</div>
-        <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem; font-size: 0.82rem; font-weight: 600;">
-            <span style="color: #2563EB;">👥 Staffing Guideline: {active_p['staff_rec']}</span>
-            <span style="color: #059669;">📦 Safety Stock: {active_p['buffer_rec']}</span>
-            <span style="color: #D97706;">🏷️ Promo: {active_p['promo']}% Discount</span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-left: 5px solid {active_p['color']}; border-radius: 10px; padding: 0.9rem 1.2rem; margin-bottom: 1.2rem;">
+<div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Active Scenario: {st.session_state.active_preset}</div>
+<div style="font-size: 0.88rem; color: #475569; margin-top: 0.15rem;">{active_p['desc']}</div>
+<div style="display: flex; gap: 1.5rem; margin-top: 0.5rem; font-size: 0.82rem; font-weight: 600;">
+<span style="color: #2563EB;">👥 Staffing Guideline: {active_p['staff_rec']}</span>
+<span style="color: #059669;">📦 Safety Stock: {active_p['buffer_rec']}</span>
+<span style="color: #D97706;">🏷️ Promo: {active_p['promo']}% Discount</span>
+</div>
+</div>""", unsafe_allow_html=True)
     
     sim_col1, sim_col2 = st.columns([1, 2])
     
@@ -1848,49 +1798,43 @@ def render_scenario_simulator(is_simple=False):
         st.markdown("##### ⚡ 3 Quick-Glance Operational Directives:")
         d_badge1, d_badge2, d_badge3 = st.columns(3)
         with d_badge1:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
-                <div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase; letter-spacing: 0.04em;">
-                    👥 Staffing Directive
-                </div>
-                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
-                    {active_p['staff_rec']}
-                </div>
-                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
-                    Floor coverage: 12 PM - 6 PM
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
+<div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase; letter-spacing: 0.04em;">
+👥 Staffing Directive
+</div>
+<div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+{active_p['staff_rec']}
+</div>
+<div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+Floor coverage: 12 PM - 6 PM
+</div>
+</div>""", unsafe_allow_html=True)
             
         with d_badge2:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%); border: 1.5px solid #A7F3D0; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(16,185,129,0.06);">
-                <div style="font-size: 0.75rem; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.04em;">
-                    📦 Safety Stock Buffer
-                </div>
-                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
-                    {active_p['buffer_rec']}
-                </div>
-                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
-                    Backroom restock 48h prior
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%); border: 1.5px solid #A7F3D0; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(16,185,129,0.06);">
+<div style="font-size: 0.75rem; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.04em;">
+📦 Safety Stock Buffer
+</div>
+<div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+{active_p['buffer_rec']}
+</div>
+<div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+Backroom restock 48h prior
+</div>
+</div>""", unsafe_allow_html=True)
             
         with d_badge3:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%); border: 1.5px solid #FDE68A; border-left: 5px solid #F59E0B; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(245,158,11,0.06);">
-                <div style="font-size: 0.75rem; font-weight: 800; color: #D97706; text-transform: uppercase; letter-spacing: 0.04em;">
-                    🏷️ Pricing & Margin
-                </div>
-                <div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
-                    {int(sim_promo * 100)}% Promo Markdown
-                </div>
-                <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
-                    Contribution margin protected
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%); border: 1.5px solid #FDE68A; border-left: 5px solid #F59E0B; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(245,158,11,0.06);">
+<div style="font-size: 0.75rem; font-weight: 800; color: #D97706; text-transform: uppercase; letter-spacing: 0.04em;">
+🏷️ Pricing & Margin
+</div>
+<div style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin-top: 0.1rem;">
+{int(sim_promo * 100)}% Promo Markdown
+</div>
+<div style="font-size: 0.75rem; color: #64748B; margin-top: 0.15rem;">
+Contribution margin protected
+</div>
+</div>""", unsafe_allow_html=True)
 
         st.write("")
         st.markdown("##### 🌊 Visual 3-Step Demand Surge Waterfall")
@@ -1990,11 +1934,9 @@ def render_scenario_simulator(is_simple=False):
 def render_speedometer_gauges(is_simple=False):
     st.subheader("⏱️ Visual Inventory & Labor Speedometer Gauges")
     if is_simple:
-        st.markdown("""
-        <div class="simple-callout">
-            💡 <b>Operational Command Cockpit:</b> Visual speedometer gauges let store directors and warehouse managers monitor <b>inventory stockout risks</b>, <b>cashier & restocker workloads</b>, and <b>fill-rate SLAs</b> in real-time before demand surges hit.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div class="simple-callout">
+💡 <b>Operational Command Cockpit:</b> Visual speedometer gauges let store directors and warehouse managers monitor <b>inventory stockout risks</b>, <b>cashier & restocker workloads</b>, and <b>fill-rate SLAs</b> in real-time before demand surges hit.
+</div>""", unsafe_allow_html=True)
     else:
         st.caption("Real-time operational indicator dials measuring warehouse capacity stress, frontline associate throughput, sales velocity, and on-shelf availability.")
 
@@ -2080,22 +2022,20 @@ def render_speedometer_gauges(is_simple=False):
     
     # Hero Alert Banner
     alert_border = gauges["inv_color"] if gauges["inv_stress_index"] > 110 else gauges["labor_color"]
-    st.markdown(f"""
-    <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {alert_border}; border-radius: 12px; padding: 1.1rem 1.4rem; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-            <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">
-                Active Operational State: {sp_preset}
-            </span>
-            <span style="background: {alert_border}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
-                {gauges['inv_status']}
-            </span>
-        </div>
-        <div style="font-size: 0.9rem; color: #334155; line-height: 1.5;">
-            • <b>Warehouse Strategy:</b> {gauges['inv_desc']}<br/>
-            • <b>Floor Staffing Directive:</b> {gauges['labor_desc']}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {alert_border}; border-radius: 12px; padding: 1.1rem 1.4rem; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">
+Active Operational State: {sp_preset}
+</span>
+<span style="background: {alert_border}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
+{gauges['inv_status']}
+</span>
+</div>
+<div style="font-size: 0.9rem; color: #334155; line-height: 1.5;">
+• <b>Warehouse Strategy:</b> {gauges['inv_desc']}<br/>
+• <b>Floor Staffing Directive:</b> {gauges['labor_desc']}
+</div>
+</div>""", unsafe_allow_html=True)
 
     # 4 Speedometer Gauges Grid (2x2)
     g_r1_c1, g_r1_c2 = st.columns(2)
@@ -2116,43 +2056,35 @@ def render_speedometer_gauges(is_simple=False):
     st.markdown("#### 📋 Floor Manager & Warehouse Action Checklist")
     act1, act2, act3 = st.columns(3)
     with act1:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-emerald"></div>
-            <div class="kpi-label">Warehouse Safety Stock</div>
-            <div class="kpi-number" style="font-size: 1.3rem;">{gauges['inv_rec']}</div>
-            <div class="kpi-meta">📦 Restock Target</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Warehouse Safety Stock</div>
+<div class="kpi-number" style="font-size: 1.3rem;">{gauges['inv_rec']}</div>
+<div class="kpi-meta">📦 Restock Target</div>
+</div>""", unsafe_allow_html=True)
     with act2:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-purple"></div>
-            <div class="kpi-label">Labor Schedule Adjustment</div>
-            <div class="kpi-number" style="font-size: 1.3rem;">{gauges['labor_rec']}</div>
-            <div class="kpi-meta">👥 Frontline Associates</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Labor Schedule Adjustment</div>
+<div class="kpi-number" style="font-size: 1.3rem;">{gauges['labor_rec']}</div>
+<div class="kpi-meta">👥 Frontline Associates</div>
+</div>""", unsafe_allow_html=True)
     with act3:
-        st.markdown(f"""
-        <div class="glass-kpi-card">
-            <div class="kpi-accent-bar accent-blue"></div>
-            <div class="kpi-label">On-Shelf Availability SLA</div>
-            <div class="kpi-number" style="font-size: 1.3rem;">{gauges['fill_rate']:.1f}% Target</div>
-            <div class="kpi-meta">🛡️ Zero-Out-Of-Stock Goal</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">On-Shelf Availability SLA</div>
+<div class="kpi-number" style="font-size: 1.3rem;">{gauges['fill_rate']:.1f}% Target</div>
+<div class="kpi-meta">🛡️ Zero-Out-Of-Stock Goal</div>
+</div>""", unsafe_allow_html=True)
 
 
 def render_profit_estimator(is_simple=False):
     st.subheader("💰 Profit & Operating Margin Estimator")
     if is_simple:
-        st.markdown("""
-        <div class="simple-callout">
-            💡 <b>Why Profit Modeling Matters:</b> Top-line sales volume is only half the picture! Selling $50,000 at a 30% discount can sometimes make <b>LESS net profit</b> than selling $35,000 at a 10% discount. 
-            This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>Break-Even Sales</b>, and calculates your <b>maximum take-home cash profit sweet spot</b>.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div class="simple-callout">
+💡 <b>Why Profit Modeling Matters:</b> Top-line sales volume is only half the picture! Selling $50,000 at a 30% discount can sometimes make <b>LESS net profit</b> than selling $35,000 at a 10% discount.
+This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>Break-Even Sales</b>, and calculates your <b>maximum take-home cash profit sweet spot</b>.
+</div>""", unsafe_allow_html=True)
     else:
         st.caption("Comprehensive financial P&L statement simulator, cost of goods sold (COGS) decomposition, promotional markdown elasticity, and net operating margin optimization.")
 
@@ -2241,73 +2173,63 @@ def render_profit_estimator(is_simple=False):
     st.write("")
     
     # Visual Financial Cash Flow Stepper Bar ($ Sales ➔ Wholesale ➔ Wages ➔ Rent ➔ Net Cash)
-    st.markdown(f"""
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; color: white; gap: 0.5rem; box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.25);">
-        <div style="text-align: center;">
-            <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">💵 Register Sales</div>
-            <div style="font-size: 1.1rem; font-weight: 800; color: #60A5FA;">${pl['net_sales']:,.0f}</div>
-        </div>
-        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
-        <div style="text-align: center;">
-            <div style="font-size: 0.72rem; color: #FCA5A5; text-transform: uppercase; font-weight: 700;">📦 -Wholesale COGS</div>
-            <div style="font-size: 1.1rem; font-weight: 800; color: #EF4444;">-${pl['total_cogs']:,.0f}</div>
-        </div>
-        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
-        <div style="text-align: center;">
-            <div style="font-size: 0.72rem; color: #DDD6FE; text-transform: uppercase; font-weight: 700;">👥 -Floor Wages</div>
-            <div style="font-size: 1.1rem; font-weight: 800; color: #A855F7;">-${pl['labor_cost']:,.0f}</div>
-        </div>
-        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
-        <div style="text-align: center;">
-            <div style="font-size: 0.72rem; color: #FDE68A; text-transform: uppercase; font-weight: 700;">🏢 -Rent / OPEX</div>
-            <div style="font-size: 1.1rem; font-weight: 800; color: #F59E0B;">-${pl['fixed_opex']:,.0f}</div>
-        </div>
-        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
-        <div style="text-align: center; background: rgba(16, 185, 129, 0.2); padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.4);">
-            <div style="font-size: 0.72rem; color: #6EE7B7; text-transform: uppercase; font-weight: 800;">💰 = Net Cash Profit</div>
-            <div style="font-size: 1.2rem; font-weight: 800; color: #34D399;">${pl['net_operating_profit']:,.0f} <span style="font-size: 0.75rem;">({pl['net_margin_pct']:.1f}%)</span></div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; color: white; gap: 0.5rem; box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.25);">
+<div style="text-align: center;">
+<div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">💵 Register Sales</div>
+<div style="font-size: 1.1rem; font-weight: 800; color: #60A5FA;">${pl['net_sales']:,.0f}</div>
+</div>
+<div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+<div style="text-align: center;">
+<div style="font-size: 0.72rem; color: #FCA5A5; text-transform: uppercase; font-weight: 700;">📦 -Wholesale COGS</div>
+<div style="font-size: 1.1rem; font-weight: 800; color: #EF4444;">-${pl['total_cogs']:,.0f}</div>
+</div>
+<div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+<div style="text-align: center;">
+<div style="font-size: 0.72rem; color: #DDD6FE; text-transform: uppercase; font-weight: 700;">👥 -Floor Wages</div>
+<div style="font-size: 1.1rem; font-weight: 800; color: #A855F7;">-${pl['labor_cost']:,.0f}</div>
+</div>
+<div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+<div style="text-align: center;">
+<div style="font-size: 0.72rem; color: #FDE68A; text-transform: uppercase; font-weight: 700;">🏢 -Rent / OPEX</div>
+<div style="font-size: 1.1rem; font-weight: 800; color: #F59E0B;">-${pl['fixed_opex']:,.0f}</div>
+</div>
+<div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+<div style="text-align: center; background: rgba(16, 185, 129, 0.2); padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.4);">
+<div style="font-size: 0.72rem; color: #6EE7B7; text-transform: uppercase; font-weight: 800;">💰 = Net Cash Profit</div>
+<div style="font-size: 1.2rem; font-weight: 800; color: #34D399;">${pl['net_operating_profit']:,.0f} <span style="font-size: 0.75rem;">({pl['net_margin_pct']:.1f}%)</span></div>
+</div>
+</div>""", unsafe_allow_html=True)
 
     # 4 Glassmorphism KPI Metrics
     pk1, pk2, pk3, pk4 = st.columns(4)
     with pk1:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Bottom-line operating cash profit after all inventory, markdown, labor, and OPEX costs.">
-            <div class="kpi-accent-bar accent-emerald"></div>
-            <div class="kpi-label">Net Operating Profit</div>
-            <div class="kpi-number" style="font-size: 1.5rem;">${pl['net_operating_profit']:,.0f}</div>
-            <div class="kpi-meta">📈 {pl['net_margin_pct']:.1f}% Net Margin</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card" title="Bottom-line operating cash profit after all inventory, markdown, labor, and OPEX costs.">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Net Operating Profit</div>
+<div class="kpi-number" style="font-size: 1.5rem;">${pl['net_operating_profit']:,.0f}</div>
+<div class="kpi-meta">📈 {pl['net_margin_pct']:.1f}% Net Margin</div>
+</div>""", unsafe_allow_html=True)
     with pk2:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Revenue minus wholesale cost of goods sold.">
-            <div class="kpi-accent-bar accent-blue"></div>
-            <div class="kpi-label">Gross Margin ($)</div>
-            <div class="kpi-number" style="font-size: 1.5rem;">${pl['gross_profit']:,.0f}</div>
-            <div class="kpi-meta">🛒 {pl['gross_margin_pct']:.1f}% of Sales</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card" title="Revenue minus wholesale cost of goods sold.">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">Gross Margin ($)</div>
+<div class="kpi-number" style="font-size: 1.5rem;">${pl['gross_profit']:,.0f}</div>
+<div class="kpi-meta">🛒 {pl['gross_margin_pct']:.1f}% of Sales</div>
+</div>""", unsafe_allow_html=True)
     with pk3:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Direct store associate floor labor and checkout staff costs.">
-            <div class="kpi-accent-bar accent-purple"></div>
-            <div class="kpi-label">Store Labor Cost</div>
-            <div class="kpi-number" style="font-size: 1.5rem;">${pl['labor_cost']:,.0f}</div>
-            <div class="kpi-meta">👥 {pl['total_labor_hours']:.0f} Total Hours</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card" title="Direct store associate floor labor and checkout staff costs.">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Store Labor Cost</div>
+<div class="kpi-number" style="font-size: 1.5rem;">${pl['labor_cost']:,.0f}</div>
+<div class="kpi-meta">👥 {pl['total_labor_hours']:.0f} Total Hours</div>
+</div>""", unsafe_allow_html=True)
     with pk4:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Minimum weekly sales needed to cover all labor and fixed store overhead without taking a loss.">
-            <div class="kpi-accent-bar accent-amber"></div>
-            <div class="kpi-label">Break-Even Sales</div>
-            <div class="kpi-number" style="font-size: 1.5rem;">${pl['break_even_sales']:,.0f}</div>
-            <div class="kpi-meta">🛡️ Zero-Loss Threshold</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="glass-kpi-card" title="Minimum weekly sales needed to cover all labor and fixed store overhead without taking a loss.">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">Break-Even Sales</div>
+<div class="kpi-number" style="font-size: 1.5rem;">${pl['break_even_sales']:,.0f}</div>
+<div class="kpi-meta">🛡️ Zero-Loss Threshold</div>
+</div>""", unsafe_allow_html=True)
 
     st.write("")
     
@@ -2347,17 +2269,15 @@ def render_profit_estimator(is_simple=False):
         st.plotly_chart(fig_curve, use_container_width=True)
         
     with el_c2:
-        st.markdown(f"""
-        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10B981; border-radius: 12px; padding: 1.1rem; margin-bottom: 0.8rem;">
-            <div style="font-weight: 800; color: #065F46; font-size: 1.1rem;">🏆 Optimal Profit Sweet Spot</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0.3rem 0;">
-                {optimal_row['Discount (%)']}% Discount
-            </div>
-            <div style="font-size: 0.86rem; color: #334155; line-height: 1.45;">
-                Generates peak net cash profit of <b>${optimal_row['Net Profit ($)']:,.2f}</b> ({optimal_row['Net Margin (%)']:.1f}% margin) with a <b>+{optimal_row['Revenue Lift (%)']:.1f}%</b> demand velocity lift.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10B981; border-radius: 12px; padding: 1.1rem; margin-bottom: 0.8rem;">
+<div style="font-weight: 800; color: #065F46; font-size: 1.1rem;">🏆 Optimal Profit Sweet Spot</div>
+<div style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0.3rem 0;">
+{optimal_row['Discount (%)']}% Discount
+</div>
+<div style="font-size: 0.86rem; color: #334155; line-height: 1.45;">
+Generates peak net cash profit of <b>${optimal_row['Net Profit ($)']:,.2f}</b> ({optimal_row['Net Margin (%)']:.1f}% margin) with a <b>+{optimal_row['Revenue Lift (%)']:.1f}%</b> demand velocity lift.
+</div>
+</div>""", unsafe_allow_html=True)
         
         display_curve_df = df_curve[["Discount (%)", "Gross Revenue ($)", "Revenue Lift (%)", "Net Profit ($)", "Net Margin (%)"]].copy()
         display_curve_df["Gross Revenue ($)"] = display_curve_df["Gross Revenue ($)"].map("${:,.0f}".format)
@@ -2486,19 +2406,17 @@ def render_executive_briefing(is_simple=False):
         )
         
         # Executive 1-Slide Infographic Card: Headline Pill, 3 Stat Dials, & 3 Checklist Action Pills
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(15,23,42,0.12);">
-            <div style="display: flex; align-items: center; gap: 0.6rem;">
-                <span style="font-size: 1.15rem;">📌</span>
-                <span style="font-weight: 800; font-size: 1.02rem; color: #F8FAFC; letter-spacing: -0.01em;">
-                    {briefing['headline']}
-                </span>
-            </div>
-            <span style="background: {briefing['risk_color']}; color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
-                {briefing['risk_level']}
-            </span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(15,23,42,0.12);">
+<div style="display: flex; align-items: center; gap: 0.6rem;">
+<span style="font-size: 1.15rem;">📌</span>
+<span style="font-weight: 800; font-size: 1.02rem; color: #F8FAFC; letter-spacing: -0.01em;">
+{briefing['headline']}
+</span>
+</div>
+<span style="background: {briefing['risk_color']}; color: white; padding: 0.25rem 0.85rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
+{briefing['risk_level']}
+</span>
+</div>""", unsafe_allow_html=True)
         
         # 3 Visual Stat Dials (P10, P50, P90)
         stat_dials = create_executive_stat_dials(briefing["p10"], briefing["p50"], briefing["p90"], base_sales_eb)
@@ -2515,27 +2433,25 @@ def render_executive_briefing(is_simple=False):
         rec_2 = briefing["recommendations"][1] if len(briefing["recommendations"]) > 1 else "Stage safety stock buffer"
         rec_3 = briefing["recommendations"][2] if len(briefing["recommendations"]) > 2 else "Align floor associate shift roster"
         
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-radius: 14px; padding: 1rem 1.3rem; margin-top: 0.1rem; margin-bottom: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.04);">
-            <div style="font-weight: 800; font-size: 0.88rem; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;">
-                <span>📋</span> <span>Executive Action Checklist (Immediate Directives):</span>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                    <span style="background: #ECFDF5; color: #059669; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
-                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_1}</span>
-                </div>
-                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                    <span style="background: #EFF6FF; color: #2563EB; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
-                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_2}</span>
-                </div>
-                <div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #8B5CF6; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-                    <span style="background: #F5F3FF; color: #7C3AED; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
-                    <span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_3}</span>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border: 1.5px solid #DBEAFE; border-radius: 14px; padding: 1rem 1.3rem; margin-top: 0.1rem; margin-bottom: 1.1rem; box-shadow: 0 4px 12px rgba(37,99,235,0.04);">
+<div style="font-weight: 800; font-size: 0.88rem; color: #1E3A8A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;">
+<span>📋</span> <span>Executive Action Checklist (Immediate Directives):</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 0.5rem;">
+<div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<span style="background: #ECFDF5; color: #059669; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+<span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_1}</span>
+</div>
+<div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<span style="background: #EFF6FF; color: #2563EB; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+<span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_2}</span>
+</div>
+<div style="display: flex; align-items: center; background: white; border: 1px solid #E2E8F0; border-left: 4px solid #8B5CF6; border-radius: 8px; padding: 0.6rem 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<span style="background: #F5F3FF; color: #7C3AED; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; margin-right: 0.75rem; flex-shrink: 0;">✓</span>
+<span style="font-size: 0.87rem; color: #1E293B; line-height: 1.4;">{rec_3}</span>
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             
         memo_text = f"""RETAIL DEMAND EXECUTIVE BRIEFING MEMORANDUM
 Generated by Retail Pulse AI Engine
@@ -2879,21 +2795,19 @@ def render_batch_export(is_simple=False):
         cat_card_df = compute_category_health_scorecard(raw_df)
         zip_bytes = generate_executive_bundle_zip(raw_df, results_df, metrics_data, STORE_LOCATIONS, store_card_df, cat_card_df)
         
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #065F46 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 1.25rem 1.6rem; color: white; margin-bottom: 0.8rem; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <span style="font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
-                    📦 Complete Executive Intelligence Bundle (.ZIP)
-                </span>
-                <span style="background: rgba(255,255,255,0.25); color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
-                    ⚡ 1-Click All-in-One
-                </span>
-            </div>
-            <div style="font-size: 0.9rem; color: #D1FAE5; line-height: 1.5;">
-                Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</b> + <b>Granular CSV Predictions</b> + <b>Store Health Leaderboard</b> + <b>Category Diagnostics</b> + <b>Management Readme</b>.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("""<div style="background: linear-gradient(135deg, #065F46 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 1.25rem 1.6rem; color: white; margin-bottom: 0.8rem; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+<span style="font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+📦 Complete Executive Intelligence Bundle (.ZIP)
+</span>
+<span style="background: rgba(255,255,255,0.25); color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
+⚡ 1-Click All-in-One
+</span>
+</div>
+<div style="font-size: 0.9rem; color: #D1FAE5; line-height: 1.5;">
+Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</b> + <b>Granular CSV Predictions</b> + <b>Store Health Leaderboard</b> + <b>Category Diagnostics</b> + <b>Management Readme</b>.
+</div>
+</div>""", unsafe_allow_html=True)
         
         st.download_button(
             label="📦 DOWNLOAD COMPLETE EXECUTIVE BUNDLE (.ZIP)",
@@ -2909,17 +2823,15 @@ def render_batch_export(is_simple=False):
         exp_col1, exp_col2, exp_col3 = st.columns(3)
         
         with exp_col1:
-            st.markdown("""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📄</div>
-                    <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Executive Intelligence PDF</div>
-                    <div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
-                        Ready-to-present PDF memo with KPI tables, department dynamics, champion model leaderboard, and strategic directives.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📄</div>
+<div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Executive Intelligence PDF</div>
+<div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
+Ready-to-present PDF memo with KPI tables, department dynamics, champion model leaderboard, and strategic directives.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             pdf_bytes = generate_executive_pdf(raw_df, results_df, metrics_data, STORE_LOCATIONS)
             st.download_button(
@@ -2932,17 +2844,15 @@ def render_batch_export(is_simple=False):
             )
             
         with exp_col2:
-            st.markdown("""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📊</div>
-                    <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Multi-Sheet Excel Workbook</div>
-                    <div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
-                        5 comprehensive worksheets: Executive_Summary, Store_Network, Department_Breakdown, Model_Benchmarks, and Batch_Forecasts.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #10B981; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📊</div>
+<div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Multi-Sheet Excel Workbook</div>
+<div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
+5 comprehensive worksheets: Executive_Summary, Store_Network, Department_Breakdown, Model_Benchmarks, and Batch_Forecasts.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             excel_bytes = generate_multisheet_excel(raw_df, results_df, metrics_data, STORE_LOCATIONS)
             st.download_button(
@@ -2955,17 +2865,15 @@ def render_batch_export(is_simple=False):
             )
             
         with exp_col3:
-            st.markdown("""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📁</div>
-                    <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Granular Batch CSV Dataset</div>
-                    <div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
-                        Raw tabular forecast results ready for downstream data warehouses (Snowflake/BigQuery) or custom BI tool ingestion.
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #8B5CF6; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+<div>
+<div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📁</div>
+<div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Granular Batch CSV Dataset</div>
+<div style="font-size: 0.84rem; color: #475569; margin-top: 0.3rem;">
+Raw tabular forecast results ready for downstream data warehouses (Snowflake/BigQuery) or custom BI tool ingestion.
+</div>
+</div>
+</div>""", unsafe_allow_html=True)
             st.write("")
             csv_data = results_df.to_csv(index=False).encode('utf-8')
             st.download_button(
@@ -3124,29 +3032,31 @@ Upload custom store CSVs or click 1 button to download the <b>Complete Executive
 def page_store_view():
     st.subheader("🏢 Store Intelligence, Diagnostics & Battle Arena")
     st.caption("Inspect store network performance, interact with the US pinboard map, launch head-to-head store battles, and review diagnostic scorecards.")
-    
-    # Store Deck & Pinboard
-    render_us_minimap_pinboard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
-    st.write("")
-    
-    # Store Battle Arena
-    render_store_battle_arena(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
-    st.write("")
-    st.markdown("---")
-    
-    # Store Health Scorecards
-    render_health_scorecard(is_simple=(view_mode.startswith("🌟")))
-    st.write("")
-    st.markdown("---")
-    
-    # Geospatial & Department Demand Matrix
-    render_geospatial_matrix()
-    st.write("")
-    st.markdown("---")
-    
-    # Historical Analytics
-    with st.expander("📊 **Explore Historical Sales & Customer Demand Curves**", expanded=False):
-        render_historical_analytics(is_simple=(view_mode.startswith("🌟")))
+
+    store_tab1, store_tab2, store_tab3 = st.tabs([
+        "📍 Interactive US Pinboard & Card Deck",
+        "⚔️ Store Battle Arena (Head-to-Head)",
+        "🩺 Store & Category Health Diagnostics"
+    ])
+
+    with store_tab1:
+        render_us_minimap_pinboard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"), key_prefix="stores_pinboard")
+        st.write("")
+        st.markdown("#### 🏢 10-Store Visual Performance Card Deck")
+        render_interactive_store_deck(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"), key_prefix="stores_deck")
+
+    with store_tab2:
+        render_store_battle_arena(raw_df, STORE_LOCATIONS, key_prefix="stores_arena")
+
+    with store_tab3:
+        render_health_scorecard(is_simple=(view_mode.startswith("🌟")), show_embedded_arena=False)
+        st.write("")
+        st.markdown("---")
+        render_geospatial_matrix()
+        st.write("")
+        st.markdown("---")
+        with st.expander("📊 **Explore Historical Sales & Customer Demand Curves**", expanded=False):
+            render_historical_analytics(is_simple=(view_mode.startswith("🌟")))
 
 
 # ==============================================================================
