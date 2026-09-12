@@ -81,6 +81,18 @@ def get_enriched_store_cards(raw_df: pd.DataFrame, store_locations: dict) -> Lis
     return cards
 
 
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 def render_interactive_store_deck(
     raw_df: pd.DataFrame,
     store_locations: dict,
@@ -111,7 +123,7 @@ def render_interactive_store_deck(
 Currently Active: <span style="background: #2563EB; color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700;">{active_profile['icon']} {active_profile['city']}, {active_profile['state']} ({current_active})</span>
 </span>
 </div>"""
-    st.markdown(header_deck_html, unsafe_allow_html=True)
+    safe_render_html(header_deck_html)
 
     # Render in 2 rows of 5 columns
     row1 = store_cards[:5]
@@ -148,7 +160,7 @@ Currently Active: <span style="background: #2563EB; color: white; padding: 0.2re
 <div>📈 <b>Sales:</b> ${card['tot_rev']/1e6:.1f}M Total</div>
 </div>
 </div>"""
-                st.markdown(card_html, unsafe_allow_html=True)
+                safe_render_html(card_html)
                 
                 btn_type = "primary" if is_active else "secondary"
                 btn_label = f"Selected ✓" if is_active else f"Select {card['city']}"

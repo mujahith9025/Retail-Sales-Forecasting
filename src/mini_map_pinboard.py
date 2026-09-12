@@ -121,6 +121,18 @@ def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str
     return fig
 
 
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 def render_us_minimap_pinboard(
     raw_df: pd.DataFrame,
     store_locations: dict,
@@ -156,14 +168,14 @@ def render_us_minimap_pinboard(
 ${active_c['yield_sqft']:.2f}/sq ft Yield
 </span>
 </div>"""
-    st.markdown(header_pin_html, unsafe_allow_html=True)
+    safe_render_html(header_pin_html)
 
     # Mini-Map Plotly Chart
     fig = generate_us_minimap_figure(cards, current_active)
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
     # Interactive 1-Click Store Pin Chips (2 rows x 5 cols)
-    st.markdown("<div style='font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem;'>📌 Click any store pin below to select:</div>", unsafe_allow_html=True)
+    safe_render_html("<div style='font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem;'>📌 Click any store pin below to select:</div>")
     
     cols_row1 = st.columns(5)
     cols_row2 = st.columns(5)

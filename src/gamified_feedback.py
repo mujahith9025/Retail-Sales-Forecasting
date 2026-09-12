@@ -163,6 +163,18 @@ def get_economic_feedback(cpi: float, unemp: float, fuel: float, temp: float) ->
         }
 
 
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 def render_slider_feedback_badge(feedback: dict):
     """
     Renders an ultra-clean, stylish responsive micro-badge with real-time feedback.
@@ -171,7 +183,7 @@ def render_slider_feedback_badge(feedback: dict):
     subtitle_val = feedback.get(subtitle_key, "")
     action_text = feedback.get("message", feedback.get("action", ""))
 
-    st.markdown(f"""<div style="background: {feedback['bg']}; border: 1.5px solid {feedback['border']}; border-left: 5px solid {feedback['color']}; border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: -0.4rem; margin-bottom: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s ease;">
+    badge_html = f"""<div style="background: {feedback['bg']}; border: 1.5px solid {feedback['border']}; border-left: 5px solid {feedback['color']}; border-radius: 10px; padding: 0.6rem 0.9rem; margin-top: -0.4rem; margin-bottom: 0.8rem; box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.25s ease;">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
 <span style="font-weight: 800; font-size: 0.88rem; color: {feedback['color']}; display: flex; align-items: center; gap: 0.35rem;">
 {feedback['emoji']} {feedback.get('status', feedback.get('level', 'Status'))}
@@ -183,4 +195,5 @@ def render_slider_feedback_badge(feedback: dict):
 <div style="font-size: 0.78rem; color: #334155; line-height: 1.35;">
 {action_text}
 </div>
-</div>""", unsafe_allow_html=True)
+</div>"""
+    safe_render_html(badge_html)

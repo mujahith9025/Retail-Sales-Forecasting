@@ -176,6 +176,18 @@ def generate_battle_chart(battle_data: Dict[str, Any]) -> go.Figure:
     return fig
 
 
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 def render_store_battle_arena(
     raw_df: pd.DataFrame,
     store_locations: dict,
@@ -265,38 +277,38 @@ def render_store_battle_arena(
 {battle['verdict_summary']}
 </div>
 </div>"""
-    st.markdown(banner_html, unsafe_allow_html=True)
+    safe_render_html(banner_html)
 
     # 2-Column Layout: Side-by-Side Comparison Bars (Left) + Plotly Benchmark Chart (Right)
     arena_c1, arena_c2 = st.columns([1.4, 1.2])
 
     with arena_c1:
         st.markdown("##### 📊 Head-to-Head Comparison Bars:")
+        bars_html_list = []
         for m in battle["metrics"]:
             win_a = (m["winner"] == "A")
             win_b = (m["winner"] == "B")
             
-            border_a = "border-left: 4px solid #2563EB;" if win_a else "border-left: 1px solid #E2E8F0;"
-            badge_a = "🏆 WINNER" if win_a else ""
-            badge_b = "🏆 WINNER" if win_b else ""
+            badge_a = '<span style="font-size: 0.68rem; font-weight: 800; color: #2563EB;">🏆 WINNER</span>' if win_a else ""
+            badge_b = '<span style="font-size: 0.68rem; font-weight: 800; color: #7C3AED;">🏆 WINNER</span>' if win_b else ""
             
-            bar_html = f"""<div style="background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+            bars_html_list.append(f"""<div style="background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
 <div style="font-size: 0.78rem; font-weight: 800; color: #64748B; text-transform: uppercase; margin-bottom: 0.25rem;">
 {m['name']}
 </div>
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
 <div style="flex: 1; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
 <span style="font-weight: 800; font-size: 0.88rem; color: #1E40AF;">{m['fmt_a']}</span>
-<span style="font-size: 0.68rem; font-weight: 800; color: #2563EB;">{badge_a}</span>
+{badge_a}
 </div>
 <span style="font-size: 0.75rem; font-weight: 700; color: #94A3B8;">vs</span>
 <div style="flex: 1; background: #F5F3FF; border: 1px solid #DDD6FE; border-radius: 6px; padding: 0.35rem 0.6rem; display: flex; justify-content: space-between; align-items: center;">
-<span style="font-size: 0.68rem; font-weight: 800; color: #7C3AED;">{badge_b}</span>
+{badge_b}
 <span style="font-weight: 800; font-size: 0.88rem; color: #6D28D9;">{m['fmt_b']}</span>
 </div>
 </div>
-</div>"""
-            st.markdown(bar_html, unsafe_allow_html=True)
+</div>""")
+        safe_render_html("".join(bars_html_list))
 
     with arena_c2:
         st.markdown("##### 📈 Relative Strength Index:")
@@ -312,4 +324,4 @@ def render_store_battle_arena(
 Benchmark top SKU assortments and promotional floor plans from <b>{battle['overall_winner']}</b> to lift space productivity in peer branches.
 </div>
 </div>"""
-        st.markdown(takeaway_html, unsafe_allow_html=True)
+        safe_render_html(takeaway_html)

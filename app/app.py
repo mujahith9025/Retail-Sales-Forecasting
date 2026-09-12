@@ -459,6 +459,19 @@ box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
 }
 </style>""", unsafe_allow_html=True)
 
+
+def safe_render_html(html_str: str):
+    """
+    Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    Prefers st.html if available, with minified st.markdown as fallback.
+    """
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        st.markdown(minified, unsafe_allow_html=True)
+
+
 # ==============================================================================
 # DATA & MODEL LOADERS
 # ==============================================================================
