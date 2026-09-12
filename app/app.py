@@ -698,201 +698,8 @@ if raw_df is None or "champion" not in all_models:
 model_artifact = all_models["champion"]
 
 # ==============================================================================
-# PLAIN-ENGLISH EXECUTIVE KPI BANNER
+# REUSABLE MODULAR RENDER FUNCTIONS
 # ==============================================================================
-total_rev = raw_df["Weekly_Sales"].sum()
-avg_weekly_rev = raw_df.groupby("Date")["Weekly_Sales"].sum().mean()
-best_dept = raw_df.groupby("Department")["Weekly_Sales"].sum().idxmax()
-champion_r2 = metrics_data[0]["R2 Score"] if metrics_data else 0.968
-champion_mape = metrics_data[0]["MAPE (%)"] if metrics_data else 5.38
-
-kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
-
-with kpi1:
-    kpi1_html = f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year historical period.">
-<div class="kpi-accent-bar accent-blue"></div>
-<div class="kpi-label">Total Network Sales</div>
-<div class="kpi-number">${total_rev/1e6:,.1f}M</div>
-<div class="kpi-meta">📈 +3.5% Annual Growth</div>
-</div>"""
-    st.markdown(kpi1_html, unsafe_allow_html=True)
-
-with kpi2:
-    kpi2_html = f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
-<div class="kpi-accent-bar accent-emerald"></div>
-<div class="kpi-label">Weekly Sales Pace</div>
-<div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
-<div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
-</div>"""
-    st.markdown(kpi2_html, unsafe_allow_html=True)
-
-with kpi3:
-    kpi3_html = f"""<div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
-<div class="kpi-accent-bar accent-purple"></div>
-<div class="kpi-label">Top Category</div>
-<div class="kpi-number">{best_dept}</div>
-<div class="kpi-meta">🛒 27.6% of Net Sales</div>
-</div>"""
-    st.markdown(kpi3_html, unsafe_allow_html=True)
-
-with kpi4:
-    kpi4_html = f"""<div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
-<div class="kpi-accent-bar accent-amber"></div>
-<div class="kpi-label">Forecast Accuracy</div>
-<div class="kpi-number">{champion_r2*100:.1f}%</div>
-<div class="kpi-meta">🎯 Champion: XGBoost</div>
-</div>"""
-    st.markdown(kpi4_html, unsafe_allow_html=True)
-
-with kpi5:
-    kpi5_html = f"""<div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
-<div class="kpi-accent-bar accent-rose"></div>
-<div class="kpi-label">Avg Error Margin</div>
-<div class="kpi-number">±{champion_mape:.1f}%</div>
-<div class="kpi-meta">🛡️ High Confidence</div>
-</div>"""
-    st.markdown(kpi5_html, unsafe_allow_html=True)
-
-st.write("")
-
-# ==============================================================================
-# ⚡ AI DAILY ACTION CENTER (3-SECOND EXECUTIVE TAKEAWAYS)
-# ==============================================================================
-action_center_html = """<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-<span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
-⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
-</span>
-<span style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
-Updated Live
-</span>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem;">
-<div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.75rem 0.9rem;">
-<div style="font-weight: 700; color: #065F46; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-🟢 TOP GROWTH OPPORTUNITY
-</div>
-<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-<b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
-</div>
-</div>
-<div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
-<div style="font-weight: 700; color: #92400E; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-🟡 PROFIT MARGIN SWEET SPOT
-</div>
-<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
-</div>
-</div>
-<div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
-<div style="font-weight: 700; color: #991B1B; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
-🔴 PEAK SURGE WARNING
-</div>
-<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-<b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
-</div>
-</div>
-</div>
-</div>"""
-st.markdown(action_center_html, unsafe_allow_html=True)
-
-# ==============================================================================
-# 🧭 "WHAT DO YOU WANT TO DO?" 1-CLICK DECISION WIZARD
-# ==============================================================================
-try:
-    if view_mode.startswith("🌟"):
-        render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
-    else:
-        with st.expander("🧭 **'What Do You Want to Do?' 1-Click Executive Decision Wizard**", expanded=False):
-            render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
-except Exception as e:
-    st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
-
-# ==============================================================================
-# INTERACTIVE 30-SECOND QUICK START GUIDE BANNER
-# ==============================================================================
-with st.expander("👋 **New to Retail Pulse AI? Click for a 30-Second Quick Start Guide**", expanded=(view_mode.startswith("🌟"))):
-    g1, g2, g3 = st.columns(3)
-    with g1:
-        st.markdown("""
-        <div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
-            <div style="font-weight: 700; color: #1E3A8A; font-size: 0.92rem;">1️⃣ Ask & Discover</div>
-            <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Click any Smart Question Chip for instant plain-English answers and inspect <b>A+ to F Store Health Grades</b>.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with g2:
-        st.markdown("""
-        <div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
-            <div style="font-weight: 700; color: #92400E; font-size: 0.92rem;">2️⃣ Plan, Simulate & Profits</div>
-            <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Set a target revenue goal or test <b>Black Friday presets</b> to see required staff, discounts, and net cash profits.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with g3:
-        st.markdown("""
-        <div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
-            <div style="font-weight: 700; color: #065F46; font-size: 0.92rem;">3️⃣ Upload & 1-Click Reports</div>
-            <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Upload custom store CSVs or click 1 button to download the <b>Complete Executive Bundle (.ZIP)</b>.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-# ==============================================================================
-# BUILT-IN PLAIN-ENGLISH JARGON BUSTER EXPANDER
-# ==============================================================================
-with st.expander("📖 **Retail & AI Jargon Buster (Click to decode COGS, Safety Stock, MAPE & R² in plain English)**", expanded=False):
-    j_c1, j_c2 = st.columns([2.5, 1])
-    with j_c1:
-        j_query = st.text_input(
-            "🔍 Search any term (e.g. 'COGS', 'Safety Stock', 'R²', 'EBITDA', 'Fill Rate', 'Halo Effect'):",
-            placeholder="Type a retail or data science term to search...",
-            key="jargon_banner_search"
-        )
-    with j_c2:
-        j_cat = st.selectbox(
-            "Filter Category:",
-            options=["All Categories", "💰 Finance & Profit", "📦 Supply Chain & Inventory", "🏢 Store Operations", "🤖 AI & Data Science"],
-            index=0,
-            key="jargon_banner_cat"
-        )
-        
-    filtered_terms = search_jargon_terms(query=j_query, category_filter=j_cat)
-    
-    if not filtered_terms:
-        st.info(f"No terms matched '{j_query}'. Try searching for 'margin', 'inventory', 'forecast', or 'discount'.")
-    else:
-        st.write("")
-        j_cols = st.columns(2)
-        for idx, item in enumerate(filtered_terms):
-            c = j_cols[idx % 2]
-            with c:
-                st.markdown(f"""
-                <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.9rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                        <span style="font-weight: 800; font-size: 1rem; color: #0F172A; display: flex; align-items: center; gap: 0.4rem;">
-                            {item['icon']} {item['term']}
-                        </span>
-                        <span style="background: #F1F5F9; color: #475569; font-weight: 600; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px;">
-                            {item['category']}
-                        </span>
-                    </div>
-                    <div style="font-size: 0.88rem; color: #1E293B; font-weight: 600; line-height: 1.45; margin-bottom: 0.45rem;">
-                        {item['definition']}
-                    </div>
-                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.82rem; color: #334155; margin-bottom: 0.35rem;">
-                        💡 <b>Real-World Example:</b> {item['example']}
-                    </div>
-                    <div style="font-size: 0.78rem; color: #64748B;">
-                        🎯 <b>Why it matters:</b> {item['why_it_matters']}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-
-st.write("")
 
 # ==============================================================================
 # REUSABLE TAB RENDER FUNCTIONS
@@ -3172,118 +2979,288 @@ def render_batch_export(is_simple=False):
 
 
 # ==============================================================================
-# MAIN TABS CONTROLLER (SIMPLE vs ADVANCED MODE)
+# 🌟 PAGE 1: EXECUTIVE BRIEFING & DECISION CENTER
 # ==============================================================================
-if view_mode.startswith("🌟"):
-    # Simple Mode: 3 Ultra-Clean, Beginner-Friendly Action Centers
-    tab1, tab2, tab3 = st.tabs([
-        "💡 1. Ask & Discover",
-        "🎯 2. Plan, Simulate & Profits",
-        "🚀 3. Upload & 1-Click Reports"
-    ])
+def page_executive_view():
+    total_rev = raw_df["Weekly_Sales"].sum()
+    avg_weekly_rev = raw_df.groupby("Date")["Weekly_Sales"].sum().mean()
+    best_dept = raw_df.groupby("Department")["Weekly_Sales"].sum().idxmax()
+    champion_r2 = metrics_data[0]["R2 Score"] if metrics_data else 0.968
+    champion_mape = metrics_data[0]["MAPE (%)"] if metrics_data else 5.38
+
+    # Plain-English Executive KPI Banner
+    kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
+    with kpi1:
+        st.markdown(f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year period.">
+<div class="kpi-accent-bar accent-blue"></div>
+<div class="kpi-label">Total Network Sales</div>
+<div class="kpi-number">${total_rev/1e6:,.1f}M</div>
+<div class="kpi-meta">📈 +3.5% Annual Growth</div>
+</div>""", unsafe_allow_html=True)
+
+    with kpi2:
+        st.markdown(f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
+<div class="kpi-accent-bar accent-emerald"></div>
+<div class="kpi-label">Weekly Sales Pace</div>
+<div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
+<div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
+</div>""", unsafe_allow_html=True)
+
+    with kpi3:
+        st.markdown(f"""<div class="glass-kpi-card" title="The single highest-grossing category across all branches.">
+<div class="kpi-accent-bar accent-purple"></div>
+<div class="kpi-label">Top Category</div>
+<div class="kpi-number">{best_dept}</div>
+<div class="kpi-meta">🛒 27.6% of Net Sales</div>
+</div>""", unsafe_allow_html=True)
+
+    with kpi4:
+        st.markdown(f"""<div class="glass-kpi-card" title="Prediction Accuracy: Model captures 96.8% of all real-world retail sales fluctuations.">
+<div class="kpi-accent-bar accent-amber"></div>
+<div class="kpi-label">Forecast Accuracy</div>
+<div class="kpi-number">{champion_r2*100:.1f}%</div>
+<div class="kpi-meta">🎯 Champion: XGBoost</div>
+</div>""", unsafe_allow_html=True)
+
+    with kpi5:
+        st.markdown(f"""<div class="glass-kpi-card" title="Average Error Margin: On average, forecasts deviate by only ±5.4% from actual sales.">
+<div class="kpi-accent-bar accent-rose"></div>
+<div class="kpi-label">Avg Error Margin</div>
+<div class="kpi-number">±{champion_mape:.1f}%</div>
+<div class="kpi-meta">🛡️ High Confidence</div>
+</div>""", unsafe_allow_html=True)
+
+    st.write("")
+
+    # Today's AI Action Directives
+    action_center_html = """<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+<span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
+</span>
+<span style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+Updated Live
+</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem;">
+<div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #065F46; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🟢 TOP GROWTH OPPORTUNITY
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+<b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
+</div>
+</div>
+<div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #92400E; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🟡 PROFIT MARGIN SWEET SPOT
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
+</div>
+</div>
+<div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
+<div style="font-weight: 700; color: #991B1B; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+🔴 PEAK SURGE WARNING
+</div>
+<div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+<b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
+</div>
+</div>
+</div>
+</div>"""
+    st.markdown(action_center_html, unsafe_allow_html=True)
+
+    # 1-Click Executive Decision Wizard
+    try:
+        render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+    except Exception as e:
+        st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
+
+    st.write("")
+    st.markdown("---")
+
+    # 3-Second Visual Smart Q&A Engine
+    render_smart_question_chips(is_simple=(view_mode.startswith("🌟")))
+
+    st.write("")
+    st.markdown("---")
+
+    # AI Executive Briefing & 1-Slide Infographic Memos
+    render_executive_briefing(is_simple=(view_mode.startswith("🌟")))
+
+    # Plain-English Jargon Buster & Quick Start Guide
+    with st.expander("📖 **Retail & AI Jargon Buster (Search COGS, Safety Stock, MAPE & R²)**", expanded=False):
+        render_jargon_buster_tab(is_simple=True)
+        
+    with st.expander("👋 **30-Second Quick Start Onboarding Guide**", expanded=False):
+        g1, g2, g3 = st.columns(3)
+        with g1:
+            st.markdown("""<div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+<div style="font-weight: 700; color: #1E3A8A; font-size: 0.92rem;">1️⃣ Ask & Discover</div>
+<div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
+Click any Smart Question Chip for instant plain-English answers and inspect <b>A+ to F Store Health Grades</b>.
+</div>
+</div>""", unsafe_allow_html=True)
+        with g2:
+            st.markdown("""<div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+<div style="font-weight: 700; color: #92400E; font-size: 0.92rem;">2️⃣ Plan, Simulate & Profits</div>
+<div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
+Set a target revenue goal or test <b>Black Friday presets</b> to see required staff, discounts, and net cash profits.
+</div>
+</div>""", unsafe_allow_html=True)
+        with g3:
+            st.markdown("""<div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+<div style="font-weight: 700; color: #065F46; font-size: 0.92rem;">3️⃣ Upload & 1-Click Reports</div>
+<div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
+Upload custom store CSVs or click 1 button to download the <b>Complete Executive Bundle (.ZIP)</b>.
+</div>
+</div>""", unsafe_allow_html=True)
+
+
+# ==============================================================================
+# 🏢 PAGE 2: STORE INTELLIGENCE & BATTLE ARENA
+# ==============================================================================
+def page_store_view():
+    st.subheader("🏢 Store Intelligence, Diagnostics & Battle Arena")
+    st.caption("Inspect store network performance, interact with the US pinboard map, launch head-to-head store battles, and review diagnostic scorecards.")
     
-    with tab1:
-        render_smart_question_chips(is_simple=True)
-        st.write("")
-        st.markdown("---")
-        render_health_scorecard(is_simple=True)
-        st.write("")
-        st.markdown("---")
-        with st.expander("📖 **Retail & AI Jargon Buster (Look up any financial or data science term)**", expanded=False):
-            render_jargon_buster_tab(is_simple=True)
-        with st.expander("📊 **Explore Historical Sales & Customer Demand Curves**", expanded=False):
-            render_historical_analytics(is_simple=True)
-        
-    with tab2:
-        st.subheader("🎯 Goal-Seek, Scenario Simulator & Profit Workbench")
-        st.caption("Set a revenue target or choose a retail event preset (Black Friday, Christmas) to see required markdowns, staffing, and cash profits in real time.")
-        
-        sim_choice = st.radio(
-            "Select Planning Mode:",
-            options=["🎯 Target Revenue Goal-Seek Solver", "🔮 1-Click Retail Scenario Presets (Black Friday, Christmas, Inflation)"],
-            index=0,
-            horizontal=True,
-            key="sim_mode_radio"
-        )
-        st.write("")
-        if sim_choice.startswith("🎯"):
-            render_goal_seek(is_simple=True)
-        else:
-            render_scenario_simulator(is_simple=True)
-            
-        st.write("")
-        st.markdown("---")
-        render_profit_estimator(is_simple=True)
-        st.write("")
-        st.markdown("---")
-        with st.expander("⏱️ **Real-Time Inventory & Labor Speedometer Gauges**", expanded=False):
-            render_speedometer_gauges(is_simple=True)
-        
-    with tab3:
-        st.subheader("🚀 Upload Custom Sales CSV & 1-Click Executive Reports")
-        st.caption("Upload your custom store sales CSV for instant AI forecasting, or download publication-grade PDF memos and Excel workbooks.")
-        
-        up_choice = st.radio(
-            "Select Action:",
-            options=["📤 Upload / Test Custom Sales CSV", "📑 Executive Demand Briefing & 1-Click Export Suite"],
-            index=0,
-            horizontal=True,
-            key="up_mode_radio"
-        )
-        st.write("")
-        if up_choice.startswith("📤"):
-            render_upload_analyzer(is_simple=True)
-        else:
-            render_executive_briefing(is_simple=True)
-            st.write("")
-            st.markdown("---")
-            render_batch_export(is_simple=True)
-else:
-    # Advanced ML Lab Mode: Full 14 Deep Dive Tabs
-    tab_a0, tab_a1, tab_a2, tab_a3, tab_ap, tab_a4, tab_a5, tab_a6, tab_a7, tab_a8, tab_a9, tab_a10, tab_a11, tab_a12 = st.tabs([
-        "💡 Instant AI Smart Q&A",
-        "📊 Historical Analytics",
-        "🩺 Health Scorecards (A-F)",
-        "🎯 Goal-Seek / Target Calculator",
-        "💰 Profit & Margin Estimator",
-        "📤 Upload & Auto-Analyze CSV",
-        "🔮 Scenario Simulator",
-        "⏱️ Operational Speedometers",
-        "📑 AI Executive Briefing",
-        "📈 Horizon Forecast",
-        "🗺️ Geospatial & Category Matrix",
-        "🧠 Deep Learning & Quantiles",
-        "🏆 Model Benchmarks",
-        "📁 Batch Forecast & Export Center"
+    # Store Deck & Pinboard
+    render_us_minimap_pinboard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+    st.write("")
+    
+    # Store Battle Arena
+    render_store_battle_arena(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+    st.write("")
+    st.markdown("---")
+    
+    # Store Health Scorecards
+    render_health_scorecard(is_simple=(view_mode.startswith("🌟")))
+    st.write("")
+    st.markdown("---")
+    
+    # Geospatial & Department Demand Matrix
+    render_geospatial_matrix()
+    st.write("")
+    st.markdown("---")
+    
+    # Historical Analytics
+    with st.expander("📊 **Explore Historical Sales & Customer Demand Curves**", expanded=False):
+        render_historical_analytics(is_simple=(view_mode.startswith("🌟")))
+
+
+# ==============================================================================
+# 🔮 PAGE 3: DEMAND FORECASTER & SCENARIO SIMULATION
+# ==============================================================================
+def page_forecast_view():
+    st.subheader("🔮 Demand Forecasting, What-If Simulation & Goal-Seek")
+    st.caption("Simulate promotional discounts, test Black Friday event presets, solve revenue targets with reverse goal-seek, and estimate unit cash profit margins.")
+
+    # 12-Week Forward Horizon Forecast
+    render_horizon_forecast()
+    st.write("")
+    st.markdown("---")
+
+    # Scenario Simulator & Goal-Seek Tabs
+    f_tab1, f_tab2, f_tab3 = st.tabs([
+        "🎯 Target Revenue Goal-Seek Solver",
+        "🎛️ Scenario Simulator & Event Presets",
+        "💰 Unit Profit & Margin Estimator"
     ])
-    with tab_a0:
-        render_smart_question_chips(is_simple=False)
-    with tab_a1:
-        render_historical_analytics(is_simple=False)
-    with tab_a2:
-        render_health_scorecard(is_simple=False)
-    with tab_a3:
-        render_goal_seek(is_simple=False)
-    with tab_ap:
-        render_profit_estimator(is_simple=False)
-    with tab_a4:
-        render_upload_analyzer(is_simple=False)
-    with tab_a5:
-        render_scenario_simulator(is_simple=False)
-    with tab_a6:
-        render_speedometer_gauges(is_simple=False)
-    with tab_a7:
-        render_executive_briefing(is_simple=False)
-    with tab_a8:
-        render_horizon_forecast()
-    with tab_a9:
-        render_geospatial_matrix()
-    with tab_a10:
-        render_deep_probabilistic()
-    with tab_a11:
+    with f_tab1:
+        render_goal_seek(is_simple=(view_mode.startswith("🌟")))
+    with f_tab2:
+        render_scenario_simulator(is_simple=(view_mode.startswith("🌟")))
+    with f_tab3:
+        render_profit_estimator(is_simple=(view_mode.startswith("🌟")))
+
+    st.write("")
+    st.markdown("---")
+    with st.expander("⏱️ **Real-Time Inventory & Labor Speedometer Gauges**", expanded=False):
+        render_speedometer_gauges(is_simple=(view_mode.startswith("🌟")))
+
+
+# ==============================================================================
+# 🧠 PAGE 4: MODEL TOURNAMENT & ML LAB
+# ==============================================================================
+def page_model_view():
+    st.subheader("🧠 Model Tournament & ML Telemetry")
+    st.caption("Deep-dive into multi-model tournament benchmarks, probabilistic quantile uncertainty spreads, Bi-LSTM neural architectures, and feature sensitivity.")
+
+    m_tab1, m_tab2 = st.tabs([
+        "🏆 Model Tournament Arena (XGBoost vs LightGBM vs RF vs Bi-LSTM)",
+        "🛡️ Probabilistic Quantile Uncertainty & Risk Bands (P10, P50, P90)"
+    ])
+    with m_tab1:
         render_model_benchmarks()
-    with tab_a12:
-        render_batch_export(is_simple=False)
+    with m_tab2:
+        render_deep_probabilistic()
+
+
+# ==============================================================================
+# 📑 PAGE 5: CUSTOM DATA & EXPORT HUB
+# ==============================================================================
+def page_export_view():
+    st.subheader("📑 Custom Data Ingestion & 1-Click Export Center")
+    st.caption("Upload your custom store sales CSV files for automated forward AI forecasting, or download publication-grade PDF memos, Excel workbooks, and batch CSV archives.")
+
+    e_tab1, e_tab2 = st.tabs([
+        "📤 Upload / Test Custom Store Sales CSV",
+        "📦 1-Click Multi-Asset Export Suite (PDF, Excel, CSV, ZIP)"
+    ])
+    with e_tab1:
+        render_upload_analyzer(is_simple=(view_mode.startswith("🌟")))
+    with e_tab2:
+        render_batch_export(is_simple=(view_mode.startswith("🌟")))
+
+
+# ==============================================================================
+# 🧭 STREAMLIT MULTI-PAGE NAVIGATION CONTROLLER
+# ==============================================================================
+page_exec = st.Page(
+    page_executive_view,
+    title="Executive Briefing & Q&A",
+    icon="🌟",
+    url_path="executive",
+    default=True
+)
+page_stores = st.Page(
+    page_store_view,
+    title="Store Diagnostics & Battle Arena",
+    icon="🏢",
+    url_path="stores"
+)
+page_forecast = st.Page(
+    page_forecast_view,
+    title="Demand Forecaster & Simulator",
+    icon="🔮",
+    url_path="forecast"
+)
+page_models = st.Page(
+    page_model_view,
+    title="Model Tournament & ML Lab",
+    icon="🧠",
+    url_path="models"
+)
+page_export = st.Page(
+    page_export_view,
+    title="Custom Data & Export Hub",
+    icon="📑",
+    url_path="reports"
+)
+
+pg = st.navigation(
+    {
+        "Executive Leadership": [page_exec],
+        "Store & Branch Diagnostics": [page_stores],
+        "Demand Planning & What-If": [page_forecast],
+        "Machine Learning & AI Telemetry": [page_models],
+        "Operations & Data Hub": [page_export]
+    }
+)
+
+# Run active page
+pg.run()
 
 # ==============================================================================
 # FLOATING BOTTOM ACTION BAR (MOBILE & DESKTOP FRIENDLY)
