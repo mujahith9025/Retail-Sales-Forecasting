@@ -30,20 +30,23 @@ graph TD
 * **Visual City Cards:** Browse and click 10 branch cards (🗽 New York, 🌴 Los Angeles, 🏆 Dallas, 🚀 Houston, etc.) featuring live letter grades (A+ to F), sales efficiency (`$/sq ft`), and active selection glowing borders.
 * **Global State Sync:** Selecting any branch card instantly synchronizes the entire platform across diagnostic scorecards, goal-seek calculators, and scenario simulations.
 
-### 3. 💡 1-Click Smart Answers & Store Health Scorecards
-* **Instant Answer Chips:** Click 8 pre-formulated executive question chips (*"Top Performing Branch"*, *"Black Friday Surge"*, *"Optimal Margins"*) or type natural language queries.
-* **Store Health Grades (A+ to F):** 5-pillar composite scoring (Revenue Velocity, Space Efficiency `$/sqft`, Momentum, Stability, and Promotional Agility).
+### 3. 🩺 5-Pillar Battery Meters & Health Scorecards
+* **Visual Battery Meters:** Animated progress meters for **Revenue Velocity (25 pts)**, **Footprint Efficiency (20 pts)**, **Growth Momentum (20 pts)**, **Forecast Stability (20 pts)**, and **Promo Agility (15 pts)**.
+* **1-Sentence Action Pill:** Crisp, executive directive strictly under 10 words (e.g. *💡 Restock Grocery inventory to sustain +4.2% growth*).
 
-### 4. 🎮 Dynamic Real-Time Slider Feedback (Gamified Interaction)
+### 4. 🎯 Goal-Seek Feasibility Dial & 4 Pictorial Metric Boxes
+* **Visual Feasibility Dial (0-100%):** Color-coded semi-circle radial gauge (Green = Easy, Blue = Moderate, Amber = Stretch, Red = Moonshot).
+* **4 Pictorial Metric Boxes:** Instant visual breakdown of **Required Markdown (% Off)**, **Extra Floor Staff (👥)**, **Restock Boxes Buffer (📦)**, and **Net Cash Profit ($ & %)**.
+
+### 5. 💰 Visual Cash Flow Stepper & P&L Waterfall
+* **Cash Flow Stepper Bar:** Visual step-down chain (*💵 Register Sales ➔ 📦 -COGS ➔ 👥 -Labor ➔ 🏢 -Rent/OPEX ➔ 💰 = Net Cash Profit*).
+* **Financial P&L Waterfall:** Color-coded Plotly step-down waterfall decomposing wholesale COGS, associate floor wages, and net EBITDA margins.
+
+### 6. 🎮 Dynamic Real-Time Slider Feedback (Gamified Interaction)
 * **Live Micro-Badges:** Instant feedback as you drag discount sliders, revenue goals, and inflation indices:
   - *🔥 Margin Sweet Spot (5-10% promo):* Displays maximum net cash profit warnings vs. margin dilution.
   - *🎯 Goal Target Rating:* Evaluates feasibility from *🟢 Easy Baseline* to *🚀 Moonshot Surge*.
   - *📈 Macro Health Bar:* Evaluates combined gas prices, CPI inflation, and unemployment stress.
-
-### 5. 🎯 Goal-Seek Target Calculator & Profit Modeler
-* **Target Revenue Solver:** Set a target weekly sales revenue (e.g. `$35,000`), and the AI reverse-engineers the required discount markdown, floor staffing roster, safety stock buffer, and net profit.
-* **Financial P&L Modeler:** Line-by-line breakdown of Wholesale COGS, floor labor wages, store rent/overhead, and net operating profit ($ and %).
-* **Discount Elasticity Sweet Spot:** Dual-axis curve identifying the exact discount percentage that maximizes net cash take-home profit.
 
 ### 6. 🔮 1-Click What-If Scenario Simulator
 * **7 Commercial Presets:** *🛍️ Black Friday Surge*, *🎄 Christmas Rush*, *☀️ Summer Peak*, *🏷️ Clearance (30% Off)*, *📉 Macro Inflation*, *🏈 Super Bowl*, and *🔄 Standard Operations*.

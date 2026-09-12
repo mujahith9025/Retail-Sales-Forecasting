@@ -1065,48 +1065,62 @@ def render_health_scorecard(is_simple=False):
         
         target_store_data = store_card_df[store_card_df["Store_ID"] == sel_diag_store].iloc[0]
         
-        diag_c1, diag_c2 = st.columns([1.5, 1])
+        diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
-            pillars_df = pd.DataFrame([
-                {"Pillar": "1. Revenue Velocity", "Score": target_store_data["Pillar_Revenue"], "Max_Possible": 25.0},
-                {"Pillar": "2. Space Efficiency ($/sqft)", "Score": target_store_data["Pillar_Efficiency"], "Max_Possible": 20.0},
-                {"Pillar": "3. Growth Momentum", "Score": target_store_data["Pillar_Growth"], "Max_Possible": 20.0},
-                {"Pillar": "4. Forecast Stability", "Score": target_store_data["Pillar_Stability"], "Max_Possible": 20.0},
-                {"Pillar": "5. Promo & Holiday Agility", "Score": target_store_data["Pillar_Agility"], "Max_Possible": 15.0},
-            ])
+            st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
             
-            fig_pillars = px.bar(
-                pillars_df,
-                x="Score",
-                y="Pillar",
-                orientation="h",
-                title=f"5-Pillar Score Breakdown: {sel_diag_store} ({target_store_data['City']})",
-                template="plotly_white",
-                color="Score",
-                color_continuous_scale="Blues",
-                text_auto=".1f"
-            )
-            fig_pillars.update_layout(margin=dict(l=20, r=20, t=40, b=20), height=280)
-            st.plotly_chart(fig_pillars, use_container_width=True)
+            p1_pct = min(100.0, (target_store_data["Pillar_Revenue"] / 25.0) * 100)
+            p2_pct = min(100.0, (target_store_data["Pillar_Efficiency"] / 20.0) * 100)
+            p3_pct = min(100.0, (target_store_data["Pillar_Growth"] / 20.0) * 100)
+            p4_pct = min(100.0, (target_store_data["Pillar_Stability"] / 20.0) * 100)
+            p5_pct = min(100.0, (target_store_data["Pillar_Agility"] / 15.0) * 100)
             
+            pillars = [
+                ("⚡ 1. Revenue Velocity", target_store_data["Pillar_Revenue"], 25.0, p1_pct),
+                ("📐 2. Space Efficiency ($/sqft)", target_store_data["Pillar_Efficiency"], 20.0, p2_pct),
+                ("📈 3. Growth Momentum", target_store_data["Pillar_Growth"], 20.0, p3_pct),
+                ("🛡️ 4. Forecast Stability", target_store_data["Pillar_Stability"], 20.0, p4_pct),
+                ("🏷️ 5. Promo & Holiday Agility", target_store_data["Pillar_Agility"], 15.0, p5_pct),
+            ]
+            
+            for p_name, p_val, p_max, p_pct in pillars:
+                bar_color = "#10B981" if p_pct >= 80 else ("#2563EB" if p_pct >= 60 else ("#F59E0B" if p_pct >= 40 else "#EF4444"))
+                st.markdown(f"""
+                <div style="background: rgba(255, 255, 255, 0.9); border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.55rem 0.85rem; margin-bottom: 0.45rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; color: #1E293B; margin-bottom: 0.25rem;">
+                        <span>{p_name}</span>
+                        <span style="color: {bar_color};">{p_val:.1f} / {p_max:.0f} pts ({p_pct:.0f}%)</span>
+                    </div>
+                    <div style="background: #F1F5F9; border-radius: 9999px; height: 10px; overflow: hidden; border: 1px solid #CBD5E1;">
+                        <div style="background: linear-gradient(90deg, {bar_color} 0%, #60A5FA 100%); height: 100%; width: {p_pct}%; border-radius: 9999px; transition: width 0.4s ease;"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
         with diag_c2:
+            # 1-Sentence Action Pill strictly max 10 words
+            raw_rx = target_store_data.get('Prescription', 'Maintain standard inventory buffers.')
+            rx_words = str(raw_rx).split()
+            rx_pill = " ".join(rx_words[:9]) if len(rx_words) > 9 else raw_rx
+            
             st.markdown(f"""
-            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data['Color']}; border-radius: 12px; padding: 1.2rem; min-height: 280px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                    <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data['Store_ID']} — {target_store_data['City']}</span>
-                    <span style="background: {target_store_data['Color']}; color: white; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 800; font-size: 0.85rem;">Grade {target_store_data['Grade']}</span>
+            <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data['Color']}; border-radius: 14px; padding: 1.1rem 1.25rem; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data['Store_ID']} — {target_store_data['City']}</span>
+                        <span style="background: {target_store_data['Color']}; color: white; padding: 0.2rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem;">Grade {target_store_data['Grade']}</span>
+                    </div>
+                    <div style="font-size: 0.88rem; color: #334155; margin-bottom: 0.6rem;">
+                        <b>Health Score:</b> {target_store_data['Health_Score']} / 100 <span style="color: #64748B;">({target_store_data['Status']})</span>
+                    </div>
+                    <div style="font-size: 0.82rem; color: #475569; line-height: 1.45; margin-bottom: 0.7rem;">
+                        • <b>Space Yield:</b> ${target_store_data['Sales_per_SqFt ($)']}/sq ft<br/>
+                        • <b>Momentum:</b> {target_store_data['Growth_Pace (%)']:+.1f}% vs 12-wk avg<br/>
+                        • <b>Anchor Dept:</b> {target_store_data['Top_Category']}
+                    </div>
                 </div>
-                <div style="font-size: 0.9rem; color: #334155; margin-bottom: 0.8rem;">
-                    <b>Health Score:</b> {target_store_data['Health_Score']} / 100 ({target_store_data['Status']})
-                </div>
-                <div style="font-size: 0.84rem; color: #475569; line-height: 1.5; margin-bottom: 0.8rem;">
-                    <b>Executive Diagnostics:</b><br/>
-                    • <b>Space Yield:</b> ${target_store_data['Sales_per_SqFt ($)']}/sq ft<br/>
-                    • <b>Recent Growth:</b> {target_store_data['Growth_Pace (%)']:+.1f}% vs 12-wk average<br/>
-                    • <b>Anchor Category:</b> {target_store_data['Top_Category']}
-                </div>
-                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.6rem; font-size: 0.82rem; color: #1E293B;">
-                    💡 <b>Prescription:</b> {target_store_data['Prescription']}
+                <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.8rem; color: #1E3A8A; font-weight: 700;">
+                    💡 Action: {rx_pill}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -1231,67 +1245,89 @@ def render_goal_seek(is_simple=False):
 
     st.write("")
     
-    # Hero Feasibility Banner Card
-    st.markdown(f"""
-    <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {plan['feasibility_color']}; border-radius: 14px; padding: 1.2rem 1.5rem; box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.04); margin-bottom: 1.2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #0F172A;">
-                Target Assessment: <span style="color: {plan['feasibility_color']};">{plan['feasibility']}</span>
-            </span>
-            <span style="background: {plan['feasibility_color']}; color: white; padding: 0.3rem 0.9rem; border-radius: 9999px; font-weight: 700; font-size: 0.82rem;">
-                {plan['pct_gap']:+.1f}% Growth Target
-            </span>
-        </div>
-        <div style="font-size: 0.92rem; color: #334155; line-height: 1.5;">
-            {plan['feasibility_desc']}
-        </div>
-        <div style="display: flex; gap: 2rem; margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid #E2E8F0; font-size: 0.85rem; font-weight: 600;">
-            <span style="color: #475569;">📊 Baseline Run-Rate: <b>${plan['baseline_sales']:,.2f}</b></span>
-            <span style="color: #2563EB;">🎯 User Target: <b>${plan['target_sales']:,.2f}</b></span>
-            <span style="color: #059669;">✨ AI Achieved Projection: <b>${plan['projected_sales']:,.2f}</b></span>
-            <span style="color: #D97706;">⚡ Gap: <b>${plan['gap']:+,.2f}</b></span>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Feasibility Score Mapping
+    feasibility_map = {
+        "Highly Feasible": (95.0, "#10B981"),
+        "Moderately Feasible": (80.0, "#2563EB"),
+        "Challenging": (60.0, "#F59E0B"),
+        "Aggressive": (40.0, "#EA580C"),
+        "Unrealistic": (20.0, "#DC2626")
+    }
+    feas_val, feas_col = feasibility_map.get(plan["feasibility"], (75.0, plan["feasibility_color"]))
 
-    # 4 Glassmorphic KPI Cards
-    k1, k2, k3, k4 = st.columns(4)
-    with k1:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="The revenue goal you set.">
-            <div class="kpi-accent-bar accent-blue"></div>
-            <div class="kpi-label">Target Revenue</div>
-            <div class="kpi-number">${plan['target_sales']:,.0f}</div>
-            <div class="kpi-meta">📈 {plan['pct_gap']:+.1f}% vs Baseline</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with k2:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Optimal promotional discount percentage needed to generate required demand lift.">
-            <div class="kpi-accent-bar accent-purple"></div>
-            <div class="kpi-label">Required Markdown</div>
-            <div class="kpi-number">{plan['recommended_promo_pct']}% Off</div>
-            <div class="kpi-meta">🏷️ {plan['recommended_event']}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with k3:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Extra store associates needed to handle customer volume and restock shelves.">
-            <div class="kpi-accent-bar accent-emerald"></div>
-            <div class="kpi-label">Labor Adjustment</div>
-            <div class="kpi-number">{plan['staff_recommendation'].split('(')[0].strip()}</div>
-            <div class="kpi-meta">👥 Labor Cost: ${plan['labor_cost']:,.0f}/wk</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with k4:
-        st.markdown(f"""
-        <div class="glass-kpi-card" title="Additional inventory safety stock to stage in warehouse to prevent stockouts.">
-            <div class="kpi-accent-bar accent-amber"></div>
-            <div class="kpi-label">Safety Inventory Buffer</div>
-            <div class="kpi-number">{plan['buffer_recommendation'].split()[0]}</div>
-            <div class="kpi-meta">📦 Zero-Stockout Target</div>
-        </div>
-        """, unsafe_allow_html=True)
+    # Visual Feasibility Dial & 4 Pictorial Metric Boxes
+    g_col1, g_col2 = st.columns([1.1, 2.2])
+    
+    with g_col1:
+        fig_dial = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=feas_val,
+            number={'suffix': "%", 'font': {'size': 28, 'family': "Plus Jakarta Sans", 'weight': 800, 'color': feas_col}},
+            title={'text': f"🎯 Feasibility: <b>{plan['feasibility']}</b>", 'font': {'size': 13, 'color': '#0F172A', 'family': 'Plus Jakarta Sans'}},
+            gauge={
+                'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#94A3B8"},
+                'bar': {'color': feas_col, 'thickness': 0.35},
+                'bgcolor': "#F8FAFC",
+                'borderwidth': 1,
+                'bordercolor': "#E2E8F0",
+                'steps': [
+                    {'range': [0, 35], 'color': 'rgba(239, 68, 68, 0.15)'},
+                    {'range': [35, 65], 'color': 'rgba(245, 158, 11, 0.15)'},
+                    {'range': [65, 85], 'color': 'rgba(59, 130, 246, 0.15)'},
+                    {'range': [85, 100], 'color': 'rgba(16, 185, 129, 0.2)'}
+                ],
+                'threshold': {
+                    'line': {'color': feas_col, 'width': 4},
+                    'thickness': 0.8,
+                    'value': feas_val
+                }
+            }
+        ))
+        fig_dial.update_layout(
+            template="plotly_white",
+            margin=dict(l=10, r=10, t=35, b=10),
+            height=210
+        )
+        st.plotly_chart(fig_dial, use_container_width=True)
+
+    with g_col2:
+        # 4 Pictorial Metric Boxes
+        k1, k2 = st.columns(2)
+        with k1:
+            st.markdown(f"""
+            <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+                <div class="kpi-accent-bar accent-purple"></div>
+                <div class="kpi-label">🏷️ Required Markdown</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{plan['recommended_promo_pct']}% Off</div>
+                <div class="kpi-meta">🎯 {plan['recommended_event']}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="glass-kpi-card">
+                <div class="kpi-accent-bar accent-emerald"></div>
+                <div class="kpi-label">👥 Extra Floor Staff</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{plan['staff_recommendation'].split('(')[0].strip()}</div>
+                <div class="kpi-meta">💵 Labor Cost: ${plan['labor_cost']:,.0f}/wk</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        with k2:
+            st.markdown(f"""
+            <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+                <div class="kpi-accent-bar accent-amber"></div>
+                <div class="kpi-label">📦 Restock Boxes Buffer</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{plan['inventory_recommendation'].split('(')[0].strip()}</div>
+                <div class="kpi-meta">⏱️ Lead Time: {plan['supplier_lead_days']} Days</div>
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="glass-kpi-card">
+                <div class="kpi-accent-bar accent-blue"></div>
+                <div class="kpi-label">💵 Net Cash Profit</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">${plan['projected_net_profit']:,.0f}</div>
+                <div class="kpi-meta">📈 {plan['projected_net_margin_pct']:.1f}% Margin</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.write("")
 
@@ -2117,24 +2153,32 @@ def render_profit_estimator(is_simple=False):
 
     st.write("")
     
-    # Hero Financial Assessment Banner Card
+    # Visual Financial Cash Flow Stepper Bar ($ Sales ➔ Wholesale ➔ Wages ➔ Rent ➔ Net Cash)
     st.markdown(f"""
-    <div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {pl['margin_color']}; border-radius: 12px; padding: 1.1rem 1.4rem; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05); margin-bottom: 1.2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-            <span style="font-weight: 800; font-size: 1.2rem; color: #0F172A;">
-                Financial Margin Health: <span style="color: {pl['margin_color']};">{pl['margin_grade']}</span>
-            </span>
-            <span style="background: {pl['margin_color']}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
-                {pl['net_margin_pct']:.1f}% Net Margin
-            </span>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; color: white; gap: 0.5rem; box-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.25);">
+        <div style="text-align: center;">
+            <div style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; font-weight: 700;">💵 Register Sales</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #60A5FA;">${pl['net_sales']:,.0f}</div>
         </div>
-        <div style="font-size: 0.9rem; color: #334155; line-height: 1.5;">
-            {pl['cogs_desc']}
+        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+        <div style="text-align: center;">
+            <div style="font-size: 0.72rem; color: #FCA5A5; text-transform: uppercase; font-weight: 700;">📦 -Wholesale COGS</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #EF4444;">-${pl['total_cogs']:,.0f}</div>
         </div>
-        <div style="display: flex; gap: 2rem; margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid #E2E8F0; font-size: 0.84rem; font-weight: 600;">
-            <span style="color: #475569;">📊 Net Sales: <b>${pl['net_sales']:,.2f}</b></span>
-            <span style="color: #10B981;">💰 Net Operating Profit: <b>${pl['net_operating_profit']:,.2f}</b></span>
-            <span style="color: #2563EB;">🛡️ Break-Even Sales: <b>${pl['break_even_sales']:,.2f}</b></span>
+        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+        <div style="text-align: center;">
+            <div style="font-size: 0.72rem; color: #DDD6FE; text-transform: uppercase; font-weight: 700;">👥 -Floor Wages</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #A855F7;">-${pl['labor_cost']:,.0f}</div>
+        </div>
+        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+        <div style="text-align: center;">
+            <div style="font-size: 0.72rem; color: #FDE68A; text-transform: uppercase; font-weight: 700;">🏢 -Rent / OPEX</div>
+            <div style="font-size: 1.1rem; font-weight: 800; color: #F59E0B;">-${pl['fixed_opex']:,.0f}</div>
+        </div>
+        <div style="color: #64748B; font-size: 1.2rem; font-weight: 700;">➔</div>
+        <div style="text-align: center; background: rgba(16, 185, 129, 0.2); padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.4);">
+            <div style="font-size: 0.72rem; color: #6EE7B7; text-transform: uppercase; font-weight: 800;">💰 = Net Cash Profit</div>
+            <div style="font-size: 1.2rem; font-weight: 800; color: #34D399;">${pl['net_operating_profit']:,.0f} <span style="font-size: 0.75rem;">({pl['net_margin_pct']:.1f}%)</span></div>
         </div>
     </div>
     """, unsafe_allow_html=True)
