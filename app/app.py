@@ -79,6 +79,12 @@ from src.jargon_buster import (
     JARGON_TERMS,
     search_jargon_terms
 )
+from src.store_deck import (
+    STORE_PROFILES,
+    GRADE_COLORS,
+    get_enriched_store_cards,
+    render_interactive_store_deck
+)
 
 # Page Configuration
 st.set_page_config(
@@ -87,6 +93,10 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Global Active Store State Initialization
+if "active_store" not in st.session_state:
+    st.session_state.active_store = "Store_09"
 
 # ==============================================================================
 # PREMIUM DESIGN SYSTEM & CSS (THE WOW FACTOR)
@@ -969,7 +979,13 @@ def render_health_scorecard(is_simple=False):
         
         st.write("")
         st.markdown("#### 🔍 Deep-Dive Store Diagnostic Breakdown")
-        sel_diag_store = st.selectbox("Select Store for In-Depth 5-Pillar Diagnostics:", options=STORES, index=0, key="sel_diag_store")
+        active_deck_store = render_interactive_store_deck(
+            raw_df,
+            STORE_LOCATIONS,
+            st.session_state.get("active_store", "Store_09"),
+            key_prefix="health_deck"
+        )
+        sel_diag_store = active_deck_store
         
         target_store_data = store_card_df[store_card_df["Store_ID"] == sel_diag_store].iloc[0]
         
@@ -1051,10 +1067,17 @@ def render_goal_seek(is_simple=False):
     else:
         st.caption("Reverse-engineer promotional discounts, labor staffing allocations, warehouse safety buffers, and net operating margins for any user-defined weekly revenue target.")
 
-    # Top entity controls
+    # Visual Interactive Store Card Deck
+    gs_store = render_interactive_store_deck(
+        raw_df,
+        STORE_LOCATIONS,
+        st.session_state.get("active_store", "Store_09"),
+        key_prefix="gs_deck"
+    )
+
+    # Department & Quick Goal Presets Bar
     c_ctrl1, c_ctrl2 = st.columns([1, 1.2])
     with c_ctrl1:
-        gs_store = st.selectbox("Select Store Branch:", options=STORES, index=0, key="gs_store_select")
         dept_options = ["All Departments (Entire Store)"] + DEPARTMENTS
         gs_dept = st.selectbox("Select Department / Scope:", options=dept_options, index=1, key="gs_dept_select")
     
@@ -1593,7 +1616,8 @@ def render_scenario_simulator(is_simple=False):
     
     with sim_col1:
         st.markdown("#### ⚙️ Entity Selection")
-        sim_store = st.selectbox("Select Store:", STORES, index=0, key="sim_st_sel")
+        st_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        sim_store = st.selectbox("Select Store:", STORES, index=st_idx, key="sim_st_sel")
         sim_dept = st.selectbox("Select Department:", DEPARTMENTS, index=0, key="sim_dp_sel")
         sim_date = st.date_input("Target Forecast Week:", value=pd.to_datetime("2024-01-05"), key="sim_dt_sel")
         
@@ -1772,7 +1796,8 @@ def render_speedometer_gauges(is_simple=False):
     # Top Controls
     sp_col1, sp_col2, sp_col3 = st.columns([1, 1, 1.2])
     with sp_col1:
-        sp_store = st.selectbox("Select Store Branch:", STORES, key="sp_store_select", index=0)
+        sp_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        sp_store = st.selectbox("Select Store Branch:", STORES, key="sp_store_select", index=sp_idx)
     with sp_col2:
         sp_dept = st.selectbox("Select Department:", DEPARTMENTS, key="sp_dept_select", index=0)
     with sp_col3:
@@ -1929,7 +1954,8 @@ def render_profit_estimator(is_simple=False):
     # Top Control Bar
     p_c1, p_c2, p_c3 = st.columns([1, 1, 1.2])
     with p_c1:
-        pe_store = st.selectbox("Select Store Branch:", STORES, key="pe_store_select", index=0)
+        pe_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        pe_store = st.selectbox("Select Store Branch:", STORES, key="pe_store_select", index=pe_idx)
     with p_c2:
         pe_dept = st.selectbox("Select Department:", DEPARTMENTS, key="pe_dept_select", index=0)
     with p_c3:
@@ -2165,7 +2191,8 @@ def render_executive_briefing(is_simple=False):
             options=["Chief Executive (CFO / CEO)", "VP of Supply Chain & Logistics", "Regional Store Manager"],
             index=0
         )
-        eb_store = st.selectbox("Store:", STORES, key="eb_store_sel", index=0)
+        eb_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        eb_store = st.selectbox("Store:", STORES, key="eb_store_sel", index=eb_idx)
         eb_dept = st.selectbox("Department:", DEPARTMENTS, key="eb_dept_sel", index=0)
         eb_scenario = st.selectbox("Commercial Context:", list(PRESETS.keys()), index=0)
         
@@ -2302,7 +2329,8 @@ def render_horizon_forecast():
     
     h_col1, h_col2 = st.columns([1, 3])
     with h_col1:
-        hz_store = st.selectbox("Store:", STORES, key="hz_st_sel")
+        hz_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        hz_store = st.selectbox("Store:", STORES, index=hz_idx, key="hz_st_sel")
         hz_dept = st.selectbox("Department:", DEPARTMENTS, key="hz_dp_sel")
         hz_weeks = st.slider("Forecast Horizon (Weeks):", min_value=4, max_value=12, value=8, step=1)
         apply_hz_promo = st.checkbox("Simulate 15% Mid-Horizon Promo Campaign", value=True)
@@ -2470,7 +2498,8 @@ def render_deep_probabilistic():
     dp_col1, dp_col2 = st.columns([1, 2.5])
     with dp_col1:
         st.markdown("#### Simulation Controls")
-        dp_store = st.selectbox("Store:", STORES, key="dp_st_sel")
+        dp_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
+        dp_store = st.selectbox("Store:", STORES, index=dp_idx, key="dp_st_sel")
         dp_dept = st.selectbox("Department:", DEPARTMENTS, key="dp_dp_sel")
         risk_mode = st.radio("Supply Chain Strategy:", ["🛡️ Conservative (P10)", "⚖️ Expected (P50)", "🚀 Surge Buffer (P90)"], index=1)
         st.markdown("---")

@@ -22,11 +22,15 @@ graph TD
     A --> D[🚀 3. Upload & 1-Click Reports<br/>CSV Demo Testing + Executive PDF, Excel & ZIP Bundle]
 ```
 
-### 1. 💡 1-Click Smart Answers & Store Health Scorecards
+### 1. 🏢 Interactive Visual Store Card Deck (Goodbye Boring Dropdowns)
+* **Visual City Cards:** Browse and click 10 branch cards (🗽 New York, 🌴 Los Angeles, 🏆 Dallas, 🚀 Houston, etc.) featuring live letter grades (A+ to F), sales efficiency (`$/sq ft`), and active selection glowing borders.
+* **Global State Sync:** Selecting any branch card instantly synchronizes the entire platform across diagnostic scorecards, goal-seek calculators, and scenario simulations.
+
+### 2. 💡 1-Click Smart Answers & Store Health Scorecards
 * **Instant Answer Chips:** Click 8 pre-formulated executive question chips (*"Top Performing Branch"*, *"Black Friday Surge"*, *"Optimal Margins"*) or type natural language queries.
 * **Store Health Grades (A+ to F):** 5-pillar composite scoring (Revenue Velocity, Space Efficiency `$/sqft`, Momentum, Stability, and Promotional Agility).
 
-### 2. 🎯 Goal-Seek Target Calculator & Profit Modeler
+### 3. 🎯 Goal-Seek Target Calculator & Profit Modeler
 * **Target Revenue Solver:** Set a target weekly sales revenue (e.g. `$35,000`), and the AI reverse-engineers the required discount markdown, floor staffing roster, safety stock buffer, and net profit.
 * **Financial P&L Modeler:** Line-by-line breakdown of Wholesale COGS, floor labor wages, store rent/overhead, and net operating profit ($ and %).
 * **Discount Elasticity Sweet Spot:** Dual-axis curve identifying the exact discount percentage that maximizes net cash take-home profit.
@@ -85,6 +89,7 @@ retail-sales-forecasting/
 │   ├── deep_learning.py                    # PyTorch Bi-LSTM sequence forecaster
 │   ├── probabilistic.py                    # Quantile loss uncertainty cones
 │   ├── hierarchical.py                     # Hierarchical reconciliation
+│   ├── store_deck.py                       # Interactive visual store card deck engine
 │   ├── health_scorecard.py                 # Store A+ to F diagnostic scorecard
 │   ├── goal_seek.py                        # Target revenue reverse-engineering solver
 │   ├── profit_estimator.py                 # Financial P&L ledger & elasticity curves
