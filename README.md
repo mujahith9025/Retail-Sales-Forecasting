@@ -22,31 +22,35 @@ graph TD
     A --> D[🚀 3. Upload & 1-Click Reports<br/>CSV Demo Testing + Executive PDF, Excel & ZIP Bundle]
 ```
 
-### 1. 🏢 Interactive Visual Store Card Deck (Goodbye Boring Dropdowns)
+### 1. 🧭 "What Do You Want to Do?" 1-Click Executive Decision Wizard
+* **Instant Intent Cards:** 6 high-level commercial intents (*"Hit a Revenue Target"*, *"Prepare for Holiday Surge"*, *"Audit Store Health Grades"*, *"Maximize Cash Profits"*, *"Forecast Custom CSV"*, *"Export Executive Briefing"*).
+* **Live Action Directives:** Instantly calculates the exact 3-step action plan, expected revenue, required discount, labor hours, and safety buffers.
+
+### 2. 🏢 Interactive Visual Store Card Deck (Goodbye Boring Dropdowns)
 * **Visual City Cards:** Browse and click 10 branch cards (🗽 New York, 🌴 Los Angeles, 🏆 Dallas, 🚀 Houston, etc.) featuring live letter grades (A+ to F), sales efficiency (`$/sq ft`), and active selection glowing borders.
 * **Global State Sync:** Selecting any branch card instantly synchronizes the entire platform across diagnostic scorecards, goal-seek calculators, and scenario simulations.
 
-### 2. 💡 1-Click Smart Answers & Store Health Scorecards
+### 3. 💡 1-Click Smart Answers & Store Health Scorecards
 * **Instant Answer Chips:** Click 8 pre-formulated executive question chips (*"Top Performing Branch"*, *"Black Friday Surge"*, *"Optimal Margins"*) or type natural language queries.
 * **Store Health Grades (A+ to F):** 5-pillar composite scoring (Revenue Velocity, Space Efficiency `$/sqft`, Momentum, Stability, and Promotional Agility).
 
-### 3. 🎯 Goal-Seek Target Calculator & Profit Modeler
+### 4. 🎯 Goal-Seek Target Calculator & Profit Modeler
 * **Target Revenue Solver:** Set a target weekly sales revenue (e.g. `$35,000`), and the AI reverse-engineers the required discount markdown, floor staffing roster, safety stock buffer, and net profit.
 * **Financial P&L Modeler:** Line-by-line breakdown of Wholesale COGS, floor labor wages, store rent/overhead, and net operating profit ($ and %).
 * **Discount Elasticity Sweet Spot:** Dual-axis curve identifying the exact discount percentage that maximizes net cash take-home profit.
 
-### 3. 🔮 1-Click What-If Scenario Simulator
+### 5. 🔮 1-Click What-If Scenario Simulator
 * **7 Commercial Presets:** *🛍️ Black Friday Surge*, *🎄 Christmas Rush*, *☀️ Summer Peak*, *🏷️ Clearance (30% Off)*, *📉 Macro Inflation*, *🏈 Super Bowl*, and *🔄 Standard Operations*.
 * **Driver Waterfall:** Deconstructs baseline revenue, markdown demand lift, and holiday surge volume.
 
-### 4. 📤 Custom CSV Sales Report Upload & Auto-Analyzer
+### 6. 📤 Custom CSV Sales Report Upload & Auto-Analyzer
 * **1-Click Demo Dataset:** Test immediately without uploading, or drag-and-drop custom store CSV sales files.
 * **Automated AI Audit:** Automatically generates 12-week forward forecasts, detects sales outliers (>2.2σ), and exports custom PDF audit memos.
 
-### 5. 📦 1-Click "Download Everything" Executive Bundle (.ZIP)
+### 7. 📦 1-Click "Download Everything" Executive Bundle (.ZIP)
 * **Single-Click Download:** Compiles **Executive PDF Memo**, **5-Sheet Formatted Excel Workbook**, **Batch Predictions CSV**, **Store Health Scorecards CSV**, and **Management Readme** into an all-in-one ZIP archive.
 
-### 6. 📖 Built-in Plain-English "Jargon Buster" Glossary
+### 8. 📖 Built-in Plain-English "Jargon Buster" Glossary
 * **Retail & AI Demystified:** Instant 1-sentence explanations and real-world examples for terms like `COGS`, `Safety Stock`, `MAPE ±5.4%`, `R² = 94.6%`, and `P10/P50/P90 Cones`.
 
 ---
@@ -90,6 +94,7 @@ retail-sales-forecasting/
 │   ├── probabilistic.py                    # Quantile loss uncertainty cones
 │   ├── hierarchical.py                     # Hierarchical reconciliation
 │   ├── store_deck.py                       # Interactive visual store card deck engine
+│   ├── decision_wizard.py                  # 1-Click executive decision wizard engine
 │   ├── health_scorecard.py                 # Store A+ to F diagnostic scorecard
 │   ├── goal_seek.py                        # Target revenue reverse-engineering solver
 │   ├── profit_estimator.py                 # Financial P&L ledger & elasticity curves

@@ -85,6 +85,10 @@ from src.store_deck import (
     get_enriched_store_cards,
     render_interactive_store_deck
 )
+from src.decision_wizard import (
+    DECISION_INTENTS,
+    render_decision_wizard
+)
 
 # Page Configuration
 st.set_page_config(
@@ -568,6 +572,15 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+# ==============================================================================
+# 🧭 "WHAT DO YOU WANT TO DO?" 1-CLICK DECISION WIZARD
+# ==============================================================================
+if view_mode.startswith("🌟"):
+    render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+else:
+    with st.expander("🧭 **'What Do You Want to Do?' 1-Click Executive Decision Wizard**", expanded=False):
+        render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
 
 # ==============================================================================
 # INTERACTIVE 30-SECOND QUICK START GUIDE BANNER
