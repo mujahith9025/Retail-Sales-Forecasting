@@ -81,16 +81,24 @@ def get_enriched_store_cards(raw_df: pd.DataFrame, store_locations: dict) -> Lis
     return cards
 
 
-def safe_render_html(html_str: str):
+def safe_render_html(html_str: str, container=None):
     """
     Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    If the input string is markdown (contains no HTML tags), delegates to st.markdown.
     Prefers st.html if available, with minified st.markdown as fallback.
     """
-    if hasattr(st, "html"):
+    target = container or st
+    stripped = html_str.strip()
+    if "<" not in stripped:
+        target.markdown(html_str)
+        return
+    if hasattr(target, "html"):
+        target.html(html_str)
+    elif hasattr(st, "html"):
         st.html(html_str)
     else:
-        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
-        st.markdown(minified, unsafe_allow_html=True)
+        minified = " ".join(line.strip() for line in stripped.splitlines() if line.strip())
+        target.markdown(minified, unsafe_allow_html=True)
 
 
 def render_interactive_store_deck(

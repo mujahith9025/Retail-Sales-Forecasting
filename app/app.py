@@ -245,15 +245,20 @@ st.set_page_config(
 def safe_render_html(html_str: str, container=None):
     """
     Renders pure HTML cleanly without triggering Markdown code block / LaTeX formatting.
+    If the input string is markdown (contains no HTML tags), delegates to st.markdown.
     Prefers st.html if available, with minified st.markdown as fallback.
     """
     target = container or st
+    stripped = html_str.strip()
+    if "<" not in stripped:
+        target.markdown(html_str)
+        return
     if hasattr(target, "html"):
         target.html(html_str)
     elif hasattr(st, "html"):
         st.html(html_str)
     else:
-        minified = " ".join(line.strip() for line in html_str.strip().splitlines() if line.strip())
+        minified = " ".join(line.strip() for line in stripped.splitlines() if line.strip())
         target.markdown(minified, unsafe_allow_html=True)
 
 
@@ -802,7 +807,7 @@ def render_smart_question_chips(is_simple=False):
             key="sel_smart_chip_cat"
         )
 
-    safe_render_html("##### ⚡ Click a Smart Question Chip:")
+    st.markdown("##### ⚡ Click a Smart Question Chip:")
     
     # Filter questions if category selected
     displayed_questions = SMART_QUESTIONS
@@ -888,7 +893,7 @@ def render_smart_question_chips(is_simple=False):
     # Visual Evidence & Supporting Data Table
     v_c1, v_c2 = st.columns([1.5, 1])
     with v_c1:
-        safe_render_html("#### 📊 Visual Data Evidence")
+        st.markdown("#### 📊 Visual Data Evidence")
         st.plotly_chart(ans["fig"], use_container_width=True)
     with v_c2:
         st.markdown("#### 📑 Summary Table")
@@ -917,7 +922,7 @@ def render_smart_question_chips(is_simple=False):
 def render_historical_analytics(is_simple=False):
     st.subheader("📊 Historical Sales & Customer Demand Insights")
     if is_simple:
-        st.markdown("""<div class="simple-callout">
+        safe_render_html("""<div class="simple-callout">
 💡 <b>Key Business Takeaway:</b> <b>Grocery</b> and <b>Electronics</b> account for <b>52.6%</b> of total revenue.
 Thanksgiving / Black Friday drives the strongest annual demand spike (+43.7% revenue lift).
 </div>""")
@@ -1118,7 +1123,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
             safe_render_html(action_pill_html)
             
         st.write("")
-        safe_render_html("#### 🏆 Store Network Health Leaderboard")
+        st.markdown("#### 🏆 Store Network Health Leaderboard")
         st.caption("Ranked by composite 5-pillar operational score (Revenue, Space Efficiency, Growth, Stability, Agility).")
         display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
         st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
@@ -1154,7 +1159,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 def render_goal_seek(is_simple=False):
     st.subheader("🎯 Interactive Goal-Seek / Target Revenue Calculator")
     if is_simple:
-        st.markdown("""<div class="simple-callout">
+        safe_render_html("""<div class="simple-callout">
 💡 <b>How Goal-Seek Works:</b> Instead of asking <i>"What will sales be?"</i>, tell the AI your <b>dream weekly revenue goal</b> (e.g. $35,000).
 The machine learning solver reverse-engineers the <b>exact promotional markdown</b>, <b>floor staffing roster</b>, <b>safety inventory buffer</b>, and <b>net profit margin</b> required to hit it.
 </div>""")
@@ -1195,7 +1200,7 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
         st.session_state[state_key] = float(round(baseline_val * 1.20, -2))
 
     with c_ctrl2:
-        safe_render_html("##### ⚡ Quick Goal Presets (+% vs 4-Wk Baseline):")
+        st.markdown("##### ⚡ Quick Goal Presets (+% vs 4-Wk Baseline):")
         q1, q2, q3, q4 = st.columns(4)
         if q1.button(f"+10%\n${baseline_val*1.10:,.0f}", key=f"btn_p10_{gs_store}_{gs_dept}", use_container_width=True):
             st.session_state[state_key] = float(round(baseline_val * 1.10, -2))
@@ -1307,7 +1312,7 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
 
         k1, k2 = st.columns(2)
         with k1:
-            st.markdown(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
+            safe_render_html(f"""<div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">🏷️ Required Markdown</div>
 <div class="kpi-number" style="font-size: 1.45rem;">{promo_pct_val}% Off</div>
@@ -1339,7 +1344,7 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
     # Financial Contribution & Margin Analysis + Revenue Bridge Waterfall
     f_col1, f_col2 = st.columns([1.1, 1.4])
     with f_col1:
-        safe_render_html("#### 💰 Financial Contribution & Profitability")
+        st.markdown("#### 💰 Financial Contribution & Profitability")
         st.caption("Evaluates whether reaching this revenue target increases or erodes net operating profits.")
         
         fin_df = pd.DataFrame([
@@ -1352,7 +1357,7 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
         st.dataframe(fin_df, use_container_width=True, hide_index=True)
         
         profit_color = "#10B981" if plan["net_profit"] > 0 else "#DC2626"
-        st.markdown(f"""<div style="background: rgba(248, 250, 252, 0.95); border: 1px solid #CBD5E1; border-radius: 10px; padding: 0.9rem; margin-top: 0.5rem; text-align: center;">
+        safe_render_html(f"""<div style="background: rgba(248, 250, 252, 0.95); border: 1px solid #CBD5E1; border-radius: 10px; padding: 0.9rem; margin-top: 0.5rem; text-align: center;">
 <div style="font-size: 0.8rem; font-weight: 600; color: #64748B; text-transform: uppercase;">Estimated Weekly Net Profit</div>
 <div style="font-size: 1.6rem; font-weight: 800; color: {profit_color}; margin-top: 0.2rem;">
 ${plan['net_profit']:,.2f}
@@ -1363,7 +1368,7 @@ Operating Margin: <b>{plan['net_margin_pct']:.1f}%</b> of Net Sales
 </div>""")
         
     with f_col2:
-        safe_render_html("#### 🔍 Revenue Bridge / Growth Waterfall")
+        st.markdown("#### 🔍 Revenue Bridge / Growth Waterfall")
         st.caption("Deconstructs baseline revenue, promotional markdown lift, and holiday traffic push.")
         
         b_val = plan["baseline_sales"]
@@ -1521,7 +1526,7 @@ def render_upload_analyzer(is_simple=False):
         
         up_k1, up_k2, up_k3, up_k4, up_k5 = st.columns(5)
         with up_k1:
-            st.markdown(f"""<div class="glass-kpi-card" title="Total number of transaction rows evaluated.">
+            safe_render_html(f"""<div class="glass-kpi-card" title="Total number of transaction rows evaluated.">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">Ingested Records</div>
 <div class="kpi-number">{summary['total_records']:,}</div>
@@ -1619,7 +1624,7 @@ def render_upload_analyzer(is_simple=False):
         
         u_exp1, u_exp2, u_exp3 = st.columns(3)
         with u_exp1:
-            st.markdown("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.1rem; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.3rem; margin-bottom: 0.2rem;">📄</div>
 <div style="font-weight: 700; color: #0F172A;">Custom Audit PDF Memo</div>
@@ -1689,7 +1694,7 @@ def render_scenario_simulator(is_simple=False):
     st.caption("Click any preset below to instantly see forecasted sales, revenue lift, and operational staffing rules.")
     
     # Preset Selector Pills
-    safe_render_html("##### ⚡ Click a Commercial Scenario Preset:")
+    st.markdown("##### ⚡ Click a Commercial Scenario Preset:")
     preset_cols = st.columns(len(PRESETS))
     
     if "active_preset" not in st.session_state:
@@ -1703,7 +1708,7 @@ def render_scenario_simulator(is_simple=False):
     active_p = PRESETS[st.session_state.active_preset]
     
     # Active Preset Info Callout
-    st.markdown(f"""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-left: 5px solid {active_p['color']}; border-radius: 10px; padding: 0.9rem 1.2rem; margin-bottom: 1.2rem;">
+    safe_render_html(f"""<div style="background: rgba(255,255,255,0.95); border: 1px solid #CBD5E1; border-left: 5px solid {active_p['color']}; border-radius: 10px; padding: 0.9rem 1.2rem; margin-bottom: 1.2rem;">
 <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Active Scenario: {st.session_state.active_preset}</div>
 <div style="font-size: 0.88rem; color: #475569; margin-top: 0.15rem;">{active_p['desc']}</div>
 <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem; font-size: 0.82rem; font-weight: 600;">
@@ -1716,7 +1721,7 @@ def render_scenario_simulator(is_simple=False):
     sim_col1, sim_col2 = st.columns([1, 2])
     
     with sim_col1:
-        safe_render_html("#### ⚙️ Entity Selection")
+        st.markdown("#### ⚙️ Entity Selection")
         st_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
         sim_store = st.selectbox("Select Store:", STORES, index=st_idx, key="sim_st_sel")
         sim_dept = st.selectbox("Select Department:", DEPARTMENTS, index=0, key="sim_dp_sel")
@@ -1813,7 +1818,7 @@ def render_scenario_simulator(is_simple=False):
         st.markdown("##### ⚡ 3 Quick-Glance Operational Directives:")
         d_badge1, d_badge2, d_badge3 = st.columns(3)
         with d_badge1:
-            st.markdown(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
+            safe_render_html(f"""<div style="background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%); border: 1.5px solid #BFDBFE; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.65rem 0.85rem; box-shadow: 0 2px 6px rgba(37,99,235,0.06);">
 <div style="font-size: 0.75rem; font-weight: 800; color: #2563EB; text-transform: uppercase; letter-spacing: 0.04em;">
 👥 Staffing Directive
 </div>
@@ -1852,7 +1857,7 @@ Contribution margin protected
 </div>""")
 
         st.write("")
-        safe_render_html("##### 🌊 Visual 3-Step Demand Surge Waterfall")
+        st.markdown("##### 🌊 Visual 3-Step Demand Surge Waterfall")
         promo_effect = (predicted_sales - rolling_mean_4) * (0.55 if sim_promo > 0 else 0.0)
         holiday_effect = (predicted_sales - rolling_mean_4) * (0.45 if sim_holiday != "Regular_Week" else 0.0)
         
@@ -1949,7 +1954,7 @@ Contribution margin protected
 def render_speedometer_gauges(is_simple=False):
     st.subheader("⏱️ Visual Inventory & Labor Speedometer Gauges")
     if is_simple:
-        st.markdown("""<div class="simple-callout">
+        safe_render_html("""<div class="simple-callout">
 💡 <b>Operational Command Cockpit:</b> Visual speedometer gauges let store directors and warehouse managers monitor <b>inventory stockout risks</b>, <b>cashier & restocker workloads</b>, and <b>fill-rate SLAs</b> in real-time before demand surges hit.
 </div>""")
     else:
@@ -2068,10 +2073,10 @@ Active Operational State: {sp_preset}
     st.write("")
     
     # Operational Action Checklist Card
-    safe_render_html("#### 📋 Floor Manager & Warehouse Action Checklist")
+    st.markdown("#### 📋 Floor Manager & Warehouse Action Checklist")
     act1, act2, act3 = st.columns(3)
     with act1:
-        st.markdown(f"""<div class="glass-kpi-card">
+        safe_render_html(f"""<div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">Warehouse Safety Stock</div>
 <div class="kpi-number" style="font-size: 1.3rem;">{gauges['inv_rec']}</div>
@@ -2251,7 +2256,7 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
     # Financial Waterfall Chart & P&L Statement Table
     wf_col1, wf_col2 = st.columns([1.5, 1])
     with wf_col1:
-        safe_render_html("#### 📊 P&L Cash Flow Waterfall")
+        st.markdown("#### 📊 P&L Cash Flow Waterfall")
         fig_wf = generate_financial_waterfall_chart(pl)
         st.plotly_chart(fig_wf, use_container_width=True)
         
@@ -2284,7 +2289,7 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
         st.plotly_chart(fig_curve, use_container_width=True)
         
     with el_c2:
-        st.markdown(f"""<div style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10B981; border-radius: 12px; padding: 1.1rem; margin-bottom: 0.8rem;">
+        safe_render_html(f"""<div style="background: rgba(16, 185, 129, 0.08); border: 1px solid #10B981; border-radius: 12px; padding: 1.1rem; margin-bottom: 0.8rem;">
 <div style="font-weight: 800; color: #065F46; font-size: 1.1rem;">🏆 Optimal Profit Sweet Spot</div>
 <div style="font-size: 1.6rem; font-weight: 800; color: #059669; margin: 0.3rem 0;">
 {optimal_row['Discount (%)']}% Discount
@@ -2303,7 +2308,7 @@ Generates peak net cash profit of <b>${optimal_row['Net Profit ($)']:,.2f}</b> (
 
     # 1-Click P&L Statement Export
     st.write("")
-    safe_render_html("### 🚀 1-Click Financial Statement Export")
+    st.markdown("### 🚀 1-Click Financial Statement Export")
     st.caption("Export the complete P&L audit statement and discount sensitivity ladder to share with CFOs and finance teams.")
     
     exp_f1, exp_f2 = st.columns(2)
@@ -2421,7 +2426,7 @@ def render_executive_briefing(is_simple=False):
         )
         
         # Executive 1-Slide Infographic Card: Headline Pill, 3 Stat Dials, & 3 Checklist Action Pills
-        st.markdown(f"""<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(15,23,42,0.12);">
+        safe_render_html(f"""<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(15,23,42,0.12);">
 <div style="display: flex; align-items: center; gap: 0.6rem;">
 <span style="font-size: 1.15rem;">📌</span>
 <span style="font-weight: 800; font-size: 1.02rem; color: #F8FAFC; letter-spacing: -0.01em;">
@@ -2631,7 +2636,7 @@ def render_geospatial_matrix():
     
     g_col1, g_col2 = st.columns(2)
     with g_col1:
-        safe_render_html("#### 🔗 Category Co-Movement & Affinity Matrix")
+        st.markdown("#### 🔗 Category Co-Movement & Affinity Matrix")
         st.caption("Measures how demand surges in one department correlate with adjacent category volume (Halo Effect).")
         dept_pivot = raw_df.pivot_table(index=["Store_ID", "Date"], columns="Department", values="Weekly_Sales", aggfunc="sum")
         affinity_corr = dept_pivot.corr()
@@ -2810,7 +2815,7 @@ def render_batch_export(is_simple=False):
         cat_card_df = compute_category_health_scorecard(raw_df)
         zip_bytes = generate_executive_bundle_zip(raw_df, results_df, metrics_data, STORE_LOCATIONS, store_card_df, cat_card_df)
         
-        st.markdown("""<div style="background: linear-gradient(135deg, #065F46 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 1.25rem 1.6rem; color: white; margin-bottom: 0.8rem; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3);">
+        safe_render_html("""<div style="background: linear-gradient(135deg, #065F46 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 1.25rem 1.6rem; color: white; margin-bottom: 0.8rem; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3);">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
 <span style="font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
 📦 Complete Executive Intelligence Bundle (.ZIP)
@@ -2834,11 +2839,11 @@ Includes everything: <b>Executive PDF Memo</b> + <b>Multi-Sheet Excel Workbook</
         )
         
         st.write("")
-        safe_render_html("##### Or Download Individual Report Formats:")
+        st.markdown("##### Or Download Individual Report Formats:")
         exp_col1, exp_col2, exp_col3 = st.columns(3)
         
         with exp_col1:
-            st.markdown("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
+            safe_render_html("""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-top: 4px solid #2563EB; border-radius: 12px; padding: 1.2rem; min-height: 230px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="font-size: 1.4rem; margin-bottom: 0.3rem;">📄</div>
 <div style="font-weight: 700; color: #0F172A; font-size: 1.05rem;">Executive Intelligence PDF</div>
@@ -3001,7 +3006,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
         st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
 
     st.write("")
-    safe_render_html("---")
+    st.markdown("---")
 
     # 3-Second Visual Smart Q&A Engine
     render_smart_question_chips(is_simple=(view_mode.startswith("🌟")))
@@ -3019,7 +3024,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
     with st.expander("👋 **30-Second Quick Start Onboarding Guide**", expanded=False):
         g1, g2, g3 = st.columns(3)
         with g1:
-            st.markdown("""<div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            safe_render_html("""<div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
 <div style="font-weight: 700; color: #1E3A8A; font-size: 0.92rem;">1️⃣ Ask & Discover</div>
 <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
 Click any Smart Question Chip for instant plain-English answers and inspect <b>A+ to F Store Health Grades</b>.
