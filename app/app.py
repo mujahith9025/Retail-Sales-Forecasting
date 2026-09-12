@@ -1523,22 +1523,31 @@ def render_goal_seek(is_simple=False):
 
     with g_col2:
         # 4 Pictorial Metric Boxes
+        promo_pct_val = plan.get('recommended_promo_pct', 10)
+        promo_event_val = plan.get('recommended_event', 'Standard Operating Week')
+        staff_val = str(plan.get('staff_recommendation', 'Standard Staffing')).split('(')[0].strip()
+        labor_cost_val = plan.get('labor_cost', 0.0)
+        inv_buf_val = str(plan.get('inventory_recommendation', plan.get('buffer_recommendation', '+15% Safety Stock'))).split('(')[0].strip()
+        lead_time_val = plan.get('supplier_lead_days', 7)
+        profit_val = plan.get('net_profit', plan.get('projected_net_profit', 0.0))
+        margin_pct_val = plan.get('net_margin_pct', plan.get('projected_net_margin_pct', 0.0))
+
         k1, k2 = st.columns(2)
         with k1:
             st.markdown(f"""
             <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
                 <div class="kpi-accent-bar accent-purple"></div>
                 <div class="kpi-label">🏷️ Required Markdown</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{plan['recommended_promo_pct']}% Off</div>
-                <div class="kpi-meta">🎯 {plan['recommended_event']}</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{promo_pct_val}% Off</div>
+                <div class="kpi-meta">🎯 {promo_event_val}</div>
             </div>
             """, unsafe_allow_html=True)
             st.markdown(f"""
             <div class="glass-kpi-card">
                 <div class="kpi-accent-bar accent-emerald"></div>
                 <div class="kpi-label">👥 Extra Floor Staff</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{plan['staff_recommendation'].split('(')[0].strip()}</div>
-                <div class="kpi-meta">💵 Labor Cost: ${plan['labor_cost']:,.0f}/wk</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{staff_val}</div>
+                <div class="kpi-meta">💵 Labor Cost: ${labor_cost_val:,.0f}/wk</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -1547,16 +1556,16 @@ def render_goal_seek(is_simple=False):
             <div class="glass-kpi-card" style="margin-bottom: 0.6rem;">
                 <div class="kpi-accent-bar accent-amber"></div>
                 <div class="kpi-label">📦 Restock Boxes Buffer</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">{plan['inventory_recommendation'].split('(')[0].strip()}</div>
-                <div class="kpi-meta">⏱️ Lead Time: {plan['supplier_lead_days']} Days</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">{inv_buf_val}</div>
+                <div class="kpi-meta">⏱️ Lead Time: {lead_time_val} Days</div>
             </div>
             """, unsafe_allow_html=True)
             st.markdown(f"""
             <div class="glass-kpi-card">
                 <div class="kpi-accent-bar accent-blue"></div>
                 <div class="kpi-label">💵 Net Cash Profit</div>
-                <div class="kpi-number" style="font-size: 1.45rem;">${plan['projected_net_profit']:,.0f}</div>
-                <div class="kpi-meta">📈 {plan['projected_net_margin_pct']:.1f}% Margin</div>
+                <div class="kpi-number" style="font-size: 1.45rem;">${profit_val:,.0f}</div>
+                <div class="kpi-meta">📈 {margin_pct_val:.1f}% Margin</div>
             </div>
             """, unsafe_allow_html=True)
 

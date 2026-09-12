@@ -218,6 +218,8 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
             "recommended_event": "Holiday Event Campaign" if best_is_hol else "Standard Operating Week",
             "staff_recommendation": staff_req,
             "buffer_recommendation": buffer_req,
+            "inventory_recommendation": buffer_req,
+            "supplier_lead_days": 14 if best_is_hol else 7,
             "feasibility": feasibility,
             "feasibility_color": feasibility_color,
             "feasibility_desc": feasibility_desc,
@@ -226,7 +228,9 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
             "discount_cost": round(discount_cost, 2),
             "labor_cost": round(labor_cost, 2),
             "net_profit": round(net_operating_profit, 2),
+            "projected_net_profit": round(net_operating_profit, 2),
             "net_margin_pct": round(net_margin_pct, 1),
+            "projected_net_margin_pct": round(net_margin_pct, 1),
             "plans_df": pd.DataFrame(plan_options),
             "dept_breakdown_df": dept_breakdown_df
         }
@@ -384,6 +388,8 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
             "recommended_event": "Holiday Event Window" if best_is_hol else "Standard Promotional Week",
             "staff_recommendation": staff_req,
             "buffer_recommendation": buffer_req,
+            "inventory_recommendation": buffer_req,
+            "supplier_lead_days": 14 if best_is_hol else 7,
             "feasibility": feasibility,
             "feasibility_color": feasibility_color,
             "feasibility_desc": feasibility_desc,
@@ -392,7 +398,9 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
             "discount_cost": round(discount_cost, 2),
             "labor_cost": round(labor_cost, 2),
             "net_profit": round(net_operating_profit, 2),
+            "projected_net_profit": round(net_operating_profit, 2),
             "net_margin_pct": round(net_margin_pct, 1),
+            "projected_net_margin_pct": round(net_margin_pct, 1),
             "plans_df": pd.DataFrame(plan_options),
             "dept_breakdown_df": None
         }
