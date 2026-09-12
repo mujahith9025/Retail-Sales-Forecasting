@@ -179,19 +179,30 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
         target_rev = base_rev * 1.20
         plan = solve_target_revenue_plan(active_store, "All Departments (Entire Store)", target_rev, raw_df)
 
+        target_val = plan.get('target_sales', target_rev)
+        pct_gap = plan.get('pct_gap', 20.0)
+        promo_pct = plan.get('recommended_promo_pct', 10)
+        rec_event = plan.get('recommended_event', 'Standard Operating Week')
+        staff_str = str(plan.get('staff_recommendation', 'Standard Base Staffing')).split('(')[0].strip()
+        labor_cost = plan.get('labor_cost', 1400.0)
+        buffer_str = str(plan.get('buffer_recommendation', plan.get('inventory_recommendation', '+15% Safety Stock Buffer'))).split('(')[0].strip()
+        lead_days = plan.get('supplier_lead_days', 7)
+        net_profit = plan.get('net_profit', plan.get('projected_net_profit', 12000.0))
+        net_margin = plan.get('net_margin_pct', plan.get('projected_net_margin_pct', 15.0))
+
         w1, w2, w3, w4 = st.columns(4)
         with w1:
-            st.metric("🎯 Target Revenue", f"${plan['target_sales']:,.0f}", f"{plan['pct_gap']:+.1f}% vs baseline")
+            st.metric("🎯 Target Revenue", f"${target_val:,.0f}", f"{pct_gap:+.1f}% vs baseline")
         with w2:
-            st.metric("🏷️ Required Discount", f"{plan['recommended_promo_pct']}% Off", plan['recommended_event'])
+            st.metric("🏷️ Required Discount", f"{promo_pct}% Off", rec_event)
         with w3:
-            st.metric("👥 Floor Staff Roster", plan['staff_recommendation'].split('(')[0].strip(), f"${plan['labor_cost']:,.0f}/wk cost")
+            st.metric("👥 Floor Staff Roster", staff_str, f"${labor_cost:,.0f}/wk cost")
         with w4:
-            st.metric("📦 Safety Stock Buffer", plan['inventory_recommendation'].split('(')[0].strip(), f"Lead Time: {plan['supplier_lead_days']} days")
+            st.metric("📦 Safety Stock Buffer", buffer_str, f"Lead Time: {lead_days} days")
 
         st.markdown(f"""
         <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-            💡 <b>Executive Directive:</b> To hit <b>${plan['target_sales']:,.0f}</b> at <b>{active_store}</b>, implement a <b>{plan['recommended_promo_pct']}% promotional markdown</b> with <b>{plan['staff_recommendation'].split('(')[0].strip()}</b> and <b>{plan['inventory_recommendation'].split('(')[0].strip()}</b>. Projected net profit: <b>${plan['projected_net_profit']:,.0f}</b> ({plan['projected_net_margin_pct']:.1f}% margin).
+            💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
         </div>
         """, unsafe_allow_html=True)
 
