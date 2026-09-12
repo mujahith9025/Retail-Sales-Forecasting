@@ -518,43 +518,76 @@ with kpi5:
 st.write("")
 
 # ==============================================================================
+# ⚡ AI DAILY ACTION CENTER (3-SECOND EXECUTIVE TAKEAWAYS)
+# ==============================================================================
+st.markdown("""
+<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+        <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+            ⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
+        </span>
+        <span style="background: rgba(16, 185, 129, 0.15); color: #059669; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+            Updated Live
+        </span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem;">
+        <div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 8px; padding: 0.75rem 0.9rem;">
+            <div style="font-weight: 700; color: #065F46; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+                🟢 TOP GROWTH OPPORTUNITY
+            </div>
+            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+                <b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
+            </div>
+        </div>
+        <div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
+            <div style="font-weight: 700; color: #92400E; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+                🟡 PROFIT MARGIN SWEET SPOT
+            </div>
+            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+                A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
+            </div>
+        </div>
+        <div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
+            <div style="font-weight: 700; color: #991B1B; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;">
+                🔴 PEAK SURGE WARNING
+            </div>
+            <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
+                <b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
+            </div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# ==============================================================================
 # INTERACTIVE 30-SECOND QUICK START GUIDE BANNER
 # ==============================================================================
 with st.expander("👋 **New to Retail Pulse AI? Click for a 30-Second Quick Start Guide**", expanded=(view_mode.startswith("🌟"))):
-    g1, g2, g3, g4 = st.columns(4)
+    g1, g2, g3 = st.columns(3)
     with g1:
         st.markdown("""
-        <div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px;">
-            <div style="font-weight: 700; color: #1E3A8A; font-size: 0.92rem;">1️⃣ Smart Q&A & Health</div>
+        <div style="background: rgba(37,99,235,0.06); border-left: 4px solid #2563EB; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            <div style="font-weight: 700; color: #1E3A8A; font-size: 0.92rem;">1️⃣ Ask & Discover</div>
             <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Click any Smart Question Chip for instant AI answers and inspect <b>A+ to F Store Health Grades</b>.
+                Click any Smart Question Chip for instant plain-English answers and inspect <b>A+ to F Store Health Grades</b>.
             </div>
         </div>
         """, unsafe_allow_html=True)
     with g2:
         st.markdown("""
-        <div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px;">
-            <div style="font-weight: 700; color: #92400E; font-size: 0.92rem;">2️⃣ Goals & Profits</div>
+        <div style="background: rgba(245,158,11,0.06); border-left: 4px solid #F59E0B; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            <div style="font-weight: 700; color: #92400E; font-size: 0.92rem;">2️⃣ Plan, Simulate & Profits</div>
             <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Set a revenue target to reverse-engineer required discounts, staff, inventory buffer, and net cash profit.
+                Set a target revenue goal or test <b>Black Friday presets</b> to see required staff, discounts, and net cash profits.
             </div>
         </div>
         """, unsafe_allow_html=True)
     with g3:
         st.markdown("""
-        <div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px;">
-            <div style="font-weight: 700; color: #065F46; font-size: 0.92rem;">3️⃣ Scenarios & CSV Upload</div>
+        <div style="background: rgba(16,185,129,0.06); border-left: 4px solid #10B981; padding: 0.9rem; border-radius: 8px; min-height: 110px;">
+            <div style="font-weight: 700; color: #065F46; font-size: 0.92rem;">3️⃣ Upload & 1-Click Reports</div>
             <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Test 1-click events like <b>Black Friday</b> or upload custom CSVs for automated AI forecasts.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    with g4:
-        st.markdown("""
-        <div style="background: rgba(139,92,246,0.06); border-left: 4px solid #8B5CF6; padding: 0.9rem; border-radius: 8px;">
-            <div style="font-weight: 700; color: #5B21B6; font-size: 0.92rem;">4️⃣ 1-Click Export Suite</div>
-            <div style="font-size: 0.8rem; color: #334155; margin-top: 0.2rem;">
-                Instantly download publication-quality PDF memos, multi-sheet Excel workbooks, and CSVs.
+                Upload custom store CSVs or click 1 button to download the <b>Complete Executive Bundle (.ZIP)</b>.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -2671,13 +2704,11 @@ def render_batch_export(is_simple=False):
 # MAIN TABS CONTROLLER (SIMPLE vs ADVANCED MODE)
 # ==============================================================================
 if view_mode.startswith("🌟"):
-    # Simple Mode: 5 Cohesive, Beginner-Friendly Tabs (Ultra-Clean & Visual)
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "💡 1. Smart Answers & Insights",
-        "🎯 2. Goal & Profit Planner",
-        "🔮 3. 1-Click Scenario Simulator",
-        "📤 4. Upload & Analyze CSV",
-        "🚀 5. Executive Reports & Export"
+    # Simple Mode: 3 Ultra-Clean, Beginner-Friendly Action Centers
+    tab1, tab2, tab3 = st.tabs([
+        "💡 1. Ask & Discover",
+        "🎯 2. Plan, Simulate & Profits",
+        "🚀 3. Upload & 1-Click Reports"
     ])
     
     with tab1:
@@ -2693,7 +2724,22 @@ if view_mode.startswith("🌟"):
             render_historical_analytics(is_simple=True)
         
     with tab2:
-        render_goal_seek(is_simple=True)
+        st.subheader("🎯 Goal-Seek, Scenario Simulator & Profit Workbench")
+        st.caption("Set a revenue target or choose a retail event preset (Black Friday, Christmas) to see required markdowns, staffing, and cash profits in real time.")
+        
+        sim_choice = st.radio(
+            "Select Planning Mode:",
+            options=["🎯 Target Revenue Goal-Seek Solver", "🔮 1-Click Retail Scenario Presets (Black Friday, Christmas, Inflation)"],
+            index=0,
+            horizontal=True,
+            key="sim_mode_radio"
+        )
+        st.write("")
+        if sim_choice.startswith("🎯"):
+            render_goal_seek(is_simple=True)
+        else:
+            render_scenario_simulator(is_simple=True)
+            
         st.write("")
         st.markdown("---")
         render_profit_estimator(is_simple=True)
@@ -2703,16 +2749,24 @@ if view_mode.startswith("🌟"):
             render_speedometer_gauges(is_simple=True)
         
     with tab3:
-        render_scenario_simulator(is_simple=True)
+        st.subheader("🚀 Upload Custom Sales CSV & 1-Click Executive Reports")
+        st.caption("Upload your custom store sales CSV for instant AI forecasting, or download publication-grade PDF memos and Excel workbooks.")
         
-    with tab4:
-        render_upload_analyzer(is_simple=True)
-        
-    with tab5:
-        render_executive_briefing(is_simple=True)
+        up_choice = st.radio(
+            "Select Action:",
+            options=["📤 Upload / Test Custom Sales CSV", "📑 Executive Demand Briefing & 1-Click Export Suite"],
+            index=0,
+            horizontal=True,
+            key="up_mode_radio"
+        )
         st.write("")
-        st.markdown("---")
-        render_batch_export(is_simple=True)
+        if up_choice.startswith("📤"):
+            render_upload_analyzer(is_simple=True)
+        else:
+            render_executive_briefing(is_simple=True)
+            st.write("")
+            st.markdown("---")
+            render_batch_export(is_simple=True)
 else:
     # Advanced ML Lab Mode: Full 14 Deep Dive Tabs
     tab_a0, tab_a1, tab_a2, tab_a3, tab_ap, tab_a4, tab_a5, tab_a6, tab_a7, tab_a8, tab_a9, tab_a10, tab_a11, tab_a12 = st.tabs([

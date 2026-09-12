@@ -17,11 +17,9 @@ An enterprise-grade retail demand forecasting, store health diagnostic, financia
 
 ```mermaid
 graph TD
-    A[🛍️ Retail Pulse AI Suite] --> B[💡 1. Smart Answers & Insights<br/>1-Click Question Chips + Store Health Grades A+ to F]
-    A --> C[🎯 2. Goal & Profit Planner<br/>Target Revenue Solver + P&L Margins + Stockout/Labor Dials]
-    A --> D[🔮 3. 1-Click Scenario Simulator<br/>7 Commercial Presets: Black Friday, Christmas, Inflation]
-    A --> E[📤 4. Upload & Analyze CSV<br/>1-Click Demo Data + Auto 12-Week AI Forecasts]
-    A --> F[🚀 5. Executive Reports & Export<br/>Plain-English Briefings + 1-Click PDF, Excel & ZIP Bundle]
+    A[🛍️ Retail Pulse AI Suite] --> B[💡 1. Ask & Discover<br/>1-Click Question Chips + Store Health Grades A+ to F]
+    A --> C[🎯 2. Plan, Simulate & Profits<br/>Goal-Seek Solver + 7 Event Presets + P&L Margins + Dials]
+    A --> D[🚀 3. Upload & 1-Click Reports<br/>CSV Demo Testing + Executive PDF, Excel & ZIP Bundle]
 ```
 
 ### 1. 💡 1-Click Smart Answers & Store Health Scorecards
