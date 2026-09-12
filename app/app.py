@@ -95,6 +95,7 @@ from src.gamified_feedback import (
     get_economic_feedback,
     render_slider_feedback_badge
 )
+from src.floating_bar import render_floating_action_bar
 
 # Page Configuration
 st.set_page_config(
@@ -2869,3 +2870,12 @@ else:
         render_model_benchmarks()
     with tab_a12:
         render_batch_export(is_simple=False)
+
+# ==============================================================================
+# FLOATING BOTTOM ACTION BAR (MOBILE & DESKTOP FRIENDLY)
+# ==============================================================================
+render_floating_action_bar(
+    raw_df,
+    STORE_LOCATIONS,
+    st.session_state.get("active_store", "Store_09")
+)

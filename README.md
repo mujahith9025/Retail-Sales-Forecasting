@@ -59,6 +59,9 @@ graph TD
 ### 9. 📖 Built-in Plain-English "Jargon Buster" Glossary
 * **Retail & AI Demystified:** Instant 1-sentence explanations and real-world examples for terms like `COGS`, `Safety Stock`, `MAPE ±5.4%`, `R² = 94.6%`, and `P10/P50/P90 Cones`.
 
+### 10. ⚓ Floating Bottom Action Bar (Mobile & Desktop Friendly)
+* **Persistent Glassmorphic Dock:** Fixed at the bottom of the screen with active store indicator (`🏆 Dallas, TX`), live model accuracy telemetry (`🟢 94.6% Accuracy`), and quick actions on any screen size.
+
 ---
 
 ## 🏆 Multi-Model Benchmark Leaderboard
@@ -110,7 +113,8 @@ retail-sales-forecasting/
 │   ├── upload_analyzer.py                  # Custom CSV upload & forecast engine
 │   ├── export_reports.py                   # PDF, Multi-Sheet Excel, and ZIP Bundle exporter
 │   ├── executive_briefing.py               # Plain-English AI briefing memo generator
-│   └── jargon_buster.py                    # Plain-English glossary engine
+│   ├── jargon_buster.py                    # Plain-English glossary engine
+│   └── floating_bar.py                     # Floating bottom action bar engine
 ├── notebooks/
 │   └── retail_sales_beginner_tutorial.py   # Beginner tutorial script
 ├── run_pipeline.py                         # 1-Click end-to-end retraining runner
