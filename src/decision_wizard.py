@@ -172,140 +172,148 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
         </div>
     """, unsafe_allow_html=True)
 
-    # Tailored Action Details based on Intent
-    if current_intent_id == "target_revenue":
-        s_data = raw_df[raw_df["Store_ID"] == active_store]
-        base_rev = s_data.groupby("Date")["Weekly_Sales"].sum().tail(4).mean() if len(s_data) > 0 else 125000.0
-        target_rev = base_rev * 1.20
-        plan = solve_target_revenue_plan(active_store, "All Departments (Entire Store)", target_rev, raw_df)
+    try:
+        # Tailored Action Details based on Intent
+        if current_intent_id == "target_revenue":
+            s_data = raw_df[raw_df["Store_ID"] == active_store]
+            base_rev = s_data.groupby("Date")["Weekly_Sales"].sum().tail(4).mean() if len(s_data) > 0 else 125000.0
+            target_rev = base_rev * 1.20
+            plan = solve_target_revenue_plan(active_store, "All Departments (Entire Store)", target_rev, raw_df)
 
-        target_val = plan.get('target_sales', target_rev)
-        pct_gap = plan.get('pct_gap', 20.0)
-        promo_pct = plan.get('recommended_promo_pct', 10)
-        rec_event = plan.get('recommended_event', 'Standard Operating Week')
-        staff_str = str(plan.get('staff_recommendation', 'Standard Base Staffing')).split('(')[0].strip()
-        labor_cost = plan.get('labor_cost', 1400.0)
-        buffer_str = str(plan.get('buffer_recommendation', plan.get('inventory_recommendation', '+15% Safety Stock Buffer'))).split('(')[0].strip()
-        lead_days = plan.get('supplier_lead_days', 7)
-        net_profit = plan.get('net_profit', plan.get('projected_net_profit', 12000.0))
-        net_margin = plan.get('net_margin_pct', plan.get('projected_net_margin_pct', 15.0))
+            target_val = plan.get('target_sales', target_rev)
+            pct_gap = plan.get('pct_gap', 20.0)
+            promo_pct = plan.get('recommended_promo_pct', 10)
+            rec_event = plan.get('recommended_event', 'Standard Operating Week')
+            staff_str = str(plan.get('staff_recommendation', 'Standard Base Staffing')).split('(')[0].strip()
+            labor_cost = plan.get('labor_cost', 1400.0)
+            buffer_str = str(plan.get('buffer_recommendation', plan.get('inventory_recommendation', '+15% Safety Stock Buffer'))).split('(')[0].strip()
+            lead_days = plan.get('supplier_lead_days', 7)
+            net_profit = plan.get('net_profit', plan.get('projected_net_profit', 12000.0))
+            net_margin = plan.get('net_margin_pct', plan.get('projected_net_margin_pct', 15.0))
 
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric("🎯 Target Revenue", f"${target_val:,.0f}", f"{pct_gap:+.1f}% vs baseline")
-        with w2:
-            st.metric("🏷️ Required Discount", f"{promo_pct}% Off", rec_event)
-        with w3:
-            st.metric("👥 Floor Staff Roster", staff_str, f"${labor_cost:,.0f}/wk cost")
-        with w4:
-            st.metric("📦 Safety Stock Buffer", buffer_str, f"Lead Time: {lead_days} days")
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric("🎯 Target Revenue", f"${target_val:,.0f}", f"{pct_gap:+.1f}% vs baseline")
+            with w2:
+                st.metric("🏷️ Required Discount", f"{promo_pct}% Off", rec_event)
+            with w3:
+                st.metric("👥 Floor Staff Roster", staff_str, f"${labor_cost:,.0f}/wk cost")
+            with w4:
+                st.metric("📦 Safety Stock Buffer", buffer_str, f"Lead Time: {lead_days} days")
 
+            st.markdown(f"""
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
+                💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
+            </div>
+            """, unsafe_allow_html=True)
+
+        elif current_intent_id == "holiday_surge":
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric("🛍️ Peak Holiday Event", "Black Friday / Christmas", "+48.5% Net Demand Lift")
+            with w2:
+                st.metric("🏷️ Promo Markdown", "25% Site-Wide", "High Traffic Magnet")
+            with w3:
+                st.metric("👥 Staffing Surge", "+4 Associates / Store", "Prevent checkout queues")
+            with w4:
+                st.metric("📦 Warehouse Buffer", "+35% Safety Stock", "Order 14 days in advance")
+
+            st.markdown("""
+            <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #991B1B; line-height: 1.45;">
+                🚨 <b>Holiday Readiness Directive:</b> Commercial demand surges by <b>+48.5%</b> during Black Friday week. Ensure warehouse purchase orders are dispatched <b>14 days prior</b> and schedule <b>+4 extra staff members per branch</b> to prevent stockouts and register bottlenecks.
+            </div>
+            """, unsafe_allow_html=True)
+
+        elif current_intent_id == "store_audit":
+            store_cards = compute_store_health_scorecard(raw_df, store_locations)
+            top_s = store_cards.iloc[0] if len(store_cards) > 0 else {}
+            avg_s = store_cards["Health_Score"].mean() if len(store_cards) > 0 and "Health_Score" in store_cards.columns else 85.0
+            match_s = store_cards[store_cards["Store_ID"] == active_store]
+            curr_s = match_s.iloc[0] if len(match_s) > 0 else top_s
+
+            top_id = top_s.get("Store_ID", "Store_09")
+            top_city = top_s.get("City", "Dallas")
+            top_grade = top_s.get("Grade", "A+")
+            top_score = top_s.get("Health_Score", 95.0)
+
+            curr_id = curr_s.get("Store_ID", active_store)
+            curr_city = curr_s.get("City", "Store")
+            curr_grade = curr_s.get("Grade", "A")
+            curr_sqft_rev = curr_s.get("Sales_per_SqFt ($)", 75.0)
+            curr_rx = curr_s.get("Prescription", "Maintain current operational inventory cadence.")
+            curr_growth = curr_s.get("Growth_Pace (%)", 5.0)
+
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric(f"🏆 Top Branch Leader", f"{top_id} ({top_city})", f"Grade {top_grade} ({top_score}/100)")
+            with w2:
+                st.metric(f"🏢 Active Store Grade", f"{curr_id} — Grade {curr_grade}", f"${curr_sqft_rev}/sq ft")
+            with w3:
+                st.metric("✨ Network Health Index", f"{avg_s:.1f} / 100", "Solid Baseline")
+            with w4:
+                st.metric("🛡️ Critical Risk Stores", "0 Stores (Grade F)", "Low Network Risk")
+
+            st.markdown(f"""
+            <div style="background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #166534; line-height: 1.45;">
+                🩺 <b>Health Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} Space efficiency is currently <b>${curr_sqft_rev}/sq ft</b> with <b>{curr_growth:+.1f}%</b> recent momentum.
+            </div>
+            """, unsafe_allow_html=True)
+
+        elif current_intent_id == "profit_sweetspot":
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric("💰 Optimal Sweet Spot", "10% Discount", "Maximum Take-Home Profit")
+            with w2:
+                st.metric("💵 Projected Net Profit", "$10,500 / week", "+28.4% vs 0% baseline")
+            with w3:
+                st.metric("⚠️ 30% Flash Markdown", "$6,800 / week", "-35.2% Margin Dilution")
+            with w4:
+                st.metric("📊 Wholesale COGS", "58% of Revenue", "Grocery Category Benchmark")
+
+            st.markdown("""
+            <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #92400E; line-height: 1.45;">
+                💡 <b>Profit Margin Directive:</b> A <b>10% promotional markdown</b> increases unit volume sufficiently to generate <b>$10,500 net cash profit</b>. Avoid deep 30%+ clearance markdowns unless liquidating obsolete inventory, as wholesale COGS erode net margins rapidly.
+            </div>
+            """, unsafe_allow_html=True)
+
+        elif current_intent_id == "custom_upload":
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric("📤 Custom CSV Ingestion", "Drag & Drop", "UTF-8 & Excel CSV Supported")
+            with w2:
+                st.metric("⚡ 1-Click Demo Ready", "100 Row Sample", "Instant Testing")
+            with w3:
+                st.metric("🔮 Forward AI Horizon", "12 Weeks Forecast", "XGBoost ML Pipeline")
+            with w4:
+                st.metric("🔍 Anomaly Scanner", "Outlier Detection", "Alerts on >2.2σ Spikes")
+
+            st.markdown("""
+            <div style="background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #6B21A8; line-height: 1.45;">
+                🚀 <b>Custom Data Directive:</b> Navigate to <b>Tab 3 (Upload & Reports)</b> or click below to test the automated AI forecaster with your own custom store sales CSV files.
+            </div>
+            """, unsafe_allow_html=True)
+
+        elif current_intent_id == "export_bundle":
+            w1, w2, w3, w4 = st.columns(4)
+            with w1:
+                st.metric("📑 Executive PDF Memo", "Publication Ready", "Leadership Briefing")
+            with w2:
+                st.metric("📊 5-Sheet Excel Model", "Enterprise XLSX", "Financial Schedules")
+            with w3:
+                st.metric("📁 Batch Forecast CSV", "1,300 Data Rows", "Warehouse Ingestion")
+            with w4:
+                st.metric("📦 1-Click ZIP Archive", "All-in-One Bundle", "Single Download")
+
+            st.markdown("""
+            <div style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
+                📦 <b>Executive Reporting Directive:</b> Download the complete multi-asset bundle directly from the sidebar button or <b>Tab 3</b> for immediate board-level presentation and analysis.
+            </div>
+            """, unsafe_allow_html=True)
+
+    except Exception as e:
         st.markdown(f"""
         <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-            💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif current_intent_id == "holiday_surge":
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric("🛍️ Peak Holiday Event", "Black Friday / Christmas", "+48.5% Net Demand Lift")
-        with w2:
-            st.metric("🏷️ Promo Markdown", "25% Site-Wide", "High Traffic Magnet")
-        with w3:
-            st.metric("👥 Staffing Surge", "+4 Associates / Store", "Prevent checkout queues")
-        with w4:
-            st.metric("📦 Warehouse Buffer", "+35% Safety Stock", "Order 14 days in advance")
-
-        st.markdown("""
-        <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #991B1B; line-height: 1.45;">
-            🚨 <b>Holiday Readiness Directive:</b> Commercial demand surges by <b>+48.5%</b> during Black Friday week. Ensure warehouse purchase orders are dispatched <b>14 days prior</b> and schedule <b>+4 extra staff members per branch</b> to prevent stockouts and register bottlenecks.
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif current_intent_id == "store_audit":
-        store_cards = compute_store_health_scorecard(raw_df, store_locations)
-        top_s = store_cards.iloc[0] if len(store_cards) > 0 else {}
-        avg_s = store_cards["Health_Score"].mean() if len(store_cards) > 0 and "Health_Score" in store_cards.columns else 85.0
-        match_s = store_cards[store_cards["Store_ID"] == active_store]
-        curr_s = match_s.iloc[0] if len(match_s) > 0 else top_s
-
-        top_id = top_s.get("Store_ID", "Store_09")
-        top_city = top_s.get("City", "Dallas")
-        top_grade = top_s.get("Grade", "A+")
-        top_score = top_s.get("Health_Score", 95.0)
-
-        curr_id = curr_s.get("Store_ID", active_store)
-        curr_city = curr_s.get("City", "Store")
-        curr_grade = curr_s.get("Grade", "A")
-        curr_sqft_rev = curr_s.get("Sales_per_SqFt ($)", 75.0)
-        curr_rx = curr_s.get("Prescription", "Maintain current operational inventory cadence.")
-        curr_growth = curr_s.get("Growth_Pace (%)", 5.0)
-
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric(f"🏆 Top Branch Leader", f"{top_id} ({top_city})", f"Grade {top_grade} ({top_score}/100)")
-        with w2:
-            st.metric(f"🏢 Active Store Grade", f"{curr_id} — Grade {curr_grade}", f"${curr_sqft_rev}/sq ft")
-        with w3:
-            st.metric("✨ Network Health Index", f"{avg_s:.1f} / 100", "Solid Baseline")
-        with w4:
-            st.metric("🛡️ Critical Risk Stores", "0 Stores (Grade F)", "Low Network Risk")
-
-        st.markdown(f"""
-        <div style="background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #166534; line-height: 1.45;">
-            🩺 <b>Health Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} Space efficiency is currently <b>${curr_sqft_rev}/sq ft</b> with <b>{curr_growth:+.1f}%</b> recent momentum.
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif current_intent_id == "profit_sweetspot":
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric("💰 Optimal Sweet Spot", "10% Discount", "Maximum Take-Home Profit")
-        with w2:
-            st.metric("💵 Projected Net Profit", "$10,500 / week", "+28.4% vs 0% baseline")
-        with w3:
-            st.metric("⚠️ 30% Flash Markdown", "$6,800 / week", "-35.2% Margin Dilution")
-        with w4:
-            st.metric("📊 Wholesale COGS", "58% of Revenue", "Grocery Category Benchmark")
-
-        st.markdown("""
-        <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #92400E; line-height: 1.45;">
-            💡 <b>Profit Margin Directive:</b> A <b>10% promotional markdown</b> increases unit volume sufficiently to generate <b>$10,500 net cash profit</b>. Avoid deep 30%+ clearance markdowns unless liquidating obsolete inventory, as wholesale COGS erode net margins rapidly.
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif current_intent_id == "custom_upload":
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric("📤 Custom CSV Ingestion", "Drag & Drop", "UTF-8 & Excel CSV Supported")
-        with w2:
-            st.metric("⚡ 1-Click Demo Ready", "100 Row Sample", "Instant Testing")
-        with w3:
-            st.metric("🔮 Forward AI Horizon", "12 Weeks Forecast", "XGBoost ML Pipeline")
-        with w4:
-            st.metric("🔍 Anomaly Scanner", "Outlier Detection", "Alerts on >2.2σ Spikes")
-
-        st.markdown("""
-        <div style="background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #6B21A8; line-height: 1.45;">
-            🚀 <b>Custom Data Directive:</b> Navigate to <b>Tab 3 (Upload & Reports)</b> or click below to test the automated AI forecaster with your own custom store sales CSV files.
-        </div>
-        """, unsafe_allow_html=True)
-
-    elif current_intent_id == "export_bundle":
-        w1, w2, w3, w4 = st.columns(4)
-        with w1:
-            st.metric("📑 Executive PDF Memo", "Publication Ready", "Leadership Briefing")
-        with w2:
-            st.metric("📊 5-Sheet Excel Model", "Enterprise XLSX", "Financial Schedules")
-        with w3:
-            st.metric("📁 Batch Forecast CSV", "1,300 Data Rows", "Warehouse Ingestion")
-        with w4:
-            st.metric("📦 1-Click ZIP Archive", "All-in-One Bundle", "Single Download")
-
-        st.markdown("""
-        <div style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-            📦 <b>Executive Reporting Directive:</b> Download the complete multi-asset bundle directly from the sidebar button or <b>Tab 3</b> for immediate board-level presentation and analysis.
+            💡 <b>Executive Directive:</b> AI strategy plan loaded for <b>{active_store}</b>. Use the interactive tools and controls below to evaluate forward forecasts and simulations.
         </div>
         """, unsafe_allow_html=True)
 

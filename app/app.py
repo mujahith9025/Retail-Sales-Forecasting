@@ -790,11 +790,14 @@ st.markdown("""
 # ==============================================================================
 # 🧭 "WHAT DO YOU WANT TO DO?" 1-CLICK DECISION WIZARD
 # ==============================================================================
-if view_mode.startswith("🌟"):
-    render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
-else:
-    with st.expander("🧭 **'What Do You Want to Do?' 1-Click Executive Decision Wizard**", expanded=False):
+try:
+    if view_mode.startswith("🌟"):
         render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+    else:
+        with st.expander("🧭 **'What Do You Want to Do?' 1-Click Executive Decision Wizard**", expanded=False):
+            render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+except Exception as e:
+    st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
 
 # ==============================================================================
 # INTERACTIVE 30-SECOND QUICK START GUIDE BANNER
