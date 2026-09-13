@@ -88,6 +88,69 @@ def generate_sample_sales_template(n_weeks: int = 12) -> pd.DataFrame:
                 
     return pd.DataFrame(records)
 
+
+def generate_india_sample_sales_template() -> pd.DataFrame:
+    """
+    Returns the comprehensive India Region Retail Sales Sample dataset (10 Metro Stores x 5 Departments x 52 Weeks).
+    """
+    from pathlib import Path
+    csv_file = Path(__file__).resolve().parent.parent / "data" / "india_retail_sales_sample.csv"
+    if csv_file.exists():
+        return pd.read_csv(csv_file)
+    
+    stores = [
+        {"store_id": "Store_01", "city": "Mumbai", "location": "Bandra Kurla Complex (BKC)", "state": "Maharashtra", "size_sqft": 165000, "base_multiplier": 1.45},
+        {"store_id": "Store_02", "city": "Bengaluru", "location": "Indiranagar Tech Hub", "state": "Karnataka", "size_sqft": 140000, "base_multiplier": 1.35},
+        {"store_id": "Store_03", "city": "New Delhi", "location": "Connaught Place Flagship", "state": "Delhi NCR", "size_sqft": 150000, "base_multiplier": 1.40},
+        {"store_id": "Store_04", "city": "Chennai", "location": "T. Nagar Shopping Plaza", "state": "Tamil Nadu", "size_sqft": 125000, "base_multiplier": 1.20},
+        {"store_id": "Store_05", "city": "Hyderabad", "location": "Hitec City Cyber Towers", "state": "Telangana", "size_sqft": 130000, "base_multiplier": 1.25},
+        {"store_id": "Store_06", "city": "Kolkata", "location": "Park Street Cultural Mall", "state": "West Bengal", "size_sqft": 110000, "base_multiplier": 1.15},
+        {"store_id": "Store_07", "city": "Pune", "location": "Kothrud Commercial Hub", "state": "Maharashtra", "size_sqft": 95000, "base_multiplier": 1.10},
+        {"store_id": "Store_08", "city": "Ahmedabad", "location": "SG Highway Hypermarket", "state": "Gujarat", "size_sqft": 120000, "base_multiplier": 1.22},
+        {"store_id": "Store_09", "city": "Jaipur", "location": "MI Road Heritage Store", "state": "Rajasthan", "size_sqft": 85000, "base_multiplier": 1.05},
+        {"store_id": "Store_10", "city": "Kochi", "location": "Marine Drive Coastal Mall", "state": "Kerala", "size_sqft": 90000, "base_multiplier": 1.08},
+    ]
+    departments = {
+        "Grocery": {"base_sales": 320000.0, "promo_sensitivity": 1.25},
+        "Electronics": {"base_sales": 480000.0, "promo_sensitivity": 1.65},
+        "Apparel": {"base_sales": 260000.0, "promo_sensitivity": 1.50},
+        "Home_Garden": {"base_sales": 190000.0, "promo_sensitivity": 1.35},
+        "Pharmacy": {"base_sales": 140000.0, "promo_sensitivity": 1.15}
+    }
+    start_date = pd.to_datetime("2024-01-05")
+    weeks = [start_date + pd.Timedelta(weeks=i) for i in range(52)]
+    records = []
+    np.random.seed(108)
+    for d in weeks:
+        w_num = d.isocalendar().week
+        is_holiday = 1 if w_num in [4, 12, 15, 33, 34, 36, 41, 43, 44, 52] else 0
+        holiday_name = "Diwali_Dhanteras_Grand_Festive_Sale" if w_num in [43, 44] else ("Independence_Day_Sale" if w_num == 33 else ("Regular_Week" if not is_holiday else "Festive_Sale"))
+        festive_surge = 1.85 if w_num in [43, 44] else (1.40 if is_holiday else 1.0)
+        for s in stores:
+            for dept, d_info in departments.items():
+                promo_pct = 0.20 if is_holiday else (0.10 if np.random.rand() > 0.7 else 0.0)
+                base = d_info["base_sales"] * s["base_multiplier"]
+                sales = base * festive_surge * (1.0 + promo_pct * d_info["promo_sensitivity"]) + np.random.normal(0, 5000)
+                records.append({
+                    "Date": d.strftime("%Y-%m-%d"),
+                    "Store_ID": s["store_id"],
+                    "Store_Name": f"{s['city']} - {s['location']}",
+                    "City": s["city"],
+                    "State": s["state"],
+                    "Department": dept,
+                    "Weekly_Sales": round(max(25000.0, sales), 2),
+                    "Promotion_Discount": promo_pct,
+                    "Is_Holiday": is_holiday,
+                    "Holiday_Name": holiday_name,
+                    "Temperature_C": round(np.random.uniform(22.0, 36.0), 1),
+                    "Fuel_Price_INR": round(np.random.uniform(96.0, 104.0), 2),
+                    "CPI": round(np.random.uniform(182.0, 195.0), 1),
+                    "Unemployment_Rate": round(np.random.uniform(6.8, 7.6), 2),
+                    "Store_Size_SqFt": s["size_sqft"]
+                })
+    return pd.DataFrame(records)
+
+
 def process_and_forecast_uploaded_data(df: pd.DataFrame) -> dict:
     """
     Processes an uploaded DataFrame, engineers time-series features,

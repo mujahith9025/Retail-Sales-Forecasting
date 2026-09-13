@@ -83,6 +83,7 @@ except (ImportError, ModuleNotFoundError):
 try:
     from src.upload_analyzer import (
         generate_sample_sales_template,
+        generate_india_sample_sales_template,
         process_and_forecast_uploaded_data,
         generate_uploaded_excel,
         generate_uploaded_pdf
@@ -90,6 +91,7 @@ try:
 except (ImportError, ModuleNotFoundError):
     from upload_analyzer import (
         generate_sample_sales_template,
+        generate_india_sample_sales_template,
         process_and_forecast_uploaded_data,
         generate_uploaded_excel,
         generate_uploaded_pdf
@@ -1473,19 +1475,35 @@ def render_upload_analyzer(is_simple=False):
     st.subheader("📤 Upload & Auto-Analyze Custom Sales Report (CSV)")
     st.caption("Upload your custom store sales CSV to automatically engineer time-series features, execute AI forecasts, detect demand outliers, and export publication-ready audit reports.")
     
-    col_t1, col_t2 = st.columns([1.3, 1.7])
+    sample_template = generate_sample_sales_template(n_weeks=8)
+    india_template = generate_india_sample_sales_template()
+
+    col_t1, col_t2, col_t3 = st.columns([1.2, 1.4, 1.4])
     with col_t1:
-        sample_template = generate_sample_sales_template(n_weeks=8)
         st.download_button(
-            label="📥 Download Sample CSV Template",
+            label="📥 Basic Template (CSV)",
             data=sample_template.to_csv(index=False).encode('utf-8'),
             file_name="sample_sales_report_template.csv",
             mime="text/csv",
-            help="Download a pre-formatted CSV template to test or fill with your own store figures.",
+            help="Download a basic 8-week CSV template to fill with your own store figures.",
             use_container_width=True
         )
     with col_t2:
-        use_demo = st.checkbox("✨ Load Instant Demo Dataset (1-Click Test without file browsing)", value=False, key="chk_use_demo_data")
+        st.download_button(
+            label="🇮🇳 India Region Dataset (2,600 CSV)",
+            data=india_template.to_csv(index=False).encode('utf-8'),
+            file_name="india_retail_sales_sample.csv",
+            mime="text/csv",
+            help="Download comprehensive India retail sales dataset (Mumbai, Bengaluru, Delhi, Chennai, etc. × 52 Weeks).",
+            use_container_width=True
+        )
+    with col_t3:
+        use_demo = st.selectbox(
+            "✨ Instant Demo Loader:",
+            options=["None (Upload your own CSV)", "🇮🇳 India Region Network (2,600 Rows)", "📊 Basic Sample (72 Rows)"],
+            index=0,
+            key="sel_demo_data_loader"
+        )
         
     st.write("")
     
@@ -1502,9 +1520,12 @@ def render_upload_analyzer(is_simple=False):
             st.success(f"✅ Successfully loaded '{uploaded_file.name}' ({len(df_to_analyze):,} rows)")
         except Exception as e:
             st.error(f"❌ Could not read CSV file: {e}")
-    elif use_demo:
+    elif use_demo == "🇮🇳 India Region Network (2,600 Rows)":
+        df_to_analyze = india_template
+        st.info("ℹ️ Loaded 1-Click Interactive India Region Dataset (10 Metro Stores × 5 Departments × 52 Weeks = 2,600 Records)")
+    elif use_demo == "📊 Basic Sample (72 Rows)":
         df_to_analyze = sample_template
-        st.info("ℹ️ Loaded 1-Click Interactive Demo Dataset (8 Weeks × 3 Stores × 3 Departments)")
+        st.info("ℹ️ Loaded 1-Click Interactive Basic Demo Dataset (8 Weeks × 3 Stores × 3 Departments)")
         
     if df_to_analyze is not None:
         with st.spinner("🤖 Processing data, engineering time-series features, and running AI forecasting models..."):
