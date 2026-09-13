@@ -210,22 +210,35 @@ def render_store_battle_arena(
     # Selection Pickers
     col_a, col_swap, col_b = st.columns([2, 0.6, 2])
     
-    if f"{key_prefix}_store_a" not in st.session_state:
-        st.session_state[f"{key_prefix}_store_a"] = "Store_09"  # Dallas
-    if f"{key_prefix}_store_b" not in st.session_state:
-        st.session_state[f"{key_prefix}_store_b"] = "Store_01"  # New York
+    active_stores = list(raw_df["Store_ID"].unique()) if "Store_ID" in raw_df.columns else STORES
+    if not active_stores:
+        active_stores = STORES
+        
+    def_a = active_stores[0]
+    def_b = active_stores[1] if len(active_stores) > 1 else active_stores[0]
 
-    val_a = st.session_state.get(f"{key_prefix}_store_a", "Store_09")
-    val_b = st.session_state.get(f"{key_prefix}_store_b", "Store_01")
-    idx_a = STORES.index(val_a) if val_a in STORES else 8
-    idx_b = STORES.index(val_b) if val_b in STORES else 0
+    if f"{key_prefix}_store_a" not in st.session_state or st.session_state[f"{key_prefix}_store_a"] not in active_stores:
+        st.session_state[f"{key_prefix}_store_a"] = def_a
+    if f"{key_prefix}_store_b" not in st.session_state or st.session_state[f"{key_prefix}_store_b"] not in active_stores:
+        st.session_state[f"{key_prefix}_store_b"] = def_b
+
+    val_a = st.session_state.get(f"{key_prefix}_store_a", def_a)
+    val_b = st.session_state.get(f"{key_prefix}_store_b", def_b)
+    idx_a = active_stores.index(val_a) if val_a in active_stores else 0
+    idx_b = active_stores.index(val_b) if val_b in active_stores else (1 if len(active_stores) > 1 else 0)
+
+    def format_store_label(s):
+        loc = store_locations.get(s, {}) or STORE_PROFILES.get(s, {})
+        city = loc.get("city", loc.get("City", s))
+        icon = loc.get("icon", "🏢")
+        return f"{icon} {s} — {city}"
 
     with col_a:
         sel_a = st.selectbox(
             "🔵 Select Branch Fighter A:",
-            options=STORES,
+            options=active_stores,
             index=idx_a,
-            format_func=lambda s: f"{STORE_PROFILES.get(s, {}).get('icon', '🏢')} {s} — {STORE_PROFILES.get(s, {}).get('city', s)}",
+            format_func=format_store_label,
             key=f"{key_prefix}_sel_box_a"
         )
         if sel_a != st.session_state[f"{key_prefix}_store_a"]:
@@ -245,9 +258,9 @@ def render_store_battle_arena(
     with col_b:
         sel_b = st.selectbox(
             "🟣 Select Branch Fighter B:",
-            options=STORES,
+            options=active_stores,
             index=idx_b,
-            format_func=lambda s: f"{STORE_PROFILES.get(s, {}).get('icon', '🏢')} {s} — {STORE_PROFILES.get(s, {}).get('city', s)}",
+            format_func=format_store_label,
             key=f"{key_prefix}_sel_box_b"
         )
         if sel_b != st.session_state[f"{key_prefix}_store_b"]:

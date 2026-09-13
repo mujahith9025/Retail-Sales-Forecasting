@@ -43,7 +43,13 @@ def render_floating_action_bar(
     """
     Renders the persistent Floating Bottom Action Bar.
     """
-    profile = STORE_PROFILES.get(active_store, STORE_PROFILES.get("Store_09", {"city": "Dallas", "state": "TX", "icon": "🏆"}))
+    loc = store_locations.get(active_store, {}) if store_locations else {}
+    def_p = STORE_PROFILES.get(active_store, {"city": active_store, "state": "", "icon": "🏬"})
+    profile = {
+        "city": loc.get("city", def_p.get("city", active_store)),
+        "state": loc.get("state", def_p.get("state", "")),
+        "icon": loc.get("icon", def_p.get("icon", "🏬"))
+    }
 
     # CSS for Floating Dock
     safe_render_html("""<style>

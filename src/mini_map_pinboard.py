@@ -16,10 +16,11 @@ except (ImportError, ModuleNotFoundError):
     from store_deck import STORE_PROFILES, GRADE_COLORS, get_enriched_store_cards
 
 
-def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str) -> go.Figure:
+def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str, store_locations: dict = None) -> go.Figure:
     """
-    Generates a high-precision Plotly USA geo scatter map with color-coded grade pins
+    Generates a high-precision Plotly geo scatter map with color-coded grade pins
     and glowing highlight rings for the active store.
+    Automatically adapts projection and bounding box for US, India, or global datasets.
     """
     lats = []
     lons = []
@@ -29,12 +30,13 @@ def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str
     hover_texts = []
     
     active_lat, active_lon, active_city = None, None, None
+    loc_dict = store_locations or STORE_LOCATIONS
     
     for card in cards:
         s_id = card["store_id"]
-        loc = STORE_LOCATIONS.get(s_id, {})
-        lat = loc.get("lat", 38.0)
-        lon = loc.get("lon", -97.0)
+        loc = loc_dict.get(s_id, {})
+        lat = float(loc.get("lat", 38.0))
+        lon = float(loc.get("lon", -97.0))
         grade = card["grade"]
         color = GRADE_COLORS.get(grade, "#2563EB")
         
@@ -49,10 +51,11 @@ def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str
         colors.append(color)
         sizes.append(22 if is_active else 15)
         
+        tot_rev_fmt = f"${card['tot_rev']/1e6:,.2f}M" if card['tot_rev'] >= 1e6 else f"${card['tot_rev']/1e3:,.1f}K"
         hover_info = (
             f"<b>{card['icon']} {s_id}: {card['city']}, {card['state']}</b><br>"
             f"Grade: <b>{grade}</b> ({card['health_score']:.1f} pts)<br>"
-            f"Total Sales: <b>${card['tot_rev']/1e6:,.2f}M</b><br>"
+            f"Total Sales: <b>{tot_rev_fmt}</b><br>"
             f"Space Yield: <b>${card['yield_sqft']:.2f}/sq ft</b><br>"
             f"Status: <i>{card['tag']}</i>"
         )
@@ -96,9 +99,28 @@ def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str
             name="Selected Branch"
         ))
 
-    fig.update_layout(
-        geo_scope="usa",
-        geo=dict(
+    # Geographic region detection
+    is_india = len(lons) > 0 and all(60.0 <= x <= 100.0 for x in lons) and all(5.0 <= y <= 40.0 for y in lats)
+    is_usa = len(lons) > 0 and all(-135.0 <= x <= -60.0 for x in lons) and all(20.0 <= y <= 55.0 for y in lats)
+
+    if is_india:
+        geo_layout = dict(
+            scope="asia",
+            bgcolor="rgba(0,0,0,0)",
+            lakecolor="#EFF6FF",
+            landcolor="#F8FAFC",
+            subunitcolor="#CBD5E1",
+            countrycolor="#94A3B8",
+            showlakes=True,
+            showland=True,
+            showsubunits=True,
+            showcountries=True,
+            center=dict(lat=21.5, lon=79.5),
+            projection_scale=2.7
+        )
+    elif is_usa:
+        geo_layout = dict(
+            scope="usa",
             bgcolor="rgba(0,0,0,0)",
             lakecolor="#EFF6FF",
             landcolor="#F8FAFC",
@@ -109,9 +131,25 @@ def generate_us_minimap_figure(cards: List[Dict[str, Any]], active_store_id: str
             showsubunits=True,
             showcountries=False,
             projection_type="albers usa"
-        ),
+        )
+    else:
+        geo_layout = dict(
+            scope="world",
+            bgcolor="rgba(0,0,0,0)",
+            lakecolor="#EFF6FF",
+            landcolor="#F8FAFC",
+            subunitcolor="#CBD5E1",
+            countrycolor="#94A3B8",
+            showlakes=True,
+            showland=True,
+            showsubunits=True,
+            showcountries=True
+        )
+
+    fig.update_layout(
+        geo=geo_layout,
         margin=dict(l=0, r=0, t=10, b=0),
-        height=260,
+        height=270,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         showlegend=False,
@@ -148,18 +186,19 @@ def render_us_minimap_pinboard(
     key_prefix: str = "pinboard"
 ) -> str:
     """
-    Renders the Interactive US Mini-Map Pinboard with colored pulsating dots (🟢 A+, 🔵 B, 🟡 C)
+    Renders the Interactive Store Mini-Map Pinboard with colored pulsating dots (🟢 A+, 🔵 B, 🟡 C)
     and quick-select pin buttons in Streamlit.
     """
-    if "active_store" not in st.session_state:
-        st.session_state.active_store = "Store_09"  # Dallas, TX
-        
-    current_active = active_store or st.session_state.active_store
-    if current_active not in STORE_PROFILES:
-        current_active = "Store_09"
-        st.session_state.active_store = current_active
-
     cards = get_enriched_store_cards(raw_df, store_locations)
+    if not cards:
+        st.info("ℹ️ No store location coordinates available to render map pinboard.")
+        return active_store or "Store_01"
+
+    valid_store_ids = [c["store_id"] for c in cards]
+    if "active_store" not in st.session_state or st.session_state.active_store not in valid_store_ids:
+        st.session_state.active_store = valid_store_ids[0]
+        
+    current_active = active_store if (active_store in valid_store_ids) else st.session_state.active_store
     card_dict = {c["store_id"]: c for c in cards}
     active_c = card_dict.get(current_active, cards[0])
 
@@ -168,7 +207,7 @@ def render_us_minimap_pinboard(
 <div style="display: flex; align-items: center; gap: 0.6rem;">
 <span style="font-size: 1.3rem;">📍</span>
 <div>
-<span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">Interactive US Pinboard: <b>{active_c['icon']} {current_active} ({active_c['city']}, {active_c['state']})</b></span>
+<span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">Interactive Store Pinboard: <b>{active_c['icon']} {current_active} ({active_c['city']}, {active_c['state']})</b></span>
 <span style="font-size: 0.8rem; color: #64748B; margin-left: 0.5rem;">Grade: <b style="color: {active_c['color']};">{active_c['grade']}</b> ({active_c['health_score']:.1f} pts)</span>
 </div>
 </div>
@@ -179,27 +218,29 @@ ${active_c['yield_sqft']:.2f}/sq ft Yield
     safe_render_html(header_pin_html)
 
     # Mini-Map Plotly Chart
-    fig = generate_us_minimap_figure(cards, current_active)
+    fig = generate_us_minimap_figure(cards, current_active, store_locations)
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
-    # Interactive 1-Click Store Pin Chips (2 rows x 5 cols)
+    # Interactive 1-Click Store Pin Chips (dynamically chunked)
     safe_render_html("<div style='font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem;'>📌 Click any store pin below to select:</div>")
     
-    cols_row1 = st.columns(5)
-    cols_row2 = st.columns(5)
+    chunk_size = 5
+    card_chunks = [cards[i:i + chunk_size] for i in range(0, len(cards), chunk_size)]
     
-    for i, c in enumerate(cards):
-        col = cols_row1[i] if i < 5 else cols_row2[i - 5]
-        s_id = c["store_id"]
-        is_sel = (s_id == current_active)
-        
-        # Color dot emoji by grade
-        dot = "🟢" if "A" in c["grade"] else ("🔵" if "B" in c["grade"] else ("🟡" if "C" in c["grade"] else "🔴"))
-        btn_label = f"{dot} {c['city']} ({c['grade']})"
-        btn_type = "primary" if is_sel else "secondary"
-        
-        if col.button(btn_label, key=f"{key_prefix}_pin_{s_id}", type=btn_type, use_container_width=True):
-            st.session_state.active_store = s_id
-            st.rerun()
+    for row_chunk in card_chunks:
+        cols = st.columns(len(row_chunk) if len(row_chunk) <= 5 else 5)
+        for idx, c in enumerate(row_chunk):
+            col = cols[idx]
+            s_id = c["store_id"]
+            is_sel = (s_id == current_active)
+            
+            # Color dot emoji by grade
+            dot = "🟢" if "A" in c["grade"] else ("🔵" if "B" in c["grade"] else ("🟡" if "C" in c["grade"] else "🔴"))
+            btn_label = f"{dot} {c['city']} ({c['grade']})"
+            btn_type = "primary" if is_sel else "secondary"
+            
+            if col.button(btn_label, key=f"{key_prefix}_pin_{s_id}", type=btn_type, use_container_width=True):
+                st.session_state.active_store = s_id
+                st.rerun()
 
     return current_active

@@ -492,7 +492,7 @@ def load_historical_data():
         return None
     df = pd.read_csv(RAW_DATA_FILE)
     df["Date"] = pd.to_datetime(df["Date"])
-    df["Holiday_Name"] = df["Holiday_Name"].fillna("Regular_Week").replace({"None": "Regular_Week"})
+    df["Holiday_Name"] = df["Holiday_Name"].fillna("Regular_Week").replace({"None": "Regular_Week", "nan": "Regular_Week"})
     return df
 
 @st.cache_resource
@@ -539,9 +539,129 @@ def load_metrics():
     with open(MODEL_METRICS_FILE, "r") as f:
         return json.load(f)
 
-raw_df = load_historical_data()
+
+KNOWN_CITY_COORDS = {
+    "mumbai": (19.0760, 72.8777, "🇮🇳", "Financial Capital"),
+    "bengaluru": (12.9716, 77.5946, "💻", "Silicon Valley Hub"),
+    "bangalore": (12.9716, 77.5946, "💻", "Silicon Valley Hub"),
+    "new delhi": (28.6139, 77.2090, "🏛️", "National Capital Hub"),
+    "delhi": (28.6139, 77.2090, "🏛️", "National Capital Hub"),
+    "chennai": (13.0827, 80.2707, "🌊", "Coastal Megacity"),
+    "hyderabad": (17.3850, 78.4867, "🚀", "Cyber Hub"),
+    "kolkata": (22.5726, 88.3639, "🎨", "Cultural Hub"),
+    "pune": (18.5204, 73.8567, "🎓", "Industrial Hub"),
+    "ahmedabad": (23.0225, 72.5714, "💎", "Commercial Center"),
+    "jaipur": (26.9124, 75.7873, "🏰", "Heritage Hub"),
+    "kochi": (9.9312, 76.2673, "🌴", "Port Hub"),
+    "new york": (40.7128, -74.0060, "🗽", "Flagship Hub"),
+    "los angeles": (34.0522, -118.2437, "🌴", "West Coast Flagship"),
+    "chicago": (41.8781, -87.6298, "🏙️", "Midwest Logistics Hub"),
+    "houston": (29.7604, -95.3698, "🚀", "Gulf Coast Center"),
+    "phoenix": (33.4484, -112.0740, "🌵", "Desert Growth Hub"),
+    "philadelphia": (39.9526, -75.1652, "🔔", "Mid-Atlantic Hub"),
+    "san antonio": (29.4241, -98.4936, "🤠", "Southwest Retail Hub"),
+    "san diego": (32.7157, -117.1611, "🌊", "Pacific Coastal Hub"),
+    "dallas": (32.7767, -96.7970, "🏆", "Texas Flagship Hub"),
+    "san jose": (37.3382, -121.8863, "🍑", "Silicon Valley Center"),
+}
+
+def get_active_store_locations(df: pd.DataFrame) -> dict:
+    """
+    Dynamically extracts or infers store location profiles (city, state, lat, lon, sqft, icon, tag)
+    for all unique Store_IDs present in the active dataset.
+    Supports default US stores, India region dataset, and arbitrary user-uploaded CSVs.
+    """
+    if df is None or len(df) == 0:
+        return STORE_LOCATIONS
+
+    locations = {}
+    stores = sorted(list(df["Store_ID"].unique())) if "Store_ID" in df.columns else list(STORE_LOCATIONS.keys())
+    
+    col_city = next((c for c in df.columns if c.lower() in ["city", "store_city", "location_city", "town"]), None)
+    col_state = next((c for c in df.columns if c.lower() in ["state", "store_state", "region", "province"]), None)
+    col_lat = next((c for c in df.columns if c.lower() in ["latitude", "lat", "store_lat"]), None)
+    col_lon = next((c for c in df.columns if c.lower() in ["longitude", "lon", "lng", "store_lon"]), None)
+    col_size = next((c for c in df.columns if c.lower() in ["store_size_sqft", "store_size", "size", "sqft", "area_sqft"]), None)
+    col_name = next((c for c in df.columns if c.lower() in ["store_name", "branch_name", "location_area", "store_title"]), None)
+
+    icons = ["🗽", "🌴", "🏙️", "🚀", "🌵", "🔔", "🤠", "🌊", "🏆", "🍑", "🏬", "🏛️", "🏪", "🛍️", "🎯", "⚓"]
+
+    for idx, s in enumerate(stores):
+        s_str = str(s)
+        s_data = df[df["Store_ID"] == s]
+        
+        # Check if default US STORE_LOCATIONS matches and no custom city column is provided
+        if s_str in STORE_LOCATIONS and not col_city:
+            loc_entry = dict(STORE_LOCATIONS[s_str])
+            loc_entry["icon"] = STORE_PROFILES.get(s_str, {}).get("icon", icons[idx % len(icons)])
+            loc_entry["tag"] = STORE_PROFILES.get(s_str, {}).get("tag", f"{loc_entry.get('city', s_str)} Hub")
+            loc_entry["sqft"] = float(s_data[col_size].iloc[0]) if (col_size and len(s_data) > 0 and pd.notna(s_data[col_size].iloc[0])) else 120000.0
+            locations[s_str] = loc_entry
+            continue
+
+        city = str(s_data[col_city].iloc[0]) if (col_city and len(s_data) > 0 and pd.notna(s_data[col_city].iloc[0])) else STORE_LOCATIONS.get(s_str, {}).get("city", s_str)
+        state = str(s_data[col_state].iloc[0]) if (col_state and len(s_data) > 0 and pd.notna(s_data[col_state].iloc[0])) else STORE_LOCATIONS.get(s_str, {}).get("state", "")
+        
+        city_lower = city.lower().strip()
+        known_coord = KNOWN_CITY_COORDS.get(city_lower)
+
+        if col_lat and len(s_data) > 0 and pd.notna(s_data[col_lat].iloc[0]):
+            lat = float(s_data[col_lat].iloc[0])
+        elif known_coord:
+            lat = known_coord[0]
+        elif s_str in STORE_LOCATIONS:
+            lat = STORE_LOCATIONS[s_str]["lat"]
+        else:
+            lat = 20.5937 + (idx * 1.5)
+
+        if col_lon and len(s_data) > 0 and pd.notna(s_data[col_lon].iloc[0]):
+            lon = float(s_data[col_lon].iloc[0])
+        elif known_coord:
+            lon = known_coord[1]
+        elif s_str in STORE_LOCATIONS:
+            lon = STORE_LOCATIONS[s_str]["lon"]
+        else:
+            lon = 78.9629 + (idx * 1.5)
+
+        sqft = float(s_data[col_size].iloc[0]) if (col_size and len(s_data) > 0 and pd.notna(s_data[col_size].iloc[0])) else 115000.0
+        name = str(s_data[col_name].iloc[0]) if (col_name and len(s_data) > 0 and pd.notna(s_data[col_name].iloc[0])) else city
+        icon = known_coord[2] if known_coord else icons[idx % len(icons)]
+        tag = known_coord[3] if known_coord else (f"{city} Flagship" if idx == 0 else f"{city} Hub")
+
+        locations[s_str] = {
+            "city": city,
+            "state": state,
+            "lat": lat,
+            "lon": lon,
+            "sqft": sqft,
+            "name": name,
+            "icon": icon,
+            "tag": tag
+        }
+
+    return locations
+
+
+# ==============================================================================
+# GLOBAL ACTIVE DATASET INITIALIZATION
+# ==============================================================================
+if "active_raw_df" not in st.session_state or st.session_state["active_raw_df"] is None:
+    st.session_state["active_raw_df"] = load_historical_data()
+    st.session_state["active_dataset_name"] = "Default US Retail Network (10 Stores)"
+    st.session_state["is_custom_dataset"] = False
+
+# The globally active dataframe powering all 3 main dashboard pages:
+raw_df = st.session_state["active_raw_df"]
 all_models = load_trained_models()
 metrics_data = load_metrics()
+
+# Dynamically extract stores, departments, and location metadata
+active_stores = sorted(list(raw_df["Store_ID"].unique())) if (raw_df is not None and "Store_ID" in raw_df.columns) else STORES
+active_depts = sorted(list(raw_df["Department"].unique())) if (raw_df is not None and "Department" in raw_df.columns) else DEPARTMENTS
+active_store_locations = get_active_store_locations(raw_df)
+
+if "active_store" not in st.session_state or st.session_state.active_store not in active_stores:
+    st.session_state.active_store = active_stores[0] if active_stores else "Store_01"
 
 # ==============================================================================
 # COMMERCIAL PRESETS CATALOG
@@ -636,6 +756,41 @@ PRESETS = {
 # ==============================================================================
 # SIDEBAR CONTROLS & DUAL-MODE EXPERIENCE
 # ==============================================================================
+st.sidebar.markdown("### 📊 Active Dashboard Dataset")
+is_custom_active = st.session_state.get("is_custom_dataset", False)
+dataset_name_active = st.session_state.get("active_dataset_name", "Default US Retail Network (10 Stores)")
+n_active_stores = len(active_stores)
+n_active_depts = len(active_depts)
+n_active_rows = len(raw_df) if raw_df is not None else 0
+
+if is_custom_active:
+    safe_render_html(f"""<div style="background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%); border: 1.5px solid #86EFAC; border-left: 5px solid #10B981; border-radius: 10px; padding: 0.75rem 0.85rem; margin-bottom: 0.75rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+<span style="font-weight: 800; font-size: 0.78rem; color: #065F46; text-transform: uppercase;">✨ Custom Dataset Active</span>
+<span style="background: #10B981; color: white; padding: 0.15rem 0.45rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700;">Live</span>
+</div>
+<div style="font-weight: 700; color: #0F172A; font-size: 0.88rem; margin-bottom: 0.25rem;">{dataset_name_active}</div>
+<div style="font-size: 0.75rem; color: #475569;">
+🏬 <b>{n_active_stores}</b> Stores • 🛒 <b>{n_active_depts}</b> Depts • 📅 <b>{n_active_rows:,}</b> Rows
+</div>
+</div>""", container=st.sidebar)
+    
+    if st.sidebar.button("🔄 Reset to Default US Dataset", use_container_width=True, type="primary"):
+        st.session_state["active_raw_df"] = load_historical_data()
+        st.session_state["active_dataset_name"] = "Default US Retail Network (10 Stores)"
+        st.session_state["is_custom_dataset"] = False
+        st.session_state["active_store"] = "Store_09"
+        st.rerun()
+else:
+    safe_render_html(f"""<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-left: 5px solid #2563EB; border-radius: 10px; padding: 0.75rem 0.85rem; margin-bottom: 0.75rem;">
+<div style="font-weight: 800; font-size: 0.78rem; color: #1E40AF; text-transform: uppercase; margin-bottom: 0.25rem;">📊 Active Data Source</div>
+<div style="font-weight: 700; color: #0F172A; font-size: 0.88rem; margin-bottom: 0.25rem;">{dataset_name_active}</div>
+<div style="font-size: 0.75rem; color: #475569;">
+🏬 <b>{n_active_stores}</b> Stores • 🛒 <b>{n_active_depts}</b> Depts • 📅 <b>{n_active_rows:,}</b> Rows
+</div>
+</div>""", container=st.sidebar)
+
+st.sidebar.markdown("---")
 st.sidebar.markdown("### 🧭 Dashboard View Mode")
 view_mode = st.sidebar.radio(
     "Select Experience Level:",
@@ -673,9 +828,9 @@ if TEST_FEATURES_FILE.exists() and "champion" in all_models:
     side_results["Error ($)"] = np.round(side_results["Forecasted_Sales ($)"] - side_results["Actual_Sales ($)"], 2)
     side_results["Error_Pct (%)"] = np.round(np.abs(side_results["Error ($)"] / (side_results["Actual_Sales ($)"] + 1e-5)) * 100, 2)
     
-    store_card_side = compute_store_health_scorecard(raw_df, STORE_LOCATIONS)
+    store_card_side = compute_store_health_scorecard(raw_df, active_store_locations)
     cat_card_side = compute_category_health_scorecard(raw_df)
-    sidebar_zip = generate_executive_bundle_zip(raw_df, side_results, metrics_data, STORE_LOCATIONS, store_card_side, cat_card_side)
+    sidebar_zip = generate_executive_bundle_zip(raw_df, side_results, metrics_data, active_store_locations, store_card_side, cat_card_side)
     
     st.sidebar.download_button(
         label="📦 Download Complete Bundle (.ZIP)",
@@ -686,11 +841,11 @@ if TEST_FEATURES_FILE.exists() and "champion" in all_models:
     )
 
 st.sidebar.markdown("---")
-safe_render_html("""<div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
+safe_render_html(f"""<div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
 <b>🛍️ Retail Pulse AI Overview:</b><br/>
 • <b>Champion Model:</b> XGBoost (R² = 0.968)<br/>
 • <b>Accuracy:</b> 94.6% (±5.4% Avg Error)<br/>
-• <b>Network:</b> 10 US Stores × 5 Departments<br/>
+• <b>Network:</b> {n_active_stores} Stores × {n_active_depts} Departments<br/>
 • <b>Diagnostics:</b> A+ to F Health Scorecard<br/>
 • <b>Deep Learning:</b> PyTorch Bi-LSTM
 </div>""", container=st.sidebar)
@@ -835,7 +990,7 @@ def render_smart_question_chips(is_simple=False):
             raw_df,
             all_models,
             metrics_data,
-            STORE_LOCATIONS
+            active_store_locations
         )
 
     # 3-Second Visual Answer Card with Big Bold Number & 3 Visual Bullet Chips
@@ -924,18 +1079,19 @@ def render_smart_question_chips(is_simple=False):
 def render_historical_analytics(is_simple=False):
     st.subheader("📊 Historical Sales & Customer Demand Insights")
     if is_simple:
-        safe_render_html("""<div class="simple-callout">
-💡 <b>Key Business Takeaway:</b> <b>Grocery</b> and <b>Electronics</b> account for <b>52.6%</b> of total revenue.
-Thanksgiving / Black Friday drives the strongest annual demand spike (+43.7% revenue lift).
+        top_cats = raw_df.groupby("Department")["Weekly_Sales"].sum().nlargest(2).index.tolist() if len(raw_df) > 0 else ["Grocery", "Electronics"]
+        safe_render_html(f"""<div class="simple-callout">
+💡 <b>Key Business Takeaway:</b> <b>{top_cats[0]}</b> and <b>{top_cats[1] if len(top_cats)>1 else top_cats[0]}</b> are primary anchor revenue drivers across the network.
+Peak promotional events drive substantial customer traffic and basket lift.
 </div>""")
     else:
         st.caption("Inspect store demand trajectories, department sales shares, and holiday surge multipliers.")
         
     col_filter1, col_filter2 = st.columns([1, 1])
     with col_filter1:
-        sel_stores = st.multiselect("Filter Stores:", options=STORES, default=STORES[:3])
+        sel_stores = st.multiselect("Filter Stores:", options=active_stores, default=active_stores[:min(3, len(active_stores))])
     with col_filter2:
-        sel_depts = st.multiselect("Filter Departments:", options=DEPARTMENTS, default=DEPARTMENTS)
+        sel_depts = st.multiselect("Filter Departments:", options=active_depts, default=active_depts)
         
     if not sel_stores or not sel_depts:
         st.warning("Please select at least one store and one department.")
@@ -994,12 +1150,12 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
     st.subheader("🩺 AI Store & Category Health Scorecard (A+ to F Grades)")
     st.caption("A beginner-friendly diagnostic grading system evaluating revenue velocity, footprint efficiency ($/sq ft), momentum, stability, and promotional responsiveness.")
     
-    store_card_df = compute_store_health_scorecard(raw_df, STORE_LOCATIONS)
+    store_card_df = compute_store_health_scorecard(raw_df, active_store_locations)
     cat_card_df = compute_category_health_scorecard(raw_df)
     
-    top_store = store_card_df.iloc[0]
-    top_cat = cat_card_df.iloc[0]
-    avg_score = store_card_df["Health_Score"].mean()
+    top_store = store_card_df.iloc[0] if len(store_card_df) > 0 else {"Store_ID": "Store_01", "City": "Store 1", "Grade": "A", "Health_Score": 90.0}
+    top_cat = cat_card_df.iloc[0] if len(cat_card_df) > 0 else {"Department": "General", "Grade": "A", "Health_Score": 90.0}
+    avg_score = store_card_df["Health_Score"].mean() if len(store_card_df) > 0 else 85.0
     
     h_col1, h_col2, h_col3, h_col4 = st.columns(4)
     with h_col1:
@@ -1033,12 +1189,14 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 """
         safe_render_html(kpi_h3)
     with h_col4:
+        f_count = len(store_card_df[store_card_df["Grade"] == "F"]) if len(store_card_df) > 0 else 0
+        risk_label = "Low Risk" if f_count == 0 else f"{f_count} Stores Alert"
         kpi_h4 = f"""
 <div class="glass-kpi-card">
 <div class="kpi-accent-bar accent-amber"></div>
 <div class="kpi-label">Network Risk Level</div>
-<div class="kpi-number">Low Risk</div>
-<div class="kpi-meta">🛡️ 0 Stores in Critical Grade F</div>
+<div class="kpi-number">{risk_label}</div>
+<div class="kpi-meta">🛡️ {f_count} Stores in Critical Grade F</div>
 </div>
 """
         safe_render_html(kpi_h4)
@@ -1047,42 +1205,42 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
     
     if show_embedded_arena:
         subtabs = st.tabs([
-            "🏢 Store Diagnostics & US Mini-Map Pinboard (10 Locations)",
+            f"🏢 Store Diagnostics & Network Pinboard ({len(store_card_df)} Locations)",
             "⚔️ Store Battle Arena (Head-to-Head Comparison)",
-            "🛒 Product Category Diagnostics (5 Departments)"
+            f"🛒 Product Category Diagnostics ({len(cat_card_df)} Departments)"
         ])
         subtab_store, subtab_arena, subtab_dept = subtabs[0], subtabs[1], subtabs[2]
     else:
         subtabs = st.tabs([
-            "🏢 Store Diagnostics & 5-Pillar Meters (10 Locations)",
-            "🛒 Product Category Diagnostics (5 Departments)"
+            f"🏢 Store Diagnostics & 5-Pillar Meters ({len(store_card_df)} Locations)",
+            f"🛒 Product Category Diagnostics ({len(cat_card_df)} Departments)"
         ])
         subtab_store, subtab_dept = subtabs[0], subtabs[1]
         subtab_arena = None
     
     with subtab_store:
-        active_curr = st.session_state.get("active_store", "Store_09")
+        active_curr = st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01")
         target_store_match = store_card_df[store_card_df["Store_ID"] == active_curr]
-        target_store_data = target_store_match.iloc[0] if len(target_store_match) > 0 else store_card_df.iloc[0]
+        target_store_data = target_store_match.iloc[0] if len(target_store_match) > 0 else (store_card_df.iloc[0] if len(store_card_df) > 0 else {})
         
         st.write("")
-        st.markdown(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
+        st.markdown(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data.get('City', active_curr)} ({target_store_data.get('Store_ID', active_curr)})**")
         diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
-            st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
+            st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data.get('City', active_curr)}")
             
-            p1_pct = min(100.0, (target_store_data["Pillar_Revenue"] / 25.0) * 100)
-            p2_pct = min(100.0, (target_store_data["Pillar_Efficiency"] / 20.0) * 100)
-            p3_pct = min(100.0, (target_store_data["Pillar_Growth"] / 20.0) * 100)
-            p4_pct = min(100.0, (target_store_data["Pillar_Stability"] / 20.0) * 100)
-            p5_pct = min(100.0, (target_store_data["Pillar_Agility"] / 15.0) * 100)
+            p1_pct = min(100.0, (target_store_data.get("Pillar_Revenue", 15.0) / 25.0) * 100)
+            p2_pct = min(100.0, (target_store_data.get("Pillar_Efficiency", 12.0) / 20.0) * 100)
+            p3_pct = min(100.0, (target_store_data.get("Pillar_Growth", 12.0) / 20.0) * 100)
+            p4_pct = min(100.0, (target_store_data.get("Pillar_Stability", 12.0) / 20.0) * 100)
+            p5_pct = min(100.0, (target_store_data.get("Pillar_Agility", 10.0) / 15.0) * 100)
             
             pillars = [
-                ("⚡ 1. Revenue Velocity", target_store_data["Pillar_Revenue"], 25.0, p1_pct),
-                ("📐 2. Space Efficiency ($/sqft)", target_store_data["Pillar_Efficiency"], 20.0, p2_pct),
-                ("📈 3. Growth Momentum", target_store_data["Pillar_Growth"], 20.0, p3_pct),
-                ("🛡️ 4. Forecast Stability", target_store_data["Pillar_Stability"], 20.0, p4_pct),
-                ("🏷️ 5. Promo & Holiday Agility", target_store_data["Pillar_Agility"], 15.0, p5_pct),
+                ("⚡ 1. Revenue Velocity", target_store_data.get("Pillar_Revenue", 15.0), 25.0, p1_pct),
+                ("📐 2. Space Efficiency ($/sqft)", target_store_data.get("Pillar_Efficiency", 12.0), 20.0, p2_pct),
+                ("📈 3. Growth Momentum", target_store_data.get("Pillar_Growth", 12.0), 20.0, p3_pct),
+                ("🛡️ 4. Forecast Stability", target_store_data.get("Pillar_Stability", 12.0), 20.0, p4_pct),
+                ("🏷️ 5. Promo & Holiday Agility", target_store_data.get("Pillar_Agility", 10.0), 15.0, p5_pct),
             ]
             
             for p_name, p_val, p_max, p_pct in pillars:
@@ -1103,19 +1261,19 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
             rx_words = str(raw_rx).split()
             rx_pill = " ".join(rx_words[:9]) if len(rx_words) > 9 else raw_rx
             
-            action_pill_html = f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data['Color']}; border-radius: 14px; padding: 1.1rem 1.25rem; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
+            action_pill_html = f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #CBD5E1; border-left: 6px solid {target_store_data.get('Color', '#2563EB')}; border-radius: 14px; padding: 1.1rem 1.25rem; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
 <div>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data['Store_ID']} — {target_store_data['City']}</span>
-<span style="background: {target_store_data['Color']}; color: white; padding: 0.2rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem;">Grade {target_store_data['Grade']}</span>
+<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A;">{target_store_data.get('Store_ID', active_curr)} — {target_store_data.get('City', active_curr)}</span>
+<span style="background: {target_store_data.get('Color', '#2563EB')}; color: white; padding: 0.2rem 0.7rem; border-radius: 9999px; font-weight: 800; font-size: 0.82rem;">Grade {target_store_data.get('Grade', 'B')}</span>
 </div>
 <div style="font-size: 0.88rem; color: #334155; margin-bottom: 0.6rem;">
-<b>Health Score:</b> {target_store_data['Health_Score']} / 100 <span style="color: #64748B;">({target_store_data['Status']})</span>
+<b>Health Score:</b> {target_store_data.get('Health_Score', 80.0)} / 100 <span style="color: #64748B;">({target_store_data.get('Status', 'Stable')})</span>
 </div>
 <div style="font-size: 0.82rem; color: #475569; line-height: 1.45; margin-bottom: 0.7rem;">
-• <b>Space Yield:</b> ${target_store_data['Sales_per_SqFt ($)']}/sq ft<br/>
-• <b>Momentum:</b> {target_store_data['Growth_Pace (%)']:+.1f}% vs 12-wk avg<br/>
-• <b>Anchor Dept:</b> {target_store_data['Top_Category']}
+• <b>Space Yield:</b> ${target_store_data.get('Sales_per_SqFt ($)', 75.0)}/sq ft<br/>
+• <b>Momentum:</b> {target_store_data.get('Growth_Pace (%)', 3.0):+.1f}% vs 12-wk avg<br/>
+• <b>Anchor Dept:</b> {target_store_data.get('Top_Category', 'General')}
 </div>
 </div>
 <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid #BFDBFE; border-left: 4px solid #2563EB; border-radius: 8px; padding: 0.55rem 0.75rem; font-size: 0.8rem; color: #1E3A8A; font-weight: 700;">
@@ -1128,20 +1286,22 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
         st.markdown("#### 🏆 Store Network Health Leaderboard")
         st.caption("Ranked by composite 5-pillar operational score (Revenue, Space Efficiency, Growth, Stability, Agility).")
         display_cols = ["Rank", "Store_ID", "City", "State", "Grade", "Health_Score", "Status", "Sales_per_SqFt ($)", "Growth_Pace (%)", "Top_Category", "Prescription"]
-        st.dataframe(store_card_df[display_cols], use_container_width=True, hide_index=True)
+        valid_cols = [c for c in display_cols if c in store_card_df.columns]
+        st.dataframe(store_card_df[valid_cols], use_container_width=True, hide_index=True)
 
     if show_embedded_arena and subtab_arena is not None:
         with subtab_arena:
             render_store_battle_arena(
                 raw_df,
-                STORE_LOCATIONS,
+                active_store_locations,
                 key_prefix="health_battle_arena"
             )
 
     with subtab_dept:
         st.markdown("#### 🛒 Product Department Health Leaderboard")
         cat_disp_cols = ["Rank", "Department", "Grade", "Health_Score", "Status", "Revenue_Share (%)", "Growth_Pace (%)", "Promo_Lift (%)", "Holiday_Lift (%)", "Prescription"]
-        st.dataframe(cat_card_df[cat_disp_cols], use_container_width=True, hide_index=True)
+        valid_cat_cols = [c for c in cat_disp_cols if c in cat_card_df.columns]
+        st.dataframe(cat_card_df[valid_cat_cols], use_container_width=True, hide_index=True)
         
         st.write("")
         fig_cat_bar = px.bar(
@@ -1171,29 +1331,29 @@ The machine learning solver reverse-engineers the <b>exact promotional markdown<
     # Visual Interactive Store Card Deck
     gs_store = render_interactive_store_deck(
         raw_df,
-        STORE_LOCATIONS,
-        st.session_state.get("active_store", "Store_09"),
+        active_store_locations,
+        st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01"),
         key_prefix="gs_deck"
     )
 
     # Department & Quick Goal Presets Bar
     c_ctrl1, c_ctrl2 = st.columns([1, 1.2])
     with c_ctrl1:
-        dept_options = ["All Departments (Entire Store)"] + DEPARTMENTS
-        gs_dept = st.selectbox("Select Department / Scope:", options=dept_options, index=1, key="gs_dept_select")
+        dept_options = ["All Departments (Entire Store)"] + active_depts
+        gs_dept = st.selectbox("Select Department / Scope:", options=dept_options, index=0 if len(dept_options) == 1 else 1, key="gs_dept_select")
     
     # Calculate baseline for chosen store & dept
     if gs_dept == "All Departments (Entire Store)":
         s_sub = raw_df[raw_df["Store_ID"] == gs_store]
         dept_means = []
-        for d in DEPARTMENTS:
+        for d in active_depts:
             d_sub = s_sub[s_sub["Department"] == d].sort_values(by="Date")
-            d_recent = d_sub["Weekly_Sales"].tail(4).values
+            d_recent = d_sub["Weekly_Sales"].tail(4).values if len(d_sub) > 0 else []
             dept_means.append(float(np.mean(d_recent)) if len(d_recent) > 0 else 25000.0)
-        baseline_val = sum(dept_means)
+        baseline_val = sum(dept_means) if dept_means else 100000.0
     else:
         s_sub = raw_df[(raw_df["Store_ID"] == gs_store) & (raw_df["Department"] == gs_dept)].sort_values(by="Date")
-        recent_vals = s_sub["Weekly_Sales"].tail(4).values
+        recent_vals = s_sub["Weekly_Sales"].tail(4).values if len(s_sub) > 0 else []
         baseline_val = float(np.mean(recent_vals)) if len(recent_vals) > 0 else 25000.0
 
     # Ensure session state target has a good default
@@ -1543,6 +1703,56 @@ def render_upload_analyzer(is_simple=False):
             return
             
         st.write("")
+        proc_df = summary["processed_df"]
+        dataset_title = uploaded_file.name if uploaded_file is not None else use_demo
+        is_currently_active = (st.session_state.get("active_dataset_name") == dataset_title and st.session_state.get("is_custom_dataset", False))
+        
+        # Global Dashboard Reflection & Active Dataset Controls
+        if is_currently_active:
+            safe_render_html(f"""<div style="background: linear-gradient(135deg, #EFF6FF 0%, #F0FDF4 100%); border: 2px solid #10B981; border-radius: 12px; padding: 0.95rem 1.3rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(16,185,129,0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+<div>
+<div style="font-weight: 800; font-size: 1.05rem; color: #065F46; display: flex; align-items: center; gap: 0.5rem;">
+🌟 <b>Currently Active Across Entire Dashboard:</b> {dataset_title}
+</div>
+<div style="font-size: 0.84rem; color: #334155; margin-top: 0.2rem;">
+This dataset is actively powering all 3 main features pages: <b>Executive Briefing & Smart Q&A</b>, <b>Store Diagnostics & Battle Arena</b>, and <b>Demand Forecaster & Scenario Simulator</b>.
+</div>
+</div>
+<span style="background: #10B981; color: white; padding: 0.3rem 0.85rem; border-radius: 9999px; font-weight: 800; font-size: 0.78rem;">
+🟢 LIVE ACTIVE
+</span>
+</div>""")
+        else:
+            set_c1, set_c2 = st.columns([2.2, 1.2])
+            with set_c1:
+                safe_render_html(f"""<div style="background: #F8FAFC; border: 1.5px solid #BFDBFE; border-left: 6px solid #2563EB; border-radius: 12px; padding: 0.95rem 1.2rem;">
+<div style="font-weight: 800; font-size: 0.98rem; color: #1E3A8A;">
+🚀 Apply Data to All Dashboard Pages (Replace Default US Data)
+</div>
+<div style="font-size: 0.82rem; color: #475569; margin-top: 0.2rem;">
+Click the button to propagate <b>{dataset_title}</b> ({summary['total_records']:,} rows) across <b>Executive Briefing</b>, <b>Store Intelligence</b>, and <b>Demand Forecaster</b>.
+</div>
+</div>""")
+            with set_c2:
+                st.write("")
+                if st.button("🚀 Set as Active Dashboard Dataset", key="btn_set_active_dataset", type="primary", use_container_width=True):
+                    st.session_state["active_raw_df"] = proc_df
+                    st.session_state["active_dataset_name"] = dataset_title
+                    st.session_state["is_custom_dataset"] = True
+                    st.session_state["active_store"] = proc_df["Store_ID"].unique()[0] if len(proc_df["Store_ID"].unique()) > 0 else "Store_01"
+                    st.success(f"🎉 **Active Dashboard Dataset Updated!** All pages now reflect '{dataset_title}'.")
+                    st.rerun()
+
+        if st.session_state.get("is_custom_dataset", False):
+            if st.button("🔄 Reset Dashboard to Default US Dataset", key="btn_reset_upload_page", use_container_width=False):
+                st.session_state["active_raw_df"] = load_historical_data()
+                st.session_state["active_dataset_name"] = "Default US Retail Network (10 Stores)"
+                st.session_state["is_custom_dataset"] = False
+                st.session_state["active_store"] = "Store_09"
+                st.success("✅ Dashboard reset to Default US Dataset.")
+                st.rerun()
+                
+        st.write("")
         st.markdown("### 📊 Automated AI Audit & Forecast Overview")
         
         up_k1, up_k2, up_k3, up_k4, up_k5 = st.columns(5)
@@ -1743,13 +1953,13 @@ def render_scenario_simulator(is_simple=False):
     
     with sim_col1:
         st.markdown("#### ⚙️ Entity Selection")
-        st_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        sim_store = st.selectbox("Select Store:", STORES, index=st_idx, key="sim_st_sel")
-        sim_dept = st.selectbox("Select Department:", DEPARTMENTS, index=0, key="sim_dp_sel")
+        st_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        sim_store = st.selectbox("Select Store:", active_stores, index=st_idx, key="sim_st_sel")
+        sim_dept = st.selectbox("Select Department:", active_depts, index=0, key="sim_dp_sel")
         sim_date = st.date_input("Target Forecast Week:", value=pd.to_datetime("2024-01-05"), key="sim_dt_sel")
         
         holidays_list = ["Regular_Week", "Thanksgiving_BlackFriday", "Christmas_Holiday", "Labor_Day", "Easter", "Super_Bowl"]
-        sim_holiday = st.selectbox("Active Holiday Event:", holidays_list, index=holidays_list.index(active_p["holiday"]), key="sim_hol_sel")
+        sim_holiday = st.selectbox("Active Holiday Event:", holidays_list, index=holidays_list.index(active_p["holiday"]) if active_p["holiday"] in holidays_list else 0, key="sim_hol_sel")
         sim_promo = st.slider("Promotional Discount (%):", min_value=0, max_value=35, value=active_p["promo"], step=5, key="sim_prm_sel") / 100.0
         render_slider_feedback_badge(get_promo_slider_feedback(int(sim_promo * 100)))
         
@@ -1984,10 +2194,10 @@ def render_speedometer_gauges(is_simple=False):
     # Top Controls
     sp_col1, sp_col2, sp_col3 = st.columns([1, 1, 1.2])
     with sp_col1:
-        sp_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        sp_store = st.selectbox("Select Store Branch:", STORES, key="sp_store_select", index=sp_idx)
+        sp_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        sp_store = st.selectbox("Select Store Branch:", active_stores, key="sp_store_select", index=sp_idx)
     with sp_col2:
-        sp_dept = st.selectbox("Select Department:", DEPARTMENTS, key="sp_dept_select", index=0)
+        sp_dept = st.selectbox("Select Department:", active_depts, key="sp_dept_select", index=0)
     with sp_col3:
         sp_preset = st.selectbox("Simulate Commercial Condition:", list(PRESETS.keys()), key="sp_preset_select", index=0)
 
@@ -2003,9 +2213,9 @@ def render_speedometer_gauges(is_simple=False):
 
     # Historical baseline
     h_sub = raw_df[(raw_df["Store_ID"] == sp_store) & (raw_df["Department"] == sp_dept)].sort_values(by="Date")
-    recent_vals = h_sub["Weekly_Sales"].tail(4).values
+    recent_vals = h_sub["Weekly_Sales"].tail(4).values if len(h_sub) > 0 else []
     base_sales = float(np.mean(recent_vals)) if len(recent_vals) > 0 else 25000.0
-    store_sz = h_sub["Store_Size_SqFt"].iloc[0] if len(h_sub) > 0 else 120000
+    store_sz = h_sub["Store_Size_SqFt"].iloc[0] if (len(h_sub) > 0 and "Store_Size_SqFt" in h_sub.columns) else 120000
 
     # Build input feature vector
     dt_target = pd.to_datetime("2024-01-05")
@@ -2132,10 +2342,10 @@ This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>B
     # Top Control Bar
     p_c1, p_c2, p_c3 = st.columns([1, 1, 1.2])
     with p_c1:
-        pe_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        pe_store = st.selectbox("Select Store Branch:", STORES, key="pe_store_select", index=pe_idx)
+        pe_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        pe_store = st.selectbox("Select Store Branch:", active_stores, key="pe_store_select", index=pe_idx)
     with p_c2:
-        pe_dept = st.selectbox("Select Department:", DEPARTMENTS, key="pe_dept_select", index=0)
+        pe_dept = st.selectbox("Select Department:", active_depts, key="pe_dept_select", index=0)
     with p_c3:
         pe_promo = st.slider("Simulate Promotional Markdown (%):", min_value=0, max_value=35, value=10, step=5, key="pe_promo_slider") / 100.0
 
@@ -2367,9 +2577,9 @@ def render_executive_briefing(is_simple=False):
             options=["Chief Executive (CFO / CEO)", "VP of Supply Chain & Logistics", "Regional Store Manager"],
             index=0
         )
-        eb_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        eb_store = st.selectbox("Store:", STORES, key="eb_store_sel", index=eb_idx)
-        eb_dept = st.selectbox("Department:", DEPARTMENTS, key="eb_dept_sel", index=0)
+        eb_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        eb_store = st.selectbox("Store:", active_stores, key="eb_store_sel", index=eb_idx)
+        eb_dept = st.selectbox("Department:", active_depts, key="eb_dept_sel", index=0)
         eb_scenario = st.selectbox("Commercial Context:", list(PRESETS.keys()), index=0)
         
     with eb_col2:
@@ -2384,7 +2594,7 @@ def render_executive_briefing(is_simple=False):
         dt_target = pd.to_datetime("2024-01-05")
         week_num = dt_target.isocalendar().week
         month_num = dt_target.month
-        store_sz = h_sub["Store_Size_SqFt"].iloc[0] if len(h_sub) > 0 else 120000
+        store_sz = h_sub["Store_Size_SqFt"].iloc[0] if (len(h_sub) > 0 and "Store_Size_SqFt" in h_sub.columns) else 120000
         
         row_eb = {
             "Store_Size_SqFt": store_sz,
@@ -2532,19 +2742,19 @@ def render_horizon_forecast():
     
     h_col1, h_col2 = st.columns([1, 3])
     with h_col1:
-        hz_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        hz_store = st.selectbox("Store:", STORES, index=hz_idx, key="hz_st_sel")
-        hz_dept = st.selectbox("Department:", DEPARTMENTS, key="hz_dp_sel")
+        hz_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        hz_store = st.selectbox("Store:", active_stores, index=hz_idx, key="hz_st_sel")
+        hz_dept = st.selectbox("Department:", active_depts, key="hz_dp_sel")
         hz_weeks = st.slider("Forecast Horizon (Weeks):", min_value=4, max_value=12, value=8, step=1)
         apply_hz_promo = st.checkbox("Simulate 15% Mid-Horizon Promo Campaign", value=True)
         
     with h_col2:
         hist_series = raw_df[(raw_df["Store_ID"] == hz_store) & (raw_df["Department"] == hz_dept)].sort_values(by="Date")
-        last_date = hist_series["Date"].max()
+        last_date = hist_series["Date"].max() if len(hist_series) > 0 else pd.to_datetime("2023-12-29")
         future_dates = [last_date + pd.Timedelta(weeks=w) for w in range(1, hz_weeks + 1)]
         forecast_records = []
-        simulated_sales = list(hist_series["Weekly_Sales"].tail(12).values)
-        store_sz = hist_series["Store_Size_SqFt"].iloc[0]
+        simulated_sales = list(hist_series["Weekly_Sales"].tail(12).values) if len(hist_series) > 0 else [25000.0]*12
+        store_sz = hist_series["Store_Size_SqFt"].iloc[0] if (len(hist_series) > 0 and "Store_Size_SqFt" in hist_series.columns) else 120000
         
         model = model_artifact["model"]
         feature_names = model_artifact["feature_names"]
@@ -2554,10 +2764,12 @@ def render_horizon_forecast():
             m_num = f_date.month
             promo_val = 0.15 if (apply_hz_promo and 2 <= i <= 4) else 0.0
             
-            l1, l2, l4 = simulated_sales[-1], simulated_sales[-2], simulated_sales[-4]
-            r4 = np.mean(simulated_sales[-4:])
-            r_std = np.std(simulated_sales[-4:])
-            r12 = np.mean(simulated_sales[-12:])
+            l1 = simulated_sales[-1] if len(simulated_sales) >= 1 else 25000.0
+            l2 = simulated_sales[-2] if len(simulated_sales) >= 2 else 24500.0
+            l4 = simulated_sales[-4] if len(simulated_sales) >= 4 else 24000.0
+            r4 = np.mean(simulated_sales[-4:]) if len(simulated_sales) >= 4 else 25000.0
+            r_std = np.std(simulated_sales[-4:]) if len(simulated_sales) >= 4 else 1200.0
+            r12 = np.mean(simulated_sales[-12:]) if len(simulated_sales) >= 12 else r4
             mom = l1 / (r4 + 1e-5)
             
             row_dict = {
@@ -2615,27 +2827,35 @@ def render_horizon_forecast():
 
 def render_geospatial_matrix():
     st.subheader("🗺️ Store Geospatial Intelligence & Cross-Category Matrix")
-    st.caption("Explore branch geographic locations across the US network and analyze category affinity and halo effects.")
+    st.caption("Explore branch geographic locations across the store network and analyze category affinity and halo effects.")
     
     geo_data = []
-    for s_id, s_info in STORE_LOCATIONS.items():
+    for s_id, s_info in active_store_locations.items():
         s_subset = raw_df[raw_df["Store_ID"] == s_id]
-        tot_rev = s_subset["Weekly_Sales"].sum()
-        avg_rev = s_subset.groupby("Date")["Weekly_Sales"].sum().mean()
-        sqft = s_subset["Store_Size_SqFt"].iloc[0]
-        top_cat = s_subset.groupby("Department")["Weekly_Sales"].sum().idxmax()
+        tot_rev = s_subset["Weekly_Sales"].sum() if len(s_subset) > 0 else 0
+        avg_rev = s_subset.groupby("Date")["Weekly_Sales"].sum().mean() if len(s_subset) > 0 else 0
+        sqft = s_subset["Store_Size_SqFt"].iloc[0] if (len(s_subset) > 0 and "Store_Size_SqFt" in s_subset.columns) else s_info.get("sqft", 100000)
+        top_cat = s_subset.groupby("Department")["Weekly_Sales"].sum().idxmax() if len(s_subset) > 0 else "General"
         geo_data.append({
             "Store_ID": s_id,
-            "City": s_info["city"],
-            "State": s_info["state"],
-            "lat": s_info["lat"],
-            "lon": s_info["lon"],
+            "City": s_info.get("city", s_id),
+            "State": s_info.get("state", ""),
+            "lat": s_info.get("lat", 20.0),
+            "lon": s_info.get("lon", 78.0),
             "Total_Revenue ($)": tot_rev,
             "Avg_Weekly_Sales ($)": avg_rev,
             "Store_Size_SqFt": sqft,
             "Top_Category": top_cat
         })
     geo_df = pd.DataFrame(geo_data)
+    
+    # Auto-detect map scope (India/Asia vs USA vs World)
+    lons = [d["lon"] for d in geo_data]
+    is_india = all(60.0 <= lon <= 100.0 for lon in lons) if lons else False
+    is_usa = all(lon < 0 for lon in lons) if lons else False
+    
+    scope_val = "asia" if is_india else ("usa" if is_usa else "world")
+    proj_val = "mercator" if is_india else ("albers usa" if is_usa else "natural earth")
     
     fig_map = px.scatter_geo(
         geo_df,
@@ -2645,11 +2865,11 @@ def render_geospatial_matrix():
         hover_data={"Store_ID": True, "State": True, "Total_Revenue ($)": ":$,.0f", "Avg_Weekly_Sales ($)": ":$,.0f", "Store_Size_SqFt": ":,", "Top_Category": True, "lat": False, "lon": False},
         size="Total_Revenue ($)",
         color="Avg_Weekly_Sales ($)",
-        scope="usa",
-        title="Nationwide Store Revenue & Footprint Network",
+        scope=scope_val,
+        title=f"Store Revenue & Footprint Network Map ({'India Region' if is_india else ('US Network' if is_usa else 'Global Network')})",
         template="plotly_white",
         color_continuous_scale="Viridis",
-        projection="albers usa"
+        projection=proj_val
     )
     fig_map.update_traces(marker=dict(line=dict(width=1, color="white")))
     fig_map.update_layout(margin=dict(l=10, r=10, t=40, b=10), height=420)
@@ -2668,7 +2888,7 @@ def render_geospatial_matrix():
     with g_col2:
         st.markdown("#### 🎯 Multi-Store Performance Radar")
         st.caption("Compare 2-3 branches across volume, footprint efficiency, and stability.")
-        radar_stores = st.multiselect("Select Stores to Compare:", options=STORES, default=["Store_01", "Store_02", "Store_03"], key="radar_sel")
+        radar_stores = st.multiselect("Select Stores to Compare:", options=active_stores, default=active_stores[:min(3, len(active_stores))], key="radar_sel")
         if len(radar_stores) > 0:
             fig_radar = go.Figure()
             categories = ["Sales Volume", "Space Efficiency", "Promo Lift", "Holiday Spike", "Forecast Stability"]
@@ -2701,9 +2921,9 @@ def render_deep_probabilistic():
     dp_col1, dp_col2 = st.columns([1, 2.5])
     with dp_col1:
         st.markdown("#### Simulation Controls")
-        dp_idx = STORES.index(st.session_state.get("active_store", "Store_09")) if st.session_state.get("active_store") in STORES else 0
-        dp_store = st.selectbox("Store:", STORES, index=dp_idx, key="dp_st_sel")
-        dp_dept = st.selectbox("Department:", DEPARTMENTS, key="dp_dp_sel")
+        dp_idx = active_stores.index(st.session_state.get("active_store", active_stores[0])) if st.session_state.get("active_store") in active_stores else 0
+        dp_store = st.selectbox("Store:", active_stores, index=dp_idx, key="dp_st_sel")
+        dp_dept = st.selectbox("Department:", active_depts, key="dp_dp_sel")
         risk_mode = st.radio("Supply Chain Strategy:", ["🛡️ Conservative (P10)", "⚖️ Expected (P50)", "🚀 Surge Buffer (P90)"], index=1)
         st.markdown("---")
         st.markdown("#### Model Architecture Specs")
@@ -2832,9 +3052,9 @@ def render_batch_export(is_simple=False):
         st.caption("Download individual audit files below, or grab the complete all-in-one ZIP package with 1 click.")
         
         # HERO 1-CLICK DOWNLOAD EVERYTHING BUNDLE
-        store_card_df = compute_store_health_scorecard(raw_df, STORE_LOCATIONS)
+        store_card_df = compute_store_health_scorecard(raw_df, active_store_locations)
         cat_card_df = compute_category_health_scorecard(raw_df)
-        zip_bytes = generate_executive_bundle_zip(raw_df, results_df, metrics_data, STORE_LOCATIONS, store_card_df, cat_card_df)
+        zip_bytes = generate_executive_bundle_zip(raw_df, results_df, metrics_data, active_store_locations, store_card_df, cat_card_df)
         
         safe_render_html("""<div style="background: linear-gradient(135deg, #065F46 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 14px; padding: 1.25rem 1.6rem; color: white; margin-bottom: 0.8rem; box-shadow: 0 10px 25px -5px rgba(6, 95, 70, 0.3);">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
@@ -2874,7 +3094,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
 </div>
 </div>""")
             st.write("")
-            pdf_bytes = generate_executive_pdf(raw_df, results_df, metrics_data, STORE_LOCATIONS)
+            pdf_bytes = generate_executive_pdf(raw_df, results_df, metrics_data, active_store_locations)
             st.download_button(
                 label="📄 Download Executive PDF (.PDF)",
                 data=pdf_bytes,
@@ -2895,7 +3115,7 @@ Ready-to-present PDF memo with KPI tables, department dynamics, champion model l
 </div>
 </div>""")
             st.write("")
-            excel_bytes = generate_multisheet_excel(raw_df, results_df, metrics_data, STORE_LOCATIONS)
+            excel_bytes = generate_multisheet_excel(raw_df, results_df, metrics_data, active_store_locations)
             st.download_button(
                 label="📊 Download Excel Workbook (.XLSX)",
                 data=excel_bytes,
@@ -2931,16 +3151,16 @@ Raw tabular forecast results ready for downstream data warehouses (Snowflake/Big
 # 🌟 PAGE 1: EXECUTIVE BRIEFING & DECISION CENTER
 # ==============================================================================
 def page_executive_view():
-    total_rev = raw_df["Weekly_Sales"].sum()
-    avg_weekly_rev = raw_df.groupby("Date")["Weekly_Sales"].sum().mean()
-    best_dept = raw_df.groupby("Department")["Weekly_Sales"].sum().idxmax()
+    total_rev = raw_df["Weekly_Sales"].sum() if len(raw_df) > 0 else 0.0
+    avg_weekly_rev = raw_df.groupby("Date")["Weekly_Sales"].sum().mean() if len(raw_df) > 0 else 0.0
+    best_dept = raw_df.groupby("Department")["Weekly_Sales"].sum().idxmax() if len(raw_df) > 0 else "General"
     champion_r2 = metrics_data[0]["R2 Score"] if metrics_data else 0.968
     champion_mape = metrics_data[0]["MAPE (%)"] if metrics_data else 5.38
 
     # Plain-English Executive KPI Banner
     kpi1, kpi2, kpi3, kpi4, kpi5 = st.columns(5)
     with kpi1:
-        safe_render_html(f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the 3-year period.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Total sales generated across all stores and departments in the dataset.">
 <div class="kpi-accent-bar accent-blue"></div>
 <div class="kpi-label">Total Network Sales</div>
 <div class="kpi-number">${total_rev/1e6:,.1f}M</div>
@@ -2948,11 +3168,11 @@ def page_executive_view():
 </div>""")
 
     with kpi2:
-        safe_render_html(f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire 10-store retail network.">
+        safe_render_html(f"""<div class="glass-kpi-card" title="Average weekly sales run-rate across the entire retail network.">
 <div class="kpi-accent-bar accent-emerald"></div>
 <div class="kpi-label">Weekly Sales Pace</div>
 <div class="kpi-number">${avg_weekly_rev/1e3:,.1f}K</div>
-<div class="kpi-meta">✨ 10 Stores × 5 Depts</div>
+<div class="kpi-meta">✨ {n_active_stores} Stores × {n_active_depts} Depts</div>
 </div>""")
 
     with kpi3:
@@ -2960,7 +3180,7 @@ def page_executive_view():
 <div class="kpi-accent-bar accent-purple"></div>
 <div class="kpi-label">Top Category</div>
 <div class="kpi-number">{best_dept}</div>
-<div class="kpi-meta">🛒 27.6% of Net Sales</div>
+<div class="kpi-meta">🛒 Primary Volume Driver</div>
 </div>""")
 
     with kpi4:
@@ -2982,7 +3202,14 @@ def page_executive_view():
     st.write("")
 
     # Today's AI Action Directives
-    action_center_html = """<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
+    store_cards = compute_store_health_scorecard(raw_df, active_store_locations)
+    top_store_entry = store_cards.iloc[0] if len(store_cards) > 0 else {}
+    top_store_id = top_store_entry.get("Store_ID", active_stores[0] if active_stores else "Store_01")
+    top_store_city = top_store_entry.get("City", top_store_id)
+    top_store_grade = top_store_entry.get("Grade", "A+")
+    top_store_sqft = top_store_entry.get("Sales_per_SqFt ($)", 318.48)
+
+    action_center_html = f"""<div style="background: rgba(255, 255, 255, 0.95); border: 1px solid #E2E8F0; border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.04);">
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
 <span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
 ⚡ Today's AI Action Directives <span style="font-size: 0.8rem; font-weight: 600; color: #64748B;">(Key takeaways in 3 seconds)</span>
@@ -2997,7 +3224,7 @@ Updated Live
 🟢 TOP GROWTH OPPORTUNITY
 </div>
 <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-<b>Store 09 (Dallas, TX)</b> leads network with <b>Grade A+ ($318.48/sq ft)</b>. Restock Grocery inventory by <b>+15%</b>.
+<b>{top_store_id} ({top_store_city})</b> leads network with <b>Grade {top_store_grade} (${top_store_sqft:.2f}/sq ft)</b>. Restock <b>{best_dept}</b> inventory by <b>+15%</b>.
 </div>
 </div>
 <div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 8px; padding: 0.75rem 0.9rem;">
@@ -3005,7 +3232,7 @@ Updated Live
 🟡 PROFIT MARGIN SWEET SPOT
 </div>
 <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to prevent margin dilution.
+A <b>10% discount</b> yields optimal net cash profit. Avoid 30%+ markdowns to prevent margin dilution.
 </div>
 </div>
 <div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 8px; padding: 0.75rem 0.9rem;">
@@ -3013,7 +3240,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
 🔴 PEAK SURGE WARNING
 </div>
 <div style="font-size: 0.82rem; color: #1E293B; margin-top: 0.2rem; line-height: 1.4;">
-<b>Black Friday / Holiday rush</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
+<b>Holiday / Event surge</b> approaching. Maintain <b>+35% safety stock</b> and roster <b>+4 staff</b>.
 </div>
 </div>
 </div>
@@ -3022,7 +3249,7 @@ A <b>10% discount</b> yields <b>$10,500 net profit</b>. Avoid 30%+ markdowns to 
 
     # 1-Click Executive Decision Wizard
     try:
-        render_decision_wizard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"))
+        render_decision_wizard(raw_df, active_store_locations, st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01"))
     except Exception as e:
         st.info("🧭 Decision Wizard initialized. Select an objective above to view AI recommendations.")
 
@@ -3072,22 +3299,22 @@ Upload custom store CSVs or click 1 button to download the <b>Complete Executive
 # ==============================================================================
 def page_store_view():
     st.subheader("🏢 Store Intelligence, Diagnostics & Battle Arena")
-    st.caption("Inspect store network performance, interact with the US pinboard map, launch head-to-head store battles, and review diagnostic scorecards.")
+    st.caption("Inspect store network performance, interact with the interactive pinboard map, launch head-to-head store battles, and review diagnostic scorecards.")
 
     store_tab1, store_tab2, store_tab3 = st.tabs([
-        "📍 Interactive US Pinboard & Card Deck",
+        f"📍 Interactive Pinboard & Card Deck ({len(active_stores)} Stores)",
         "⚔️ Store Battle Arena (Head-to-Head)",
         "🩺 Store & Category Health Diagnostics"
     ])
 
     with store_tab1:
-        render_us_minimap_pinboard(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"), key_prefix="stores_pinboard")
+        render_us_minimap_pinboard(raw_df, active_store_locations, st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01"), key_prefix="stores_pinboard")
         st.write("")
-        st.markdown("#### 🏢 10-Store Visual Performance Card Deck")
-        render_interactive_store_deck(raw_df, STORE_LOCATIONS, st.session_state.get("active_store", "Store_09"), key_prefix="stores_deck")
+        st.markdown(f"#### 🏢 {len(active_stores)}-Store Visual Performance Card Deck")
+        render_interactive_store_deck(raw_df, active_store_locations, st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01"), key_prefix="stores_deck")
 
     with store_tab2:
-        render_store_battle_arena(raw_df, STORE_LOCATIONS, key_prefix="stores_arena")
+        render_store_battle_arena(raw_df, active_store_locations, key_prefix="stores_arena")
 
     with store_tab3:
         render_health_scorecard(is_simple=(view_mode.startswith("🌟")), show_embedded_arena=False)
@@ -3218,6 +3445,7 @@ pg.run()
 # ==============================================================================
 render_floating_action_bar(
     raw_df,
-    STORE_LOCATIONS,
-    st.session_state.get("active_store", "Store_09")
+    active_store_locations,
+    st.session_state.get("active_store", active_stores[0] if active_stores else "Store_01")
 )
+
