@@ -875,7 +875,7 @@ def render_smart_question_chips(is_simple=False):
 </div>
 </div>
 </div>"""
-    st.markdown(answer_card_html)
+    safe_render_html(answer_card_html)
 
     # 4 KPI Cards
     k1, k2, k3, k4 = st.columns(4)
@@ -1064,7 +1064,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
         target_store_data = target_store_match.iloc[0] if len(target_store_match) > 0 else store_card_df.iloc[0]
         
         st.write("")
-        safe_render_html(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
+        st.markdown(f"#### 🔍 Deep-Dive Store Diagnostic Breakdown: **{target_store_data['City']} ({target_store_data['Store_ID']})**")
         diag_c1, diag_c2 = st.columns([1.3, 1])
         with diag_c1:
             st.markdown(f"##### 🔋 5-Pillar Operational Battery Meters: {target_store_data['City']}")
@@ -1094,7 +1094,7 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 <div style="background: linear-gradient(90deg, {bar_color} 0%, #60A5FA 100%); height: 100%; width: {p_pct}%; border-radius: 9999px; transition: width 0.4s ease;"></div>
 </div>
 </div>"""
-                st.markdown(meter_html)
+                safe_render_html(meter_html)
 
         with diag_c2:
             raw_rx = target_store_data.get('Prescription', 'Maintain standard inventory buffers.')
