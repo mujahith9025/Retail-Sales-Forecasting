@@ -4,6 +4,7 @@ Renders responsive, clickable city store cards with live letter grades,
 footprint efficiency metrics ($/sq ft), operational health scores, and active selection rings.
 """
 
+import html
 import pandas as pd
 import streamlit as st
 from typing import Dict, Any, List
@@ -148,12 +149,16 @@ def render_interactive_store_deck(
     current_active = active_store if (active_store in valid_store_ids) else st.session_state.active_store
     active_card = next((c for c in store_cards if c["store_id"] == current_active), store_cards[0])
 
+    act_city = html.escape(str(active_card.get('city', '')))
+    act_state = html.escape(str(active_card.get('state', '')))
+    act_id = html.escape(str(current_active))
+
     header_deck_html = f"""<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 0.6rem 1rem; border-radius: 10px;">
 <span style="font-weight: 700; font-size: 0.95rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
 🏢 <b>Visual Store Card Deck:</b> Click Any Branch to Select ({len(store_cards)} Stores Active)
 </span>
 <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">
-Currently Active: <span style="background: #2563EB; color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700;">{active_card['icon']} {active_card['city']}, {active_card['state']} ({current_active})</span>
+Currently Active: <span style="background: #2563EB; color: white; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 700;">{active_card['icon']} {act_city}, {act_state} ({act_id})</span>
 </span>
 </div>"""
     safe_render_html(header_deck_html)
@@ -178,17 +183,21 @@ Currently Active: <span style="background: #2563EB; color: white; padding: 0.2re
                 active_badge = f'<span style="background: #2563EB; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700;">🟢 Active</span>' if is_active else f'<span style="background: {card["color"]}; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 800;">{card["grade"]}</span>'
 
                 sales_display = f"${card['tot_rev']/1e6:.2f}M" if card['tot_rev'] >= 1e6 else f"${card['tot_rev']/1e3:.1f}K"
+                c_city = html.escape(str(card.get('city', '')))
+                c_state = html.escape(str(card.get('state', '')))
+                c_tag = html.escape(str(card.get('tag', '')))
+                c_id = html.escape(str(card.get('store_id', '')))
 
                 card_html = f"""<div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.8rem 0.9rem; box-shadow: {box_shadow}; min-height: 142px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease;">
 <div>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
 <span style="font-weight: 800; font-size: 0.95rem; color: #0F172A;">
-{card['icon']} {card['city']}
+{card['icon']} {c_city}
 </span>
 {active_badge}
 </div>
 <div style="font-size: 0.72rem; color: #64748B; font-weight: 600; margin-bottom: 0.4rem;">
-{card['store_id']} • {card['state']} • {card['tag']}
+{c_id} • {c_state} • {c_tag}
 </div>
 </div>
 <div style="border-top: 1px solid #E2E8F0; padding-top: 0.4rem; font-size: 0.75rem; color: #334155; line-height: 1.35;">

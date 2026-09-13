@@ -522,7 +522,7 @@ def load_trained_models():
                 from deep_learning import BiLSTMForecaster
             lstm_net = BiLSTMForecaster(input_dim=len(meta["feature_cols"]), hidden_dim=64, num_layers=2)
             try:
-                lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu"), weights_only=False))
+                lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu"), weights_only=True))
             except TypeError:
                 lstm_net.load_state_dict(torch.load(lstm_model_file, map_location=torch.device("cpu")))
             lstm_net.eval()

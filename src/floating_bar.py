@@ -6,6 +6,7 @@ providing quick store switching, 1-click bundle downloads, pipeline refreshes, a
 
 import streamlit as st
 import pandas as pd
+import html
 from typing import Dict, Any
 
 try:
@@ -45,10 +46,15 @@ def render_floating_action_bar(
     """
     loc = store_locations.get(active_store, {}) if store_locations else {}
     def_p = STORE_PROFILES.get(active_store, {"city": active_store, "state": "", "icon": "🏬"})
+    c_city = html.escape(str(loc.get("city", def_p.get("city", active_store))))
+    c_state = html.escape(str(loc.get("state", def_p.get("state", ""))))
+    c_icon = loc.get("icon", def_p.get("icon", "🏬"))
+    c_store = html.escape(str(active_store))
     profile = {
-        "city": loc.get("city", def_p.get("city", active_store)),
-        "state": loc.get("state", def_p.get("state", "")),
-        "icon": loc.get("icon", def_p.get("icon", "🏬"))
+        "city": c_city,
+        "state": c_state,
+        "icon": c_icon,
+        "store": c_store
     }
 
     # CSS for Floating Dock
@@ -128,7 +134,7 @@ display: none;
 <div class="floating-badge-store" title="Currently selected active branch">
 <span>{profile['icon']}</span>
 <span>{profile['city']}, {profile['state']}</span>
-<span style="opacity: 0.8; font-size: 0.7rem;">({active_store})</span>
+<span style="opacity: 0.8; font-size: 0.7rem;">({profile['store']})</span>
 </div>
 <div class="floating-badge-ai" title="Champion XGBoost Model Accuracy">
 🟢 94.6% Accuracy (±5.4% Error)

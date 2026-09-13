@@ -34,14 +34,19 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
     
     if is_store_wide:
         # Evaluate baseline across all departments
-        store_subset = raw_df[raw_df["Store_ID"] == store_id]
-        store_size = store_subset["Store_Size_SqFt"].iloc[0] if len(store_subset) > 0 else 120000
+        store_subset = raw_df[raw_df["Store_ID"] == store_id] if "Store_ID" in raw_df.columns else raw_df
+        store_size = float(store_subset["Store_Size_SqFt"].iloc[0]) if (len(store_subset) > 0 and "Store_Size_SqFt" in store_subset.columns and pd.notna(store_subset["Store_Size_SqFt"].iloc[0])) else 120000.0
         
         dept_baselines = {}
         dept_recent_sales = {}
         for d in DEPARTMENTS:
-            sub = store_subset[store_subset["Department"] == d].sort_values(by="Date")
-            rec = sub["Weekly_Sales"].tail(4).values
+            if "Department" in store_subset.columns:
+                sub = store_subset[store_subset["Department"] == d]
+                if "Date" in sub.columns:
+                    sub = sub.sort_values(by="Date")
+            else:
+                sub = store_subset
+            rec = sub["Weekly_Sales"].tail(4).values if "Weekly_Sales" in sub.columns else np.array([])
             base = float(np.mean(rec)) if len(rec) > 0 else 25000.0
             dept_baselines[d] = base
             dept_recent_sales[d] = rec
@@ -237,10 +242,16 @@ def solve_target_revenue_plan(store_id: str, dept: str, target_sales: float, raw
         
     else:
         # Single department solver
-        subset = raw_df[(raw_df["Store_ID"] == store_id) & (raw_df["Department"] == dept)].sort_values(by="Date")
-        recent_sales = subset["Weekly_Sales"].tail(4).values
+        if "Store_ID" in raw_df.columns and "Department" in raw_df.columns:
+            subset = raw_df[(raw_df["Store_ID"] == store_id) & (raw_df["Department"] == dept)]
+        else:
+            subset = raw_df
+        if "Date" in subset.columns:
+            subset = subset.sort_values(by="Date")
+            
+        recent_sales = subset["Weekly_Sales"].tail(4).values if "Weekly_Sales" in subset.columns else np.array([])
         baseline_sales = float(np.mean(recent_sales)) if len(recent_sales) > 0 else 25000.0
-        store_size = subset["Store_Size_SqFt"].iloc[0] if len(subset) > 0 else 120000
+        store_size = float(subset["Store_Size_SqFt"].iloc[0]) if (len(subset) > 0 and "Store_Size_SqFt" in subset.columns and pd.notna(subset["Store_Size_SqFt"].iloc[0])) else 120000.0
         
         gap = target_sales - baseline_sales
         pct_gap = (gap / (baseline_sales + 1e-5)) * 100

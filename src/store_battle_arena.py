@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
+import html
 from typing import Dict, Any, List
 try:
     from src.config import STORE_LOCATIONS, STORES, DEPARTMENTS
@@ -22,6 +23,23 @@ def compute_store_battle_metrics(raw_df: pd.DataFrame, store_locations: dict, st
     Computes comparative metrics, victory scores, and head-to-head ratios for two stores.
     """
     cards = get_enriched_store_cards(raw_df, store_locations)
+    if not cards:
+        cards = [{
+            "store_id": "Store_01",
+            "city": "HQ Hub",
+            "state": "Network",
+            "icon": "🏢",
+            "tag": "Flagship Hub",
+            "grade": "B",
+            "color": "#2563EB",
+            "health_score": 80.0,
+            "tot_rev": 1000000.0,
+            "avg_weekly": 25000.0,
+            "sqft": 100000.0,
+            "yield_sqft": 10.0,
+            "growth": 3.5,
+            "top_category": "General"
+        }]
     card_dict = {c["store_id"]: c for c in cards}
     
     cA = card_dict.get(store_a_id, cards[0])
@@ -271,6 +289,13 @@ def render_store_battle_arena(
     cA = battle["store_a"]
     cB = battle["store_b"]
 
+    city_a_esc = html.escape(str(cA['city']))
+    tag_a_esc = html.escape(str(cA['tag']))
+    store_a_esc = html.escape(str(cA['store_id']))
+    city_b_esc = html.escape(str(cB['city']))
+    tag_b_esc = html.escape(str(cB['tag']))
+    store_b_esc = html.escape(str(cB['store_id']))
+
     # Matchup Hero Banner
     banner_html = f"""<div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 14px; padding: 1rem 1.4rem; margin-top: 0.5rem; margin-bottom: 1rem; box-shadow: 0 4px 15px rgba(15,23,42,0.15); color: white;">
 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
@@ -278,8 +303,8 @@ def render_store_battle_arena(
 <span style="font-size: 2rem;">{cA['icon']}</span>
 <div>
 <div style="font-size: 0.75rem; color: #93C5FD; font-weight: 800; text-transform: uppercase;">BLUE CORNER</div>
-<div style="font-size: 1.15rem; font-weight: 900; color: white;">{cA['city']} ({cA['store_id']})</div>
-<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #60A5FA;">{cA['grade']}</b> • {cA['tag']}</div>
+<div style="font-size: 1.15rem; font-weight: 900; color: white;">{city_a_esc} ({store_a_esc})</div>
+<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #60A5FA;">{cA['grade']}</b> • {tag_a_esc}</div>
 </div>
 </div>
 <div style="background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.25); border-radius: 9999px; padding: 0.35rem 1rem; font-weight: 900; font-size: 0.95rem; letter-spacing: 0.08em; color: #F8FAFC;">
@@ -288,8 +313,8 @@ def render_store_battle_arena(
 <div style="display: flex; align-items: center; gap: 0.75rem; text-align: right;">
 <div>
 <div style="font-size: 0.75rem; color: #C4B5FD; font-weight: 800; text-transform: uppercase;">PURPLE CORNER</div>
-<div style="font-size: 1.15rem; font-weight: 900; color: white;">{cB['city']} ({cB['store_id']})</div>
-<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #A78BFA;">{cB['grade']}</b> • {cB['tag']}</div>
+<div style="font-size: 1.15rem; font-weight: 900; color: white;">{city_b_esc} ({store_b_esc})</div>
+<div style="font-size: 0.8rem; color: #E2E8F0;">Grade: <b style="color: #A78BFA;">{cB['grade']}</b> • {tag_b_esc}</div>
 </div>
 <span style="font-size: 2rem;">{cB['icon']}</span>
 </div>

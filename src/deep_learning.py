@@ -226,7 +226,10 @@ def train_pytorch_lstm(epochs: int = 40, batch_size: int = 64, lr: float = 0.002
     # -----------------------------------------------------------------
     # Final Evaluation & Metrics Calculation
     # -----------------------------------------------------------------
-    model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=device))
+    try:
+        model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=device, weights_only=True))
+    except TypeError:
+        model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=device))
     model.eval()
     
     all_preds_scaled = []
@@ -283,7 +286,10 @@ def load_lstm_artifacts():
     if LSTM_MODEL_FILE.exists() and LSTM_METADATA_FILE.exists():
         meta = joblib.load(LSTM_METADATA_FILE)
         model = BiLSTMForecaster(input_dim=len(meta["feature_cols"]), hidden_dim=64, num_layers=2)
-        model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=torch.device("cpu")))
+        try:
+            model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=torch.device("cpu"), weights_only=True))
+        except TypeError:
+            model.load_state_dict(torch.load(LSTM_MODEL_FILE, map_location=torch.device("cpu")))
         model.eval()
         return {"model": model, "meta": meta}
     return None
