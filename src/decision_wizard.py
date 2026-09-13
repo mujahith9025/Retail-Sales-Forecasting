@@ -27,9 +27,9 @@ DECISION_INTENTS = [
     {
         "id": "target_revenue",
         "icon": "🎯",
-        "title": "Hit a Revenue Target",
-        "tagline": "Reverse-engineer markdowns, staff & inventory",
-        "description": "Set a target sales goal (e.g. +20% growth) and let AI calculate the exact discount, staff roster, and net margin required to achieve it.",
+        "title": "Hit Revenue Target",
+        "tagline": "Reverse-engineer discounts & staff",
+        "description": "Calculate exact discount, staff roster, and net margin to hit your target.",
         "color": "#2563EB",
         "target_tab": "tab2",
         "sub_action": "goal_seek"
@@ -37,9 +37,9 @@ DECISION_INTENTS = [
     {
         "id": "holiday_surge",
         "icon": "🛍️",
-        "title": "Prepare for Holiday Surge",
-        "tagline": "Simulate Black Friday & Christmas demand",
-        "description": "Calculate inventory safety stock buffers, peak customer foot traffic, and labor rosters for major retail commercial events.",
+        "title": "Holiday Surge Prep",
+        "tagline": "Black Friday & Christmas plans",
+        "description": "Simulate peak foot-traffic, safety stock buffers, and labor surge rosters.",
         "color": "#DC2626",
         "target_tab": "tab2",
         "sub_action": "scenario_presets"
@@ -47,9 +47,9 @@ DECISION_INTENTS = [
     {
         "id": "store_audit",
         "icon": "🩺",
-        "title": "Audit Store Health Grades",
-        "tagline": "Inspect A+ to F branch grades & $/sq ft",
-        "description": "Instantly see top-performing branches, space efficiency leaders, and diagnostic prescriptions across all 10 US store locations.",
+        "title": "Store Health Audit",
+        "tagline": "A+ to F grades & yield ($/sqft)",
+        "description": "Inspect top branch rankings, space efficiency, and diagnostic prescriptions.",
         "color": "#10B981",
         "target_tab": "tab1",
         "sub_action": "health_scorecard"
@@ -57,9 +57,9 @@ DECISION_INTENTS = [
     {
         "id": "profit_sweetspot",
         "icon": "💰",
-        "title": "Maximize Cash Profits",
-        "tagline": "Find the optimal discount margin sweet spot",
-        "description": "Discover why 10% discounts often make more net cash than 30% clearance markdowns using real wholesale COGS and labor costs.",
+        "title": "Maximize Profit",
+        "tagline": "Optimal discount sweet spot",
+        "description": "Find the promo discount level that delivers peak bottom-line cash profit.",
         "color": "#F59E0B",
         "target_tab": "tab2",
         "sub_action": "profit_estimator"
@@ -67,9 +67,9 @@ DECISION_INTENTS = [
     {
         "id": "custom_upload",
         "icon": "📤",
-        "title": "Forecast Custom Store CSV",
-        "tagline": "Upload your own sales spreadsheet in 1 click",
-        "description": "Drag & drop your store sales CSV or test with pre-built sample templates to generate 12-week AI forward forecasts & anomaly audits.",
+        "title": "Forecast Custom CSV",
+        "tagline": "Instant 1-click dataset injection",
+        "description": "Upload sales CSV to auto-generate forward AI forecasts and audit reports.",
         "color": "#8B5CF6",
         "target_tab": "tab3",
         "sub_action": "upload_analyzer"
@@ -77,9 +77,9 @@ DECISION_INTENTS = [
     {
         "id": "export_bundle",
         "icon": "📦",
-        "title": "Export Executive Briefing",
-        "tagline": "1-Click PDF memo, Excel & ZIP bundle",
-        "description": "Download formatted executive briefings, multi-sheet Excel workbooks, and batch forecasts ready for board meetings and leadership reviews.",
+        "title": "Executive Export",
+        "tagline": "1-Click PDF, Excel & ZIP bundle",
+        "description": "Download publication-ready reports, spreadsheets, and predictions.",
         "color": "#0F172A",
         "target_tab": "tab3",
         "sub_action": "export_reports"
@@ -117,18 +117,18 @@ def render_decision_wizard(raw_df: pd.DataFrame, store_locations: dict, active_s
 
     current_intent_id = st.session_state.decision_wizard_intent
 
-    safe_render_html("""<div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 25px -4px rgba(15, 23, 42, 0.3);">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-<span style="font-weight: 800; font-size: 1.12rem; color: #F8FAFC; display: flex; align-items: center; gap: 0.5rem;">
-🧭 <b>"What Do You Want to Do?"</b> 1-Click Executive Decision Wizard
+    safe_render_html("""<div style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 0.9rem; border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+<div>
+<span style="font-weight: 800; font-size: 1.05rem; color: #F8FAFC; display: flex; align-items: center; gap: 0.4rem;">
+🧭 <b>1-Click Executive Decision Wizard</b>
 </span>
-<span style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 9999px; border: 1px solid rgba(59, 130, 246, 0.3);">
-⚡ Instant Decision Engine
+<div style="font-size: 0.8rem; color: #94A3B8; margin-top: 0.15rem;">
+Select an objective to instantly generate tailored AI directives and action plans.
+</div>
+</div>
+<span style="background: rgba(59, 130, 246, 0.2); color: #60A5FA; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px;">
+⚡ AI Guided
 </span>
-</div>
-<div style="font-size: 0.84rem; color: #94A3B8;">
-Select your high-level business goal below — the AI will instantly calculate your optimal action plan, key metrics, and recommended next steps.
-</div>
 </div>""")
 
     # Render 6 Intent Cards in 2 rows of 3 columns
@@ -143,21 +143,21 @@ Select your high-level business goal below — the AI will instantly calculate y
             with c:
                 border_color = item["color"] if is_active else "#E2E8F0"
                 bg_color = "linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%)" if is_active else "#FFFFFF"
-                box_shadow = "0 8px 20px -3px rgba(37, 99, 235, 0.25)" if is_active else "0 2px 6px rgba(0,0,0,0.03)"
-                badge = f'<span style="background: {item["color"]}; color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 700;">🟢 Active Intent</span>' if is_active else f'<span style="background: #F1F5F9; color: #475569; padding: 0.15rem 0.5rem; border-radius: 9999px; font-size: 0.68rem; font-weight: 600;">1-Click</span>'
+                box_shadow = "0 4px 12px -2px rgba(37, 99, 235, 0.2)" if is_active else "0 1px 4px rgba(0,0,0,0.03)"
+                badge = f'<span style="background: {item["color"]}; color: white; padding: 0.15rem 0.45rem; border-radius: 9999px; font-size: 0.65rem; font-weight: 700;">Active</span>' if is_active else f'<span style="background: #F1F5F9; color: #64748B; padding: 0.15rem 0.45rem; border-radius: 9999px; font-size: 0.65rem; font-weight: 600;">1-Click</span>'
 
-                safe_render_html(f"""<div style="background: {bg_color}; border: 2px solid {border_color}; border-radius: 12px; padding: 0.85rem 1rem; box-shadow: {box_shadow}; min-height: 125px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0.3rem;">
+                safe_render_html(f"""<div style="background: {bg_color}; border: 1.5px solid {border_color}; border-radius: 10px; padding: 0.75rem 0.9rem; box-shadow: {box_shadow}; min-height: 105px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 0.25rem;">
 <div>
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-<span style="font-weight: 800; font-size: 0.98rem; color: #0F172A;">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+<span style="font-weight: 800; font-size: 0.92rem; color: #0F172A;">
 {item['icon']} {item['title']}
 </span>
 {badge}
 </div>
-<div style="font-size: 0.78rem; font-weight: 600; color: {item['color']}; margin-bottom: 0.3rem;">
+<div style="font-size: 0.76rem; font-weight: 600; color: {item['color']}; margin-bottom: 0.2rem;">
 {item['tagline']}
 </div>
-<div style="font-size: 0.74rem; color: #64748B; line-height: 1.35;">
+<div style="font-size: 0.72rem; color: #64748B; line-height: 1.3;">
 {item['description']}
 </div>
 </div>
@@ -176,18 +176,17 @@ Select your high-level business goal below — the AI will instantly calculate y
     # ==============================================================================
     active_intent_data = next((x for x in DECISION_INTENTS if x["id"] == current_intent_id), DECISION_INTENTS[0])
     
-    safe_render_html(f"""<div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-left: 6px solid {active_intent_data['color']}; border-radius: 14px; padding: 1.2rem 1.5rem; margin-top: 0.5rem; margin-bottom: 1.2rem; box-shadow: 0 4px 15px -2px rgba(0,0,0,0.05);">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-<span style="font-weight: 800; font-size: 1.15rem; color: #0F172A; display: flex; align-items: center; gap: 0.5rem;">
+    safe_render_html(f"""<div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-left: 5px solid {active_intent_data['color']}; border-radius: 12px; padding: 1rem 1.25rem; margin-top: 0.3rem; margin-bottom: 1rem; box-shadow: 0 3px 10px -2px rgba(0,0,0,0.04);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+<span style="font-weight: 800; font-size: 1.05rem; color: #0F172A; display: flex; align-items: center; gap: 0.4rem;">
 {active_intent_data['icon']} <b>AI Action Plan:</b> {active_intent_data['title']}
 </span>
-<span style="background: {active_intent_data['color']}; color: white; padding: 0.25rem 0.8rem; border-radius: 9999px; font-weight: 700; font-size: 0.8rem;">
-Target Store: {active_store}
+<span style="background: {active_intent_data['color']}; color: white; padding: 0.2rem 0.65rem; border-radius: 9999px; font-weight: 700; font-size: 0.75rem;">
+Store: {active_store}
 </span>
 </div>""")
 
     try:
-        # Tailored Action Details based on Intent
         if current_intent_id == "target_revenue":
             s_data = raw_df[raw_df["Store_ID"] == active_store]
             base_rev = s_data.groupby("Date")["Weekly_Sales"].sum().tail(4).mean() if len(s_data) > 0 else 125000.0
@@ -197,41 +196,39 @@ Target Store: {active_store}
             target_val = plan.get('target_sales', target_rev)
             pct_gap = plan.get('pct_gap', 20.0)
             promo_pct = plan.get('recommended_promo_pct', 10)
-            rec_event = plan.get('recommended_event', 'Standard Operating Week')
-            staff_str = str(plan.get('staff_recommendation', 'Standard Base Staffing')).split('(')[0].strip()
-            labor_cost = plan.get('labor_cost', 1400.0)
-            buffer_str = str(plan.get('buffer_recommendation', plan.get('inventory_recommendation', '+15% Safety Stock Buffer'))).split('(')[0].strip()
-            lead_days = plan.get('supplier_lead_days', 7)
+            rec_event = plan.get('recommended_event', 'Standard Week')
+            staff_str = str(plan.get('staff_recommendation', 'Standard Staffing')).split('(')[0].strip()
+            buffer_str = str(plan.get('buffer_recommendation', plan.get('inventory_recommendation', '+15% Safety Buffer'))).split('(')[0].strip()
             net_profit = plan.get('net_profit', plan.get('projected_net_profit', 12000.0))
             net_margin = plan.get('net_margin_pct', plan.get('projected_net_margin_pct', 15.0))
 
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric("🎯 Target Revenue", f"${target_val:,.0f}", f"{pct_gap:+.1f}% vs baseline")
+                st.metric("🎯 Target", f"${target_val:,.0f}", f"{pct_gap:+.1f}% vs baseline")
             with w2:
-                st.metric("🏷️ Required Discount", f"{promo_pct}% Off", rec_event)
+                st.metric("🏷️ Discount", f"{promo_pct}% Off", rec_event)
             with w3:
-                st.metric("👥 Floor Staff Roster", staff_str, f"${labor_cost:,.0f}/wk cost")
+                st.metric("👥 Staff", staff_str, "Floor coverage")
             with w4:
-                st.metric("📦 Safety Stock Buffer", buffer_str, f"Lead Time: {lead_days} days")
+                st.metric("📦 Buffer", buffer_str, f"${net_profit:,.0f} Profit ({net_margin:.1f}%)")
 
-            safe_render_html(f"""<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-💡 <b>Executive Directive:</b> To hit <b>${target_val:,.0f}</b> at <b>{active_store}</b>, implement a <b>{promo_pct}% promotional markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b>. Projected net profit: <b>${net_profit:,.0f}</b> ({net_margin:.1f}% margin).
+            safe_render_html(f"""<div style="background: #F8FAFC; border-left: 4px solid #2563EB; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #1E293B;">
+💡 <b>Action Directive:</b> Apply <b>{promo_pct}% markdown</b> with <b>{staff_str}</b> and <b>{buffer_str}</b> to generate <b>${net_profit:,.0f}</b> net profit.
 </div>""")
 
         elif current_intent_id == "holiday_surge":
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric("🛍️ Peak Holiday Event", "Black Friday / Christmas", "+48.5% Net Demand Lift")
+                st.metric("🛍️ Peak Event", "Black Friday / Christmas", "+48.5% Surge")
             with w2:
-                st.metric("🏷️ Promo Markdown", "25% Site-Wide", "High Traffic Magnet")
+                st.metric("🏷️ Promo Rate", "25% Markdown", "Traffic Driver")
             with w3:
-                st.metric("👥 Staffing Surge", "+4 Associates / Store", "Prevent checkout queues")
+                st.metric("👥 Extra Staff", "+4 Associates / Store", "Checkout Support")
             with w4:
-                st.metric("📦 Warehouse Buffer", "+35% Safety Stock", "Order 14 days in advance")
+                st.metric("📦 Stock Buffer", "+35% Safety Stock", "Dispatch 14d prior")
 
-            safe_render_html("""<div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #991B1B; line-height: 1.45;">
-🚨 <b>Holiday Readiness Directive:</b> Commercial demand surges by <b>+48.5%</b> during Black Friday week. Ensure warehouse purchase orders are dispatched <b>14 days prior</b> and schedule <b>+4 extra staff members per branch</b> to prevent stockouts and register bottlenecks.
+            safe_render_html("""<div style="background: #FEF2F2; border-left: 4px solid #EF4444; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #991B1B;">
+🚨 <b>Holiday Directive:</b> Demand surges by <b>+48.5%</b>. Order inventory <b>14 days prior</b> and roster <b>+4 staff</b>.
 </div>""")
 
         elif current_intent_id == "store_audit":
@@ -244,77 +241,75 @@ Target Store: {active_store}
             top_id = top_s.get("Store_ID", "Store_09")
             top_city = top_s.get("City", "Dallas")
             top_grade = top_s.get("Grade", "A+")
-            top_score = top_s.get("Health_Score", 95.0)
 
             curr_id = curr_s.get("Store_ID", active_store)
             curr_city = curr_s.get("City", "Store")
             curr_grade = curr_s.get("Grade", "A")
             curr_sqft_rev = curr_s.get("Sales_per_SqFt ($)", 75.0)
-            curr_rx = curr_s.get("Prescription", "Maintain current operational inventory cadence.")
-            curr_growth = curr_s.get("Growth_Pace (%)", 5.0)
+            curr_rx = curr_s.get("Prescription", "Maintain inventory cadence.")
 
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric(f"🏆 Top Branch Leader", f"{top_id} ({top_city})", f"Grade {top_grade} ({top_score}/100)")
+                st.metric("🏆 Top Branch", f"{top_id} ({top_city})", f"Grade {top_grade}")
             with w2:
-                st.metric(f"🏢 Active Store Grade", f"{curr_id} — Grade {curr_grade}", f"${curr_sqft_rev}/sq ft")
+                st.metric("🏢 Active Grade", f"{curr_id} ({curr_grade})", f"${curr_sqft_rev}/sq ft")
             with w3:
-                st.metric("✨ Network Health Index", f"{avg_s:.1f} / 100", "Solid Baseline")
+                st.metric("✨ Network Health", f"{avg_s:.1f} / 100", "Solid Baseline")
             with w4:
-                st.metric("🛡️ Critical Risk Stores", "0 Stores (Grade F)", "Low Network Risk")
+                st.metric("🛡️ Critical Risk", "0 Grade F Stores", "Low Risk")
 
-            safe_render_html(f"""<div style="background: #F0FDF4; border: 1px solid #86EFAC; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #166534; line-height: 1.45;">
-🩺 <b>Health Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} Space efficiency is currently <b>${curr_sqft_rev}/sq ft</b> with <b>{curr_growth:+.1f}%</b> recent momentum.
+            safe_render_html(f"""<div style="background: #F0FDF4; border-left: 4px solid #10B981; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #166534;">
+🩺 <b>Audit Directive for {active_store} ({curr_city}):</b> {curr_rx} (Space yield: <b>${curr_sqft_rev}/sq ft</b>).
 </div>""")
 
         elif current_intent_id == "profit_sweetspot":
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric("💰 Optimal Sweet Spot", "10% Discount", "Maximum Take-Home Profit")
+                st.metric("💰 Sweet Spot", "10% Discount", "Peak Cash Profit")
             with w2:
-                st.metric("💵 Projected Net Profit", "$10,500 / week", "+28.4% vs 0% baseline")
+                st.metric("💵 Net Profit", "$10,500 / week", "+28.4% vs baseline")
             with w3:
-                st.metric("⚠️ 30% Flash Markdown", "$6,800 / week", "-35.2% Margin Dilution")
+                st.metric("⚠️ 30% Markdown", "$6,800 / week", "Margin Erosion")
             with w4:
-                st.metric("📊 Wholesale COGS", "58% of Revenue", "Grocery Category Benchmark")
+                st.metric("📊 Wholesale COGS", "58% of Revenue", "Industry Benchmark")
 
-            safe_render_html("""<div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #92400E; line-height: 1.45;">
-💡 <b>Profit Margin Directive:</b> A <b>10% promotional markdown</b> increases unit volume sufficiently to generate <b>$10,500 net cash profit</b>. Avoid deep 30%+ clearance markdowns unless liquidating obsolete inventory, as wholesale COGS erode net margins rapidly.
+            safe_render_html("""<div style="background: #FFFBEB; border-left: 4px solid #F59E0B; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #92400E;">
+💡 <b>Profit Directive:</b> <b>10% discounts</b> yield peak cash ($10.5K/wk). Avoid >30% markdowns to protect margins.
 </div>""")
 
         elif current_intent_id == "custom_upload":
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric("📤 Custom CSV Ingestion", "Drag & Drop", "UTF-8 & Excel CSV Supported")
+                st.metric("📤 CSV Upload", "Drag & Drop", "Auto Column Mapping")
             with w2:
-                st.metric("⚡ 1-Click Demo Ready", "100 Row Sample", "Instant Testing")
+                st.metric("⚡ Demo Dataset", "2,600 Rows", "1-Click Testing")
             with w3:
-                st.metric("🔮 Forward AI Horizon", "12 Weeks Forecast", "XGBoost ML Pipeline")
+                st.metric("🔮 AI Horizon", "12-Week Forecast", "XGBoost Engine")
             with w4:
-                st.metric("🔍 Anomaly Scanner", "Outlier Detection", "Alerts on >2.2σ Spikes")
+                st.metric("🔍 Anomaly Scanner", "Outlier Alerts", ">2.2σ Spikes")
 
-            safe_render_html("""<div style="background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #6B21A8; line-height: 1.45;">
-🚀 <b>Custom Data Directive:</b> Navigate to <b>Tab 3 (Upload & Reports)</b> or click below to test the automated AI forecaster with your own custom store sales CSV files.
+            safe_render_html("""<div style="background: #FAF5FF; border-left: 4px solid #8B5CF6; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #6B21A8;">
+🚀 <b>Custom Ingestion:</b> Go to <b>Custom Data & Export Hub</b> to upload CSVs and reflect changes across all pages.
 </div>""")
 
         elif current_intent_id == "export_bundle":
             w1, w2, w3, w4 = st.columns(4)
             with w1:
-                st.metric("📑 Executive PDF Memo", "Publication Ready", "Leadership Briefing")
+                st.metric("📑 PDF Memo", "Executive Briefing", "Ready to Share")
             with w2:
-                st.metric("📊 5-Sheet Excel Model", "Enterprise XLSX", "Financial Schedules")
+                st.metric("📊 Excel Model", "5-Sheet Workbook", "Financial Schedules")
             with w3:
-                st.metric("📁 Batch Forecast CSV", "1,300 Data Rows", "Warehouse Ingestion")
+                st.metric("📁 CSV Forecasts", "Batch Predictions", "Data Warehouse")
             with w4:
-                st.metric("📦 1-Click ZIP Archive", "All-in-One Bundle", "Single Download")
+                st.metric("📦 ZIP Archive", "All-in-One", "1-Click Download")
 
-            safe_render_html("""<div style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-📦 <b>Executive Reporting Directive:</b> Download the complete multi-asset bundle directly from the sidebar button or <b>Tab 3</b> for immediate board-level presentation and analysis.
+            safe_render_html("""<div style="background: #F1F5F9; border-left: 4px solid #0F172A; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #334155;">
+📦 <b>Export Directive:</b> Download the complete executive package from the sidebar or the Export Hub.
 </div>""")
 
     except Exception as e:
-        safe_render_html(f"""<div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.8rem; font-size: 0.84rem; color: #334155; line-height: 1.45;">
-💡 <b>Executive Directive:</b> AI strategy plan loaded for <b>{active_store}</b>. Use the interactive tools and controls below to evaluate forward forecasts and simulations.
+        safe_render_html(f"""<div style="background: #F8FAFC; border-left: 4px solid #2563EB; border-radius: 6px; padding: 0.65rem 0.85rem; margin-top: 0.6rem; font-size: 0.82rem; color: #334155;">
+💡 <b>Directive:</b> AI plan ready for <b>{active_store}</b>. Use controls below to run simulations.
 </div>""")
 
     safe_render_html("</div>")

@@ -147,8 +147,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🏆 Store Performance",
             "question": "Which store branch generates the highest revenue and best footprint yield ($/sq ft)?",
-            "headline": f"{top['Store_ID']} ({top['City']}, {top['State']}) is the #1 branch, generating ${top['Total_Sales']/1e6:,.2f}M with ${top['Sales_per_SqFt']:.2f}/sq ft yield.",
-            "summary": f"Across the entire 10-store network, {top['Store_ID']} in {top['City']} ranks first in gross revenue and space productivity. It outperforms the network average yield by +{((top['Sales_per_SqFt'] - store_totals['Sales_per_SqFt'].mean()) / store_totals['Sales_per_SqFt'].mean())*100:.1f}%. Runner-up {runner_up['Store_ID']} ({runner_up['City']}) follows closely with ${runner_up['Total_Sales']/1e6:,.2f}M.",
+            "headline": f"{top['Store_ID']} ({top['City']}) leads network with ${top['Total_Sales']/1e6:,.2f}M revenue & ${top['Sales_per_SqFt']:.2f}/sq ft space yield.",
+            "summary": f"{top['Store_ID']} outperforms the network average yield by +{((top['Sales_per_SqFt'] - store_totals['Sales_per_SqFt'].mean()) / store_totals['Sales_per_SqFt'].mean())*100:.1f}%. Runner-up: {runner_up['Store_ID']} (${runner_up['Total_Sales']/1e6:,.2f}M).",
             "kpis": [
                 {"label": "Top Branch", "val": f"{top['Store_ID']} ({top['City']})", "sub": "🏆 #1 Network Leader", "color": "accent-emerald"},
                 {"label": "Branch Revenue", "val": f"${top['Total_Sales']/1e6:,.2f}M", "sub": f"{(top['Total_Sales']/total_rev)*100:.1f}% Revenue Share", "color": "accent-blue"},
@@ -158,9 +158,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": table_df,
             "recommendations": [
-                f"Benchmark visual merchandising and floor layouts from {top['Store_ID']} ({top['City']}) to replicate high yield in lower-density branches.",
-                "Maintain priority replenishment cycles for Store_01 during weekend peaks to prevent stockouts.",
-                "Test expanded promotional footprints in high-yield branches while protecting contribution margins."
+                f"Scale {top['Store_ID']}'s floor layout and visual merchandising to lower-yield branches.",
+                "Maintain priority replenishment during weekend traffic peaks.",
+                "Expand high-margin promotional footprints in top tier stores."
             ],
             "related_chips": ["top_category", "holiday_impact", "stockout_risk"]
         }
@@ -199,8 +199,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🛒 Category Dynamics",
             "question": "Which product category is our anchor revenue driver and has the highest customer volume?",
-            "headline": f"{top_c['Department']} leads all categories, generating ${top_c['Total_Sales']/1e6:,.2f}M ({top_c['Revenue_Share']:.1f}% of total enterprise sales).",
-            "summary": f"{top_c['Department']} and {second_c['Department']} combined represent {(top_c['Revenue_Share'] + second_c['Revenue_Share']):.1f}% of all gross sales across the chain. High-frequency categories act as essential customer foot traffic magnets.",
+            "headline": f"{top_c['Department']} leads all categories with ${top_c['Total_Sales']/1e6:,.2f}M ({top_c['Revenue_Share']:.1f}% share of enterprise sales).",
+            "summary": f"{top_c['Department']} and {second_c['Department']} combined drive {(top_c['Revenue_Share'] + second_c['Revenue_Share']):.1f}% of total sales as core foot-traffic magnets.",
             "kpis": [
                 {"label": "Top Category", "val": top_c['Department'], "sub": f"🛒 {top_c['Revenue_Share']:.1f}% Net Sales", "color": "accent-blue"},
                 {"label": "Category Revenue", "val": f"${top_c['Total_Sales']/1e6:,.2f}M", "sub": f"${top_c['Avg_Weekly']/1e3:,.1f}K / week avg", "color": "accent-emerald"},
@@ -210,9 +210,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": table_df,
             "recommendations": [
-                f"Protect high on-shelf availability (>98%) in {top_c['Department']} to maintain store visit frequency.",
-                f"Use {top_c['Department']} promotions as basket-building anchors to cross-sell into high-margin {second_c['Department']}.",
-                "Monitor supplier lead times and establish dual-sourcing agreements for top 20 velocity SKUs."
+                f"Ensure >98% on-shelf availability for high-velocity {top_c['Department']} SKUs.",
+                f"Cross-merchandise {top_c['Department']} items with high-margin {second_c['Department']} products.",
+                "Establish dual-sourcing contracts for top 20 velocity products."
             ],
             "related_chips": ["halo_effect", "promo_roi", "top_store"]
         }
@@ -250,8 +250,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🎉 Holidays & Events",
             "question": "How much revenue lift do Thanksgiving / Black Friday and Christmas generate across stores?",
-            "headline": f"{top_hol['Holiday_Name']} generates the strongest surge with +{top_hol['Lift_Pct']:.1f}% revenue lift over baseline operations.",
-            "summary": f"During {top_hol['Holiday_Name']}, average weekly department revenue surges to ${top_hol['Weekly_Sales']:,.0f} compared to the ${reg_mean:,.0f} regular week baseline. {second_hol['Holiday_Name']} delivers the second highest spike at +{second_hol['Lift_Pct']:.1f}%.",
+            "headline": f"{top_hol['Holiday_Name'].replace('_', ' ')} delivers +{top_hol['Lift_Pct']:.1f}% revenue lift over baseline operations.",
+            "summary": f"Weekly sales reach ${top_hol['Weekly_Sales']:,.0f} during {top_hol['Holiday_Name'].replace('_', ' ')}, followed by {second_hol['Holiday_Name'].replace('_', ' ')} (+{second_hol['Lift_Pct']:.1f}%).",
             "kpis": [
                 {"label": "Peak Event", "val": top_hol['Holiday_Name'].replace('_', ' '), "sub": f"🚀 +{top_hol['Lift_Pct']:.1f}% Revenue Lift", "color": "accent-rose"},
                 {"label": "Peak Avg Sales", "val": f"${top_hol['Weekly_Sales']:,.0f}", "sub": f"vs ${reg_mean:,.0f} Baseline", "color": "accent-emerald"},
@@ -261,9 +261,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": table_df,
             "recommendations": [
-                "Stage +35% to +40% safety inventory in distribution centers 3 weeks prior to Black Friday.",
-                "Roster +4 to +6 temporary seasonal associates per store across peak checkout and restock hours.",
-                "Deploy targeted digital and flyer promotions 7 days ahead to capture early holiday gift spend."
+                "Stage +35% to +45% safety inventory buffer 3 weeks in advance.",
+                "Roster +4 to +6 temporary floor associates for peak checkout hours.",
+                "Launch early promotional announcements 7 days prior to major holiday events."
             ],
             "related_chips": ["stockout_risk", "promo_roi", "top_category"]
         }
@@ -318,8 +318,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🏷️ Pricing & Promos",
             "question": "What promotional discount percentage maximizes net profit without eroding margins?",
-            "headline": f"A {best_profit_row['Discount (%)']}% discount is the optimal profit sweet spot, yielding ${best_profit_row['Net Profit ($)']:,.2f} net profit ({best_profit_row['Net Margin (%)']}% margin).",
-            "summary": f"Discounts above 20% generate strong top-line sales but experience diminishing marginal returns due to margin erosion and markdown absorption. A {best_profit_row['Discount (%)']}% discount generates +{best_profit_row['Revenue Lift (%)']}% demand lift while maintaining healthy operating cash flow.",
+            "headline": f"A {best_profit_row['Discount (%)']}% discount is the optimal sweet spot: ${best_profit_row['Net Profit ($)']:,.0f} net profit ({best_profit_row['Net Margin (%)']}% margin).",
+            "summary": f"Discounts above 20% erode margins without proportional unit gains. A {best_profit_row['Discount (%)']}% promo achieves +{best_profit_row['Revenue Lift (%)']}% lift with peak profitability.",
             "kpis": [
                 {"label": "Optimal Discount", "val": f"{best_profit_row['Discount (%)']}% Off", "sub": "🏆 Maximum Profit Yield", "color": "accent-emerald"},
                 {"label": "Max Net Profit", "val": f"${best_profit_row['Net Profit ($)']:,.0f}", "sub": "Peak Bottom-Line Return", "color": "accent-blue"},
@@ -329,9 +329,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": table_df,
             "recommendations": [
-                f"Standardize weekly circular promotions at {best_profit_row['Discount (%)']}% for everyday traffic generation.",
-                "Reserve heavy 25-30% markdowns exclusively for end-of-season clearance to minimize margin dilution.",
-                "Pair promotional discounts with minimum basket thresholds (e.g. $10 off $75) to protect transaction value."
+                f"Standardize weekly circular promotions at {best_profit_row['Discount (%)']}% discount.",
+                "Reserve heavy 25%+ markdowns exclusively for end-of-season clearance.",
+                "Pair promotional discounts with minimum basket thresholds ($75+) to protect transaction size."
             ],
             "related_chips": ["holiday_impact", "top_category", "stockout_risk"]
         }
@@ -359,8 +359,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "📦 Supply Chain & Risk",
             "question": "What safety inventory buffer and floor staffing roster are needed for peak promo surges?",
-            "headline": "Maintain a +35% to +45% safety inventory buffer and roster +4 extra staff during major promotion and holiday surge events.",
-            "summary": "Surge velocity during peak promotions can deplete fast-moving categories within 48 hours. Establishing safety inventory buffers prevents stockouts and lost basket conversion.",
+            "headline": "+35% to +45% safety inventory buffer and +4 extra staff recommended for major promotions and holiday events.",
+            "summary": "High promo velocity depletes fast-moving SKUs within 48 hours. Maintaining safety stock buffers prevents lost basket conversions.",
             "kpis": [
                 {"label": "Peak Promo Buffer", "val": "+45% Stock", "sub": "📦 Black Friday / Q4", "color": "accent-rose"},
                 {"label": "Standard Promo Buffer", "val": "+20% Stock", "sub": "🏷️ 10-15% Markdowns", "color": "accent-blue"},
@@ -370,9 +370,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": stock_scenarios,
             "recommendations": [
-                "Issue purchase orders 14 business days prior to scheduled promo launch dates.",
-                "Schedule dynamic staggered shifts with +2 extra restockers during high foot-traffic hours (12 PM - 6 PM).",
-                "Set automated ERP inventory low-stock alerts at 25% of baseline reorder points."
+                "Issue replenishment purchase orders 14 days prior to campaign launch.",
+                "Roster +2 extra restockers during peak afternoon foot traffic (12 PM - 6 PM).",
+                "Set automated ERP inventory low-stock alerts at 25% reorder thresholds."
             ],
             "related_chips": ["holiday_impact", "promo_roi", "top_store"]
         }
@@ -396,8 +396,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🛒 Category Dynamics",
             "question": "Which departments have the strongest co-purchasing affinity and basket-building halo effect?",
-            "headline": f"Grocery and Electronics exhibit strong co-purchasing affinity (r = {top_corr_val:.2f}), driving powerful basket-building halo effects.",
-            "summary": "When high-frequency foot traffic in Grocery expands, customer spillover directly boosts discretionary purchases in Electronics and Apparel. Cross-merchandising these categories increases overall average order value (AOV).",
+            "headline": f"Grocery and Electronics exhibit strong co-purchasing affinity (r = {top_corr_val:.2f}), driving cross-basket halo effects.",
+            "summary": "High-frequency grocery traffic directly boosts discretionary purchases in electronics and apparel, expanding overall average order value.",
             "kpis": [
                 {"label": "Peak Affinity Pair", "val": "Grocery ↔ Electronics", "sub": f"🔗 Correlation: {top_corr_val:.2f}", "color": "accent-blue"},
                 {"label": "Secondary Affinity", "val": "Apparel ↔ Home Garden", "sub": "✨ Seasonal Co-movement", "color": "accent-emerald"},
@@ -407,9 +407,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": corr_matrix.round(2).reset_index(),
             "recommendations": [
-                "Place end-cap promotional displays for Electronics accessories near high-traffic Grocery aisles.",
-                "Offer bundle coupons (e.g. '$5 off Apparel when you spend $50 on Grocery') to stimulate cross-category conversion.",
-                "Coordinate marketing campaigns across co-moving departments rather than running siloed department sales."
+                "Place tech accessories and end-cap displays adjacent to high-traffic grocery aisles.",
+                "Deploy bundle coupons ($5 off apparel when spending $50 on grocery) to stimulate cross-sell.",
+                "Coordinate promotional campaigns across co-moving departments."
             ],
             "related_chips": ["top_category", "promo_roi", "top_store"]
         }
@@ -445,8 +445,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "📈 Macro Economics",
             "question": "How do rising fuel prices and CPI inflation influence store sales velocity?",
-            "headline": f"Customer demand shows slight sensitivity to fuel price spikes (r = {corr_fuel:.2f}), while core grocery categories remain resilient.",
-            "summary": "Essential grocery and pharmacy items maintain steady inelastic demand during macro fluctuations. In contrast, discretionary apparel and consumer electronics experience mild volume compression during high inflation.",
+            "headline": f"Sales show mild sensitivity to fuel spikes (r = {corr_fuel:.2f}); core grocery categories remain resilient.",
+            "summary": "Essential grocery and pharmacy items maintain stable demand during inflation, while discretionary apparel experiences mild headwinds.",
             "kpis": [
                 {"label": "Fuel Price Sensitivity", "val": f"{corr_fuel:+.2f}", "sub": "Mild Travel Headwind", "color": "accent-rose"},
                 {"label": "Inflation Elasticity", "val": f"{corr_cpi:+.2f}", "sub": "Nominal Basket Lift", "color": "accent-blue"},
@@ -456,9 +456,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": macro_df,
             "recommendations": [
-                "Promote private-label value brands during high-inflation periods to retain price-sensitive shoppers.",
-                "Incorporate regional gas price monitoring into weekly demand forecasting adjustments.",
-                "Emphasize multi-pack savings and family bundle values when inflation indices rise."
+                "Feature private-label value brands during high-inflation cycles to protect customer retention.",
+                "Incorporate regional fuel trends into weekly forecasting adjustments.",
+                "Highlight multi-pack savings bundles to price-sensitive shoppers."
             ],
             "related_chips": ["promo_roi", "top_category", "forecast_accuracy"]
         }
@@ -486,8 +486,8 @@ def answer_smart_question(
             "id": q_id,
             "category": "🤖 AI Confidence & Accuracy",
             "question": "How accurate is the machine learning forecast model and what is our expected error margin?",
-            "headline": f"Champion XGBoost delivers 94.6% accuracy (R^2 = {r2_val:.3f}) with an average error margin of only +/-{mape_val:.1f}%.",
-            "summary": f"The forecasting pipeline captures 96.8% of real-world retail sales variance. On average, predictions deviate by just ${mae_val:,.0f} per store-department week, providing high commercial reliability for inventory and financial budgeting.",
+            "headline": f"Champion XGBoost delivers 94.6% accuracy (R² = {r2_val:.3f}) with an average error margin of only +/-{mape_val:.1f}%.",
+            "summary": f"The forecasting pipeline captures {r2_val*100:.1f}% of real-world retail sales variance, with an average deviation of only ${mae_val:,.0f} per store-dept week.",
             "kpis": [
                 {"label": "Forecast Accuracy", "val": f"{(100-mape_val):.1f}%", "sub": "🎯 High Precision", "color": "accent-emerald"},
                 {"label": "Explained Variance", "val": f"{r2_val*100:.1f}% (R^2)", "sub": "Robust Feature Fit", "color": "accent-blue"},
@@ -497,9 +497,9 @@ def answer_smart_question(
             "fig": fig,
             "table_df": m_df,
             "recommendations": [
-                "Use P50 expected forecasts for base inventory ordering and P90 ceiling for peak holiday safety stocks.",
-                "Re-train the model monthly using the sidebar 1-Click Pipeline Runner to incorporate new seasonal patterns.",
-                "Integrate forecast outputs directly into weekly ERP replenishment schedules."
+                "Use P50 expected forecasts for base ordering and P90 ceiling for peak holiday safety stock.",
+                "Re-train models monthly using the sidebar 1-Click Pipeline Runner.",
+                "Feed forecast outputs directly into automated ERP replenishment schedules."
             ],
             "related_chips": ["top_store", "stockout_risk", "holiday_impact"]
         }

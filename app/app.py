@@ -674,7 +674,7 @@ PRESETS = {
         "fuel": 3.25,
         "cpi": 245.0,
         "unemp": 5.2,
-        "desc": "Peak Q4 retail surge with 25% site-wide discounts and high holiday foot traffic.",
+        "desc": "Peak Q4 surge: 25% site-wide discount with high foot traffic.",
         "color": "#DC2626",
         "staff_rec": "+4 Staff per Store",
         "buffer_rec": "+35% Inventory Buffer"
@@ -686,7 +686,7 @@ PRESETS = {
         "fuel": 3.30,
         "cpi": 248.0,
         "unemp": 5.1,
-        "desc": "Late-December gift shopping rush across Electronics, Apparel, and Grocery.",
+        "desc": "Late-December holiday shopping across all categories.",
         "color": "#16A34A",
         "staff_rec": "+5 Staff per Store",
         "buffer_rec": "+40% Inventory Buffer"
@@ -698,7 +698,7 @@ PRESETS = {
         "fuel": 3.65,
         "cpi": 242.0,
         "unemp": 5.4,
-        "desc": "Warm weather demand surge favoring Home & Garden and Apparel categories.",
+        "desc": "Warm-weather seasonal demand lift (Home & Garden, Apparel).",
         "color": "#F59E0B",
         "staff_rec": "+2 Staff per Store",
         "buffer_rec": "+20% Inventory Buffer"
@@ -710,7 +710,7 @@ PRESETS = {
         "fuel": 3.40,
         "cpi": 240.0,
         "unemp": 5.5,
-        "desc": "Aggressive 30% markdown to liquidate seasonal stock and accelerate turnover.",
+        "desc": "Aggressive 30% markdown to accelerate seasonal inventory turnover.",
         "color": "#8B5CF6",
         "staff_rec": "+2 Staff per Store",
         "buffer_rec": "Standard Inventory"
@@ -722,7 +722,7 @@ PRESETS = {
         "fuel": 4.85,
         "cpi": 262.0,
         "unemp": 8.2,
-        "desc": "Economic headwind with high gas prices and reduced consumer discretionary spend.",
+        "desc": "Economic headwind: elevated fuel and inflation pressure.",
         "color": "#64748B",
         "staff_rec": "-1 Staff per Store",
         "buffer_rec": "-15% Conservative Buffer"
@@ -734,7 +734,7 @@ PRESETS = {
         "fuel": 3.35,
         "cpi": 244.0,
         "unemp": 5.3,
-        "desc": "Early February surge driving strong volume in Grocery snacks and TV/Electronics.",
+        "desc": "Snack and TV demand surge in Grocery and Electronics.",
         "color": "#2563EB",
         "staff_rec": "+3 Staff per Store",
         "buffer_rec": "+25% Grocery Buffer"
@@ -746,7 +746,7 @@ PRESETS = {
         "fuel": 3.45,
         "cpi": 245.0,
         "unemp": 5.5,
-        "desc": "Baseline business conditions without active holiday promotions or macro shocks.",
+        "desc": "Baseline business conditions without active promotions or shocks.",
         "color": "#0F172A",
         "staff_rec": "Standard Staffing",
         "buffer_rec": "Standard Baseline"
@@ -858,10 +858,10 @@ header_html = """<div class="brand-container" style="background: linear-gradient
 <span style="font-size: 2.2rem;">🛍️</span>
 <span class="brand-title-gradient" style="color: #FFFFFF !important; font-weight: 900 !important; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);">Retail Pulse <span class="brand-title-accent" style="color: #38BDF8 !important; text-shadow: 0 0 16px rgba(56, 189, 248, 0.85);">AI</span></span>
 </div>
-<div class="brand-subtitle" style="color: #CBD5E1 !important; font-size: 0.95rem !important; margin-top: 0.35rem !important; font-weight: 500 !important;">Enterprise Retail Demand Forecasting, Store Diagnostics & Scenario Intelligence</div>
+<div class="brand-subtitle" style="color: #CBD5E1 !important; font-size: 0.95rem !important; margin-top: 0.35rem !important; font-weight: 500 !important;">Enterprise Demand Forecasting, Store Diagnostics & Scenario Intelligence</div>
 </div>
 <div>
-<span class="status-badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.4rem 0.95rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">🟢 System Ready (Accuracy: 94.6%)</span>
+<span class="status-badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.4rem 0.95rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">🟢 Ready (94.6% Accuracy)</span>
 </div>
 </div>"""
 safe_render_html(header_html)
@@ -881,8 +881,8 @@ model_artifact = all_models["champion"]
 # ==============================================================================
 
 def render_jargon_buster_tab(is_simple=False):
-    st.subheader("📖 Plain-English Jargon Buster (Retail & AI Terms Explained)")
-    st.caption("Confused by a retail or machine learning term? Search below for crystal-clear 1-sentence explanations and practical examples.")
+    st.subheader("📖 Plain-English Jargon Buster")
+    st.caption("Search retail and AI terms for crystal-clear 1-sentence explanations and practical examples.")
     
     j_c1, j_c2 = st.columns([2.5, 1])
     with j_c1:
@@ -932,13 +932,13 @@ def render_jargon_buster_tab(is_simple=False):
 
 
 def render_smart_question_chips(is_simple=False):
-    st.subheader("💡 1-Click Smart Question Chips (Instant AI Answers)")
+    st.subheader("💡 1-Click Smart Question Chips")
     if is_simple:
         safe_render_html("""<div class="simple-callout">
-💡 <b>Instant AI Answers:</b> Click any <b>Smart Question Chip</b> below to get immediate plain-English answers, KPI metric callouts, charts, and actionable recommendations without writing queries or building complex filters.
+💡 <b>Instant AI Answers:</b> Click any chip below for immediate 1-line answers, visual metrics, charts, and recommendations.
 </div>""")
     else:
-        st.caption("Click any business question chip or ask custom queries to instantly synthesize machine learning analytics, KPI drivers, and operational directives.")
+        st.caption("Click any question chip to instantly synthesize machine learning analytics, KPI drivers, and operational directives.")
 
     # Initialize session state for smart question
     if "active_smart_question" not in st.session_state:
@@ -1319,14 +1319,13 @@ def render_health_scorecard(is_simple=False, show_embedded_arena=False):
 
 
 def render_goal_seek(is_simple=False):
-    st.subheader("🎯 Interactive Goal-Seek / Target Revenue Calculator")
+    st.subheader("🎯 Target Revenue Goal-Seek Solver")
     if is_simple:
         safe_render_html("""<div class="simple-callout">
-💡 <b>How Goal-Seek Works:</b> Instead of asking <i>"What will sales be?"</i>, tell the AI your <b>dream weekly revenue goal</b> (e.g. $35,000).
-The machine learning solver reverse-engineers the <b>exact promotional markdown</b>, <b>floor staffing roster</b>, <b>safety inventory buffer</b>, and <b>net profit margin</b> required to hit it.
+💡 <b>Goal-Seek:</b> Enter your weekly revenue target to reverse-engineer optimal markdowns, staffing rosters, inventory buffers, and profit margins.
 </div>""")
     else:
-        st.caption("Reverse-engineer promotional discounts, labor staffing allocations, warehouse safety buffers, and net operating margins for any user-defined weekly revenue target.")
+        st.caption("Reverse-engineer promotional discounts, labor staffing allocations, safety buffers, and margins for any weekly revenue target.")
 
     # Visual Interactive Store Card Deck
     gs_store = render_interactive_store_deck(
@@ -1632,8 +1631,8 @@ Operating Margin: <b>{plan['net_margin_pct']:.1f}%</b> of Net Sales
 
 
 def render_upload_analyzer(is_simple=False):
-    st.subheader("📤 Upload & Auto-Analyze Custom Sales Report (CSV)")
-    st.caption("Upload your custom store sales CSV to automatically engineer time-series features, execute AI forecasts, detect demand outliers, and export publication-ready audit reports.")
+    st.subheader("📤 Upload & Auto-Analyze Sales CSV")
+    st.caption("Upload custom store sales CSV to engineer time-series features, run AI forecasts, detect anomalies, and export audit reports.")
     
     sample_template = generate_sample_sales_template(n_weeks=8)
     india_template = generate_india_sample_sales_template()
@@ -2183,13 +2182,13 @@ Contribution margin protected
 
 
 def render_speedometer_gauges(is_simple=False):
-    st.subheader("⏱️ Visual Inventory & Labor Speedometer Gauges")
+    st.subheader("⏱️ Operational Speedometer Gauges")
     if is_simple:
         safe_render_html("""<div class="simple-callout">
-💡 <b>Operational Command Cockpit:</b> Visual speedometer gauges let store directors and warehouse managers monitor <b>inventory stockout risks</b>, <b>cashier & restocker workloads</b>, and <b>fill-rate SLAs</b> in real-time before demand surges hit.
+💡 <b>Operational Telemetry:</b> Monitor inventory stockout risk, associate workload, sales pace, and fill-rate SLAs in real time.
 </div>""")
     else:
-        st.caption("Real-time operational indicator dials measuring warehouse capacity stress, frontline associate throughput, sales velocity, and on-shelf availability.")
+        st.caption("Real-time operational indicator dials measuring warehouse stress, associate throughput, sales pace, and fill rate.")
 
     # Top Controls
     sp_col1, sp_col2, sp_col3 = st.columns([1, 1, 1.2])
@@ -2333,11 +2332,10 @@ def render_profit_estimator(is_simple=False):
     st.subheader("💰 Profit & Operating Margin Estimator")
     if is_simple:
         safe_render_html("""<div class="simple-callout">
-💡 <b>Why Profit Modeling Matters:</b> Top-line sales volume is only half the picture! Selling $50,000 at a 30% discount can sometimes make <b>LESS net profit</b> than selling $35,000 at a 10% discount.
-This estimator breaks down <b>Wholesale COGS</b>, <b>Floor Labor Costs</b>, <b>Break-Even Sales</b>, and calculates your <b>maximum take-home cash profit sweet spot</b>.
+💡 <b>Profit Modeling:</b> Decomposes wholesale COGS, floor labor, and fixed overhead to identify your <b>maximum take-home cash profit sweet spot</b>.
 </div>""")
     else:
-        st.caption("Comprehensive financial P&L statement simulator, cost of goods sold (COGS) decomposition, promotional markdown elasticity, and net operating margin optimization.")
+        st.caption("Financial P&L statement simulator, cost of goods sold (COGS) decomposition, promo elasticity, and net margin optimization.")
 
     # Top Control Bar
     p_c1, p_c2, p_c3 = st.columns([1, 1, 1.2])
@@ -3022,8 +3020,8 @@ def render_model_benchmarks():
 
 
 def render_batch_export(is_simple=False):
-    st.subheader("📁 Batch Forecasting & Multi-Format Export Suite")
-    st.caption("Generate automated batch sales forecasts for all store-department series simultaneously and export publication-quality PDF memos, multi-sheet Excel workbooks, or CSV datasets with 1 click.")
+    st.subheader("📁 Batch Forecasting & 1-Click Export Suite")
+    st.caption("Generate automated batch forecasts across all stores and export publication-ready PDF memos, Excel workbooks, or CSV archives.")
     
     if TEST_FEATURES_FILE.exists():
         test_df = pd.read_csv(TEST_FEATURES_FILE)

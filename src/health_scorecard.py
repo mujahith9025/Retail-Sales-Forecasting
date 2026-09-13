@@ -15,12 +15,12 @@ import pandas as pd
 import numpy as np
 
 GRADE_THRESHOLDS = [
-    (95, "A+", "#10B981", "Elite Leader", "Outstanding revenue velocity, high footprint efficiency, and robust growth trajectory."),
-    (88, "A", "#059669", "High Performer", "Strong commercial performance with consistent sales and dependable demand response."),
-    (78, "B", "#3B82F6", "Stable / Solid", "Steady operations and average space yield. Minor upside available via targeted promos."),
-    (68, "C", "#F59E0B", "Needs Optimization", "Under-indexing on space efficiency or experiencing sales momentum slowdown."),
-    (55, "D", "#EA580C", "Underperforming", "High volatility or weak category traction. Immediate inventory & staffing review needed."),
-    (0, "F", "#DC2626", "Critical Risk", "Severe revenue lag or high stockout variance. Requires urgent executive intervention.")
+    (95, "A+", "#10B981", "Elite Leader", "High revenue velocity & top space yield."),
+    (88, "A", "#059669", "High Performer", "Strong consistency and dependable demand."),
+    (78, "B", "#3B82F6", "Stable / Solid", "Steady revenue; upside via targeted promotions."),
+    (68, "C", "#F59E0B", "Needs Focus", "Under-indexing yield; optimize space & stock."),
+    (55, "D", "#EA580C", "Underperforming", "Elevated volatility; review inventory & staffing."),
+    (0, "F", "#DC2626", "Critical Risk", "Severe revenue lag; executive review required.")
 ]
 
 def calculate_letter_grade(score: float) -> dict:
@@ -38,7 +38,7 @@ def calculate_letter_grade(score: float) -> dict:
         "grade": "F",
         "color": "#DC2626",
         "badge": "Critical Risk",
-        "description": "Severe revenue lag.",
+        "description": "Severe revenue lag; review needed.",
         "score": round(score, 1)
     }
 
@@ -49,14 +49,20 @@ def compute_store_health_scorecard(raw_df: pd.DataFrame, store_locations: dict) 
     total_network_rev = raw_df["Weekly_Sales"].sum()
     store_rows = []
     
-    for s_id, s_info in store_locations.items():
+    unique_stores = raw_df["Store_ID"].unique() if "Store_ID" in raw_df.columns else []
+    for s_id in unique_stores:
         s_data = raw_df[raw_df["Store_ID"] == s_id].sort_values(by="Date")
         if len(s_data) == 0:
             continue
             
+        s_info = store_locations.get(s_id, {}) if store_locations else {}
+        city_name = s_info.get("city", str(s_data["City"].iloc[0]) if "City" in s_data.columns else s_id)
+        state_name = s_info.get("state", str(s_data["State"].iloc[0]) if "State" in s_data.columns else "")
+
         tot_rev = s_data["Weekly_Sales"].sum()
         avg_rev = s_data.groupby("Date")["Weekly_Sales"].sum().mean()
-        sqft = s_data["Store_Size_SqFt"].iloc[0]
+        sqft = float(s_data["Store_Size_SqFt"].iloc[0]) if "Store_Size_SqFt" in s_data.columns else s_info.get("sqft", 100000.0)
+        if sqft <= 0: sqft = 100000.0
         sales_per_sqft = tot_rev / sqft
         
         # Weekly aggregates
@@ -100,8 +106,8 @@ def compute_store_health_scorecard(raw_df: pd.DataFrame, store_locations: dict) 
         
         store_rows.append({
             "Store_ID": s_id,
-            "City": s_info["city"],
-            "State": s_info["state"],
+            "City": city_name,
+            "State": state_name,
             "Health_Score": round(composite_score, 1),
             "Grade": grade_info["grade"],
             "Status": grade_info["badge"],
